@@ -4,7 +4,7 @@
 |
 |  Creation Date: 27-09-2012
 |
-|  Last Modified: Thu, Sep 27, 2012  2:04:29 PM
+|  Last Modified: Fri, Sep 28, 2012 10:39:06 AM
 |
 |  Created By: Robert Nelson
 |
@@ -12,6 +12,9 @@
 
 #include "Prefix.hpp"
 
+
+//Try to create a prefix from the current memory location
+//If not valid prefix, return 0
 Prefix* Prefix::GetPrefix(unsigned char* memLoc) {
 
 	char g1 = 0, g2 = 0, g3 = 0, g4 = 0;
@@ -63,8 +66,10 @@ Prefix* Prefix::GetPrefix(unsigned char* memLoc) {
 
 			//Things that aren't prefixes
 			default:
+				//First Byte isn't a valid prefix
 				if(offset == 0)
 					return 0;
+				//There's at least one byte of prefix
 				else
 					i = 4; //quits the for loop
 		}

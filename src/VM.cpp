@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Sep 27, 2012  9:46:07 PM
+|  Last Modified: Fri, Sep 28, 2012 10:41:26 AM
 |
 |  Created By: Robert Nelson
 |
@@ -29,7 +29,7 @@ VM::VM(int argc, char* argv[]) : mProc(mMem) {
 
 // This function will load a pure object file. No PE style header, just straight machine code
 // The object file will be copied into memory at address 0x0000
-// Execution will begin at address 0x0000
+// Execution will begin at address 0x0000 by default
 
 int VM::LoadObjectFile(char* filename) {
 

@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Sep 27, 2012  6:13:16 PM
+|  Last Modified: Fri, Sep 28, 2012 10:42:53 AM
 |
 |  Created By: Robert Nelson
 |
@@ -36,8 +36,10 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc) {
 
 	Instruction* newAdd = 0;
 
+	//Build a prefix if possible
 	prefix = Prefix::GetPrefix(memLoc);
 
+	//Start looking after the prefix
 	if(prefix) {
 		opLoc += prefix->GetLength();
 		len += prefix->GetLength();
@@ -45,13 +47,13 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc) {
 
 
 	std::string inst;
+	//Switch for the different valid opcodes
 	switch(*opLoc) {
 		case ADD_AL_BYTE:
 			sprintf(buf, "ADD AL, 0x%x", (int)*(opLoc + 1));
 
 			inst.insert(0, (char*)memLoc, len + 2);	
 
-			//create new add object
 			newAdd = new Add(prefix, buf, inst, (int)*opLoc);
 
 			break;
@@ -69,6 +71,7 @@ int Add::Execute(Processor* proc) {
 	int tInt2 = 0;
 	unsigned int parity = 0;
 
+	//switch for the different opcodes
 	switch(mOpcode) {
 		case ADD_AL_BYTE:
 			tInt1 = proc->GetRegisterLow(REG_AX) + mInst[1] ;

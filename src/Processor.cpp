@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Fri, Sep 28, 2012 10:06:46 AM
+|  Last Modified: Fri, Sep 28, 2012 10:40:47 AM
 |
 |  Created By: Robert Nelson
 |
@@ -18,6 +18,7 @@ Processor::Processor(unsigned char* mem): mMem(mem) {
 
 }
 
+//Allows the starting address to be changed
 int Processor::Initialize(unsigned int startAddr) {
 
 
@@ -31,11 +32,18 @@ int Processor::Initialize(unsigned int startAddr) {
 
 }
 
+//Execute a single instruction
 int Processor::Step() {
 
+	//Fetch
 	Instruction* inst = Instruction::ReadInstruction(mMem + GetRegister(REG_IP));
+
+	//Ensure it exists and is valid 
 	if(inst && inst->IsValid()) {
+		//Increment IP
 		SetRegister(REG_IP, GetRegister(REG_IP) + inst->GetLength());
+
+		//Execute
 		if(inst->Execute(this)) {
 			return PROC_ERR_INST;
 		}
@@ -106,6 +114,7 @@ void Processor::SetRegisterHigh(eRegisters reg, unsigned int val) {
 
 	mRegisters[reg].SetValue((mRegisters[reg].GetValue() & 0xFF) | ((val & 0xFF) << 8));
 }
+
 
 void Processor::ProcDump() {
 

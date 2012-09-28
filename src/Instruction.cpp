@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Sep 27, 2012  4:24:12 PM
+|  Last Modified: Fri, Sep 28, 2012 10:35:26 AM
 |
 |  Created By: Robert Nelson
 |
@@ -16,12 +16,16 @@
 
 #define OPCODE(op) Instruction::AllInstructions.push_back(&op::CreateInstruction)
 
+//Vector to contain the create functions for all mnemonics
 std::vector<Instruction::PCreateInst> Instruction::AllInstructions;
+
 
 Instruction::Instruction() : mValid(false), mOpcode(-1), mInst(""), mText("") {
 
 }
 
+//Try to build each mnemonic until one succeeds
+//If No mnemonic succeeds, opcode is not implemented
 Instruction* Instruction::ReadInstruction(unsigned char* memLoc) {
 	Instruction* instr = NULL;
 
@@ -33,6 +37,7 @@ Instruction* Instruction::ReadInstruction(unsigned char* memLoc) {
 	return instr;
 }
 
+//New mnemonics need to be added here to be registered
 void Instruction::InitializeOpcodes() {
 
 	OPCODE(Add);
