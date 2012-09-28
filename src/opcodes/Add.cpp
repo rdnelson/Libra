@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Fri, Sep 28, 2012 10:42:53 AM
+|  Last Modified: Fri, Sep 28, 2012 11:10:52 AM
 |
 |  Created By: Robert Nelson
 |
@@ -31,6 +31,7 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc) {
 	unsigned char* opLoc = memLoc;
 	int len = 0;
 	char buf[65];
+	int tInt1 = 0;
 
 	Prefix* prefix = 0;
 
@@ -50,10 +51,19 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc) {
 	//Switch for the different valid opcodes
 	switch(*opLoc) {
 		case ADD_AL_BYTE:
-			sprintf(buf, "ADD AL, 0x%x", (int)*(opLoc + 1));
+			sprintf(buf, "ADD AL, 0x%02X", (int)*(opLoc + 1));
 
 			inst.insert(0, (char*)memLoc, len + 2);	
 
+			newAdd = new Add(prefix, buf, inst, (int)*opLoc);
+
+			break;
+		case ADD_AX_WORD:
+			tInt1 = (int)*(opLoc + 1);
+			tInt1 |= (int)(*(opLoc + 2) << 8);
+			sprintf(buf, "ADD AX, 0x%04X", tInt1);
+
+			inst.insert(0, (char*)memLoc, len + 3);
 			newAdd = new Add(prefix, buf, inst, (int)*opLoc);
 
 			break;
@@ -82,7 +92,7 @@ int Add::Execute(Processor* proc) {
 			tInt1 &= 0xFF;
 
 			//signed flag checks
-			proc->SetFlag(FLAGS_OF, tInt1 > 0x80);
+			proc->SetFlag(FLAGS_OF, tInt1 > 0x80 && proc->GetRegisterLow(REG_AX) < 0x80);
 			proc->SetFlag(FLAGS_SF, tInt1 > 0x80);
 
 			//zero flag
@@ -99,6 +109,29 @@ int Add::Execute(Processor* proc) {
 
 			proc->SetRegisterLow(REG_AX, tInt1);
 			break;
+
+		case ADD_AX_WORD:
+			tInt1 = proc->GetRegister(REG_AX) + mInst[1] + (mInst[2] << 8);
+
+			proc->SetFlag(FLAGS_CF, tInt1 > 0xFFFF);
+			tInt1 &= 0xFFFF;
+
+			proc->SetFlag(FLAGS_OF, tInt1 > 0x8000 && proc->GetRegister(REG_AX) < 0x8000);
+			proc->SetFlag(FLAGS_SF, tInt1 > 0x8000);
+
+			proc->SetFlag(FLAGS_ZF, tInt1 == 0x0000);
+
+			proc->SetFlag(FLAGS_AF, tInt1 & 0xF0);
+
+			parity = tInt1;
+			parity ^= parity >> 8;
+			parity ^= parity >> 4;
+			parity &= 0xf;
+			proc->SetFlag(FLAGS_PF, (0x6996 >> parity) & 1);
+
+			proc->SetRegister(REG_AX, tInt1);
+			break;
+
 		default:
 			return -1;
 	}
