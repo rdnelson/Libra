@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Wed, Sep 26, 2012 10:15:34 PM
+|  Last Modified: Thu, Sep 27, 2012  4:08:13 PM
 |
 |  Created By: Robert Nelson
 |
@@ -17,8 +17,8 @@
 class Add: public Instruction {
 
 	public:
-		static Instruction* CreateInstruction(char* memLoc);
-		int Execute(Processor& proc);
+		static Instruction* CreateInstruction(unsigned char* memLoc);
+		int Execute(Processor* proc);
 
 		enum eValidOpcodes {
 			ADD_AL_BYTE	= 0x04,
@@ -37,7 +37,7 @@ class Add: public Instruction {
 
 
 	private:
-		Add();
+		Add(Prefix* pre, std::string text, std::string inst, int op);
 
 };
 

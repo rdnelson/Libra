@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Wed, Sep 26, 2012 10:48:49 PM
+|  Last Modified: Thu, Sep 27, 2012  9:46:07 PM
 |
 |  Created By: Robert Nelson
 |
@@ -20,12 +20,10 @@
 
 VM::VM(int argc, char* argv[]) : mProc(mMem) {
 
-	for(int i = 1; i < argc; i++) {
-		std::cout << argv[i];
-	}
-		
 	//initialize main memory
 	memset(mMem, 0xFF, MEM_SIZE);
+
+	LoadObjectFile(argv[1]);
 }
 
 
@@ -43,7 +41,7 @@ int VM::LoadObjectFile(char* filename) {
 
 	int i = 0;
 	while(!fin.eof()) {
-		fin.read(mMem + (i++) * 1024, 1024);
+		fin.read((char*)(mMem + (i++) * 1024), 1024);
 		if(fin.bad()) { //an error occurred
 			fin.close();
 			return VM_ERR_FREAD;
@@ -59,11 +57,18 @@ int VM::LoadObjectFile(char* filename) {
 int VM::Run() {
 
 	mProc.Initialize();
+	Instruction::InitializeOpcodes();
 	
 	for(EVER) {
 
 		//This is where to change the base execution address.
-		mProc.Step();
+		mProc.ProcDump();
+		if(mProc.Step()) {
+			//Hit an error, quit
+			
+			std::cout << "Encountered an error, quitting" << std::endl;
+			break;
+		}
 	}
 
 	return 0;

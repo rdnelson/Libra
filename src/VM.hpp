@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Sep 25, 2012  5:14:46 PM
+|  Last Modified: Thu, Sep 27, 2012  2:06:12 PM
 |
 |  Created By: Robert Nelson
 |
@@ -38,7 +38,7 @@ class VM {
 		
 
 		Processor	mProc;
-		char		mMem[MEM_SIZE];
+		unsigned char	mMem[MEM_SIZE];
 		std::vector<Peripheral*>	mDevs;
 		
 		

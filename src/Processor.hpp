@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Wed, Sep 26, 2012 10:47:33 PM
+|  Last Modified: Thu, Sep 27, 2012  6:11:09 PM
 |
 |  Created By: Robert Nelson
 |
@@ -52,16 +52,34 @@ class Processor {
 
 	public:
 		int Initialize(unsigned int startAddr = 0x0000);
-		Processor(char* mem);
+		Processor(unsigned char* mem);
 		int Step();
+
+		static const int PROC_SUCCESS		= 0;
+		static const int PROC_ERR_INV_ADDR 	= 1;
+		static const int PROC_ERR_INV_INST 	= 2;
+		static const int PROC_ERR_INST		= 3;
+
+		bool GetFlag(eFlags flag);
+		void SetFlag(eFlags flag, bool val);
+
+		unsigned int GetRegister(eRegisters reg);
+		void SetRegister(eRegisters reg, unsigned int val);
+
+		unsigned int GetRegisterLow(eRegisters reg);
+		void SetRegisterLow(eRegisters reg, unsigned int val);
+
+		unsigned int GetRegisterHigh(eRegisters reg);
+		void SetRegisterHigh(eRegisters reg, unsigned int val);
+
+		void ProcDump();
+
 		
 	private:
 		
 		int Execute(Instruction* inst);
-		bool GetFlag(eFlags flag);
-		bool SetFlag(eFlags flag);
-
+		
 		Register	mRegisters[NumRegisters];
-		char*		mMem;
+		unsigned char*	mMem;
 
 };
