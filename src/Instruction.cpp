@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Fri, Sep 28, 2012 10:35:26 AM
+|  Last Modified: Fri, Sep 28, 2012  1:51:32 PM
 |
 |  Created By: Robert Nelson
 |
@@ -20,7 +20,7 @@
 std::vector<Instruction::PCreateInst> Instruction::AllInstructions;
 
 
-Instruction::Instruction() : mValid(false), mOpcode(-1), mInst(""), mText("") {
+Instruction::Instruction() : mValid(false), mOpcode(-1), mInst(""), mText(""), modrm(0) {
 
 }
 

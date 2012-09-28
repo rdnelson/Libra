@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Fri, Sep 28, 2012 10:37:33 AM
+|  Last Modified: Fri, Sep 28, 2012  2:03:13 PM
 |
 |  Created By: Robert Nelson
 |
@@ -43,6 +43,15 @@ class Instruction {
 		//returns the number of bytes in the instruction
 		inline unsigned int GetLength() { return mInst.size(); }
 
+		//returns the reg/opcode field in modrm
+		inline unsigned char GetRegOpcode() { return (modrm & 0x38) >> 3; }
+
+		//returns the RM field in modrm
+		inline unsigned char GetRM() { return modrm & 0x07; }
+
+		//returns the Mod field in modrm
+		inline unsigned char GetMod() { return (modrm & 0xC0) >> 6; }
+
 		//Typedef for AllInstructions
 		typedef Instruction* (*PCreateInst)(unsigned char*);
 
@@ -53,6 +62,7 @@ class Instruction {
 		int mOpcode;
 		std::string mInst;
 		std::string mText;
+		unsigned char modrm;
 
 		Prefix* mPrefix;
 
