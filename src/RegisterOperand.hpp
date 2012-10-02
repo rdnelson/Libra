@@ -4,7 +4,7 @@
 |
 |  Creation Date: 01-10-2012
 |
-|  Last Modified: Mon, Oct  1, 2012 11:21:21 PM
+|  Last Modified: Tue, Oct  2, 2012  2:10:48 PM
 |
 |  Created By: Robert Nelson
 |
@@ -23,6 +23,7 @@ class RegisterOperand : public Operand {
 
 		unsigned int GetValue();
 		void SetValue(unsigned int val);
+		unsigned int GetBytecodeLen() { return 0; }
 
 		unsigned int GetBitmask();
 

@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Mon, Oct  1, 2012 11:32:10 PM
+|  Last Modified: Tue, Oct  2, 2012  3:02:06 PM
 |
 |  Created By: Robert Nelson
 |
@@ -32,7 +32,7 @@ Add::Add(Prefix* pre, std::string text, std::string inst, int op)
 Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 	unsigned char* opLoc = memLoc;
-	int len = 0;
+	int prefixLen = 0;
 	char buf[65];
 	int tInt1 = 0;
 	unsigned char modrm = 0;
@@ -47,7 +47,7 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	//Start looking after the prefix
 	if(prefix) {
 		opLoc += prefix->GetLength();
-		len += prefix->GetLength();
+		prefixLen += prefix->GetLength();
 	}
 
 
@@ -57,7 +57,7 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case ADD_AL_BYTE:
 			sprintf(buf, "ADD AL, 0x%02X", (int)*(opLoc + 1));
 
-			inst.insert(0, (char*)memLoc, len + 2);	
+			inst.insert(0, (char*)memLoc, prefixLen + 2);	
 
 			newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
 			newAdd->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
@@ -67,30 +67,47 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case ADD_AX_WORD:
 			tInt1 = (unsigned char)*(opLoc + 1);
 			tInt1 |= (((unsigned char)*(opLoc + 2)) << 8);
+
 			sprintf(buf, "ADD AX, 0x%04X", tInt1);
 
-			inst.insert(0, (char*)memLoc, len + 3);
+			inst.insert(0, (char*)memLoc, prefixLen + 3);
+
 			newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+			newAdd->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
+			newAdd->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
 
 			break;
 
 		case GRP1_ADD_MOD_IMM8:
+		case GRP1_ADD_MOD_IMM16:
+
 			modrm = *(opLoc + 1);
 
 			if(((modrm & 0x38) >> 3) == 0) {
-				switch((modrm & 0xC0) >> 6) {
-					case 0:
-						break;
+				unsigned int immSize = (*opLoc == GRP1_ADD_MOD_IMM8) ? 1 : 2;
+				if(((modrm & 0xC0) >> 6) == 0) {
+					break;
 				}
 
-				tInt1 = (int)*(opLoc+2);
-				sprintf(buf, "ADD %s, 0x%02X", "", tInt1);
+				Operand* dst = AddressOperand::GetAddressOperand(
+							proc, opLoc, Operand::DST, immSize);
 
-				inst.insert(0, (char*)memLoc, len + 3);
+				tInt1 = (int)*(opLoc+2+dst->GetBytecodeLen());
+				if(immSize == 2) 
+					tInt1 = (tInt1 << 8) + (int)*(opLoc+3+dst->GetBytecodeLen());
+
+				if(immSize == 1)
+					sprintf(buf, "ADD %s, 0x%02X", "", tInt1);
+				else
+					sprintf(buf, "ADD %s, 0x%04X", "", tInt1);
+
+				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen());
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
-
+				newAdd->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
+				newAdd->SetOperand(Operand::DST, dst);
 			}
 			break;
+
 		default:
 			break;
 	}
@@ -106,7 +123,9 @@ int Add::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
 
-	unsigned int newVal = dst->GetValue() + src->GetValue();
+	unsigned int newVal = dst->GetValue();
+	unsigned int srcVal = src->GetValue();
+	newVal += srcVal;
 	proc->SetFlag(FLAGS_CF, newVal > dst->GetBitmask());
 	newVal &= dst->GetBitmask();
 

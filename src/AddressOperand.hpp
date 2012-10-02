@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Mon, Oct  1, 2012 12:39:38 PM
+|  Last Modified: Tue, Oct  2, 2012  2:11:35 PM
 |
 |  Created By: Robert Nelson
 |
@@ -19,14 +19,22 @@ class Processor;
 class AddressOperand : public Operand {
 
 	public:
-		AddressOperand(unsigned char* addr);
-
 		void SetValue(unsigned int addr);
 		unsigned int GetValue();
 
-		static unsigned int GetAddress(Processor* proc, unsigned char modrm, unsigned int disp);
+		static Operand* GetAddressOperand(Processor* proc, unsigned char* inst, unsigned int disp, unsigned int size);
+
+		unsigned int GetBitmask();
+		unsigned int GetBytecodeLen();
+
 
 	private:
-		unsigned char* mAddr;
+		//Pass it the location of the opcode
+		AddressOperand(Processor* proc, unsigned int addr, unsigned int size, unsigned int bytelen);
 
+		static Operand* GetRegister(Processor* proc, unsigned int val, unsigned int size);
+		unsigned int mAddr;
+		unsigned int mSize;
+		Processor* mProc;
+		unsigned int mByteLen;
 };

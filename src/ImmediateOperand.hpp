@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Mon, Oct  1, 2012 11:21:59 PM
+|  Last Modified: Tue, Oct  2, 2012  2:12:42 PM
 |
 |  Created By: Robert Nelson
 |
@@ -28,6 +28,7 @@ class ImmediateOperand : public Operand {
 				bm = (bm << 8) & 0xFF;
 			return bm;
 		}
+		unsigned int GetBytecodeLen() { return mSize; }
 
 
 	private:
