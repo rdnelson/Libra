@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Fri, Sep 28, 2012  2:03:13 PM
+|  Last Modified: Mon, Oct  1, 2012  9:55:04 PM
 |
 |  Created By: Robert Nelson
 |
@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "Prefix.hpp"
+#include "Operand.hpp"
 
 class Processor;
 
@@ -23,7 +24,7 @@ class Instruction {
 
 	public:
 		//Create an instruction from a memory location
-		static Instruction* ReadInstruction(unsigned char* memLoc);
+		static Instruction* ReadInstruction(unsigned char* memLoc, Processor* proc);
 
 		//Register the mnemonics with the ReadInstruction function
 		static void InitializeOpcodes();
@@ -53,7 +54,11 @@ class Instruction {
 		inline unsigned char GetMod() { return (modrm & 0xC0) >> 6; }
 
 		//Typedef for AllInstructions
-		typedef Instruction* (*PCreateInst)(unsigned char*);
+		typedef Instruction* (*PCreateInst)(unsigned char*, Processor*);
+
+		void SetOperand(const unsigned int operand, Operand* newOp);
+
+		virtual ~Instruction();
 
 	protected:
 		Instruction();
@@ -67,5 +72,7 @@ class Instruction {
 		Prefix* mPrefix;
 
 		static std::vector<PCreateInst> AllInstructions;
+
+		Operand* mOperands[2];
 
 };

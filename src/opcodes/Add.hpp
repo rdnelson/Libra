@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Sep 27, 2012  4:08:13 PM
+|  Last Modified: Mon, Oct  1, 2012  9:54:26 PM
 |
 |  Created By: Robert Nelson
 |
@@ -14,10 +14,12 @@
 
 #include "../Instruction.hpp"
 
+class Processor;
+
 class Add: public Instruction {
 
 	public:
-		static Instruction* CreateInstruction(unsigned char* memLoc);
+		static Instruction* CreateInstruction(unsigned char* memLoc, Processor* proc);
 		int Execute(Processor* proc);
 
 		enum eValidOpcodes {

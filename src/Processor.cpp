@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Fri, Sep 28, 2012 10:40:47 AM
+|  Last Modified: Mon, Oct  1, 2012 11:29:54 PM
 |
 |  Created By: Robert Nelson
 |
@@ -36,7 +36,7 @@ int Processor::Initialize(unsigned int startAddr) {
 int Processor::Step() {
 
 	//Fetch
-	Instruction* inst = Instruction::ReadInstruction(mMem + GetRegister(REG_IP));
+	Instruction* inst = Instruction::ReadInstruction(mMem + GetRegister(REG_IP), this);
 
 	//Ensure it exists and is valid 
 	if(inst && inst->IsValid()) {
@@ -69,11 +69,20 @@ void Processor::SetFlag(eFlags flag, bool val) {
 
 
 unsigned int Processor::GetRegister(eRegisters reg) {
-	if(reg == NumRegisters) {
+	if(reg == NumRegisters || reg == HighRegisters || reg == LowRegisters) {
 		return 0;
 	}
 
-	return mRegisters[reg].GetValue();
+	if(reg < NumRegisters) {
+		return mRegisters[reg].GetValue();
+	}
+	else if(reg < LowRegisters) {
+		return GetRegisterLow((eRegisters)(reg - NumRegisters - 1));
+	}
+	else if(reg < HighRegisters) {
+		return GetRegisterHigh((eRegisters)(reg - LowRegisters - 1));
+	}
+	return 0;
 }
 
 void Processor::SetRegister(eRegisters reg, unsigned int val) {
@@ -81,7 +90,13 @@ void Processor::SetRegister(eRegisters reg, unsigned int val) {
 		return;
 	}
 
-	mRegisters[reg].SetValue(val);
+	if(reg < NumRegisters) {
+		mRegisters[reg].SetValue(val);
+	} else if(reg < LowRegisters) {
+		SetRegisterLow((eRegisters)(reg - NumRegisters - 1), val);
+	} else if(reg < HighRegisters) {
+		SetRegisterHigh((eRegisters)(reg - LowRegisters - 1), val);
+	}
 
 }
 

@@ -4,6 +4,9 @@ ALL_SRC=VM.cpp \
 	Instruction.cpp \
 	Processor.cpp \
 	Prefix.cpp \
+	Operand.cpp \
+	AddressOperand.cpp \
+	RegisterOperand.cpp \
 	$(OPCODE_SRC)
 ALL_OBJ=$(ALL_SRC:%.cpp=%.o)
 CPPFLAGS=-g -Wall

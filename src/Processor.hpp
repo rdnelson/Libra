@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Sep 27, 2012  6:11:09 PM
+|  Last Modified: Mon, Oct  1, 2012  9:22:12 PM
 |
 |  Created By: Robert Nelson
 |
@@ -33,6 +33,17 @@ enum eRegisters {
 	REG_IP,
 	REG_FLAGS,
 	NumRegisters,
+	REG_AL,
+	REG_BL,
+	REG_CL,
+	REG_DL,
+	LowRegisters,
+	REG_AH,
+	REG_BH,
+	REG_CH,
+	REG_DH,
+	HighRegisters,
+	AllRegisters=HighRegisters,
 };
 
 enum eFlags {
@@ -73,6 +84,7 @@ class Processor {
 		void SetRegisterHigh(eRegisters reg, unsigned int val);
 
 		void ProcDump();
+
 
 		
 	private:

@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Fri, Sep 28, 2012 11:10:52 AM
+|  Last Modified: Mon, Oct  1, 2012 11:32:10 PM
 |
 |  Created By: Robert Nelson
 |
@@ -13,6 +13,9 @@
 #include "Add.hpp"
 #include "../Prefix.hpp"
 #include "../Processor.hpp"
+#include "../ImmediateOperand.hpp"
+#include "../RegisterOperand.hpp"
+#include "../AddressOperand.hpp"
 
 #include <cstdlib>
 #include <cstdio>
@@ -26,12 +29,13 @@ Add::Add(Prefix* pre, std::string text, std::string inst, int op)
        	mValid = true;
 }
 
-Instruction* Add::CreateInstruction(unsigned char* memLoc) {
+Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 	unsigned char* opLoc = memLoc;
 	int len = 0;
 	char buf[65];
 	int tInt1 = 0;
+	unsigned char modrm = 0;
 
 	Prefix* prefix = 0;
 
@@ -55,17 +59,37 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc) {
 
 			inst.insert(0, (char*)memLoc, len + 2);	
 
-			newAdd = new Add(prefix, buf, inst, (int)*opLoc);
+			newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+			newAdd->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
+			newAdd->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
 
 			break;
 		case ADD_AX_WORD:
-			tInt1 = (int)*(opLoc + 1);
-			tInt1 |= (int)(*(opLoc + 2) << 8);
+			tInt1 = (unsigned char)*(opLoc + 1);
+			tInt1 |= (((unsigned char)*(opLoc + 2)) << 8);
 			sprintf(buf, "ADD AX, 0x%04X", tInt1);
 
 			inst.insert(0, (char*)memLoc, len + 3);
-			newAdd = new Add(prefix, buf, inst, (int)*opLoc);
+			newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
 
+			break;
+
+		case GRP1_ADD_MOD_IMM8:
+			modrm = *(opLoc + 1);
+
+			if(((modrm & 0x38) >> 3) == 0) {
+				switch((modrm & 0xC0) >> 6) {
+					case 0:
+						break;
+				}
+
+				tInt1 = (int)*(opLoc+2);
+				sprintf(buf, "ADD %s, 0x%02X", "", tInt1);
+
+				inst.insert(0, (char*)memLoc, len + 3);
+				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+
+			}
 			break;
 		default:
 			break;
@@ -77,65 +101,28 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc) {
 
 int Add::Execute(Processor* proc) {
 
-	int tInt1 = 0;
-	int tInt2 = 0;
 	unsigned int parity = 0;
 
-	//switch for the different opcodes
-	switch(mOpcode) {
-		case ADD_AL_BYTE:
-			tInt1 = proc->GetRegisterLow(REG_AX) + mInst[1] ;
+	Operand* dst = mOperands[Operand::DST];
+	Operand* src = mOperands[Operand::SRC];
 
-			//unsigned flag checks
-			proc->SetFlag(FLAGS_CF, tInt1 > 0xFF);
+	unsigned int newVal = dst->GetValue() + src->GetValue();
+	proc->SetFlag(FLAGS_CF, newVal > dst->GetBitmask());
+	newVal &= dst->GetBitmask();
 
-			tInt1 &= 0xFF;
+	proc->SetFlag(FLAGS_OF, newVal >= 0x80 && dst->GetValue() < 0x80);
+	proc->SetFlag(FLAGS_SF, newVal >= 0x80);
+	proc->SetFlag(FLAGS_ZF, newVal == 0x00);
+	proc->SetFlag(FLAGS_AF, (newVal & ~0x0F) != 0);
 
-			//signed flag checks
-			proc->SetFlag(FLAGS_OF, tInt1 > 0x80 && proc->GetRegisterLow(REG_AX) < 0x80);
-			proc->SetFlag(FLAGS_SF, tInt1 > 0x80);
+	parity = newVal;
+	parity ^= parity >> 16;
+	parity ^= parity >> 8;
+	parity ^= parity >> 4;
+	parity &= 0x0f;
+	proc->SetFlag(FLAGS_PF, (0x6996 >> parity) & 1);
 
-			//zero flag
-			proc->SetFlag(FLAGS_ZF, tInt1 == 0);
-
-			//Adjust Flag
-			proc->SetFlag(FLAGS_AF, tInt1 & 0xF0);
-
-			parity = tInt1;
-			parity ^= parity >> 4;
-			parity &= 0xf;
-			proc->SetFlag(FLAGS_PF, (0x6996 >> parity) & 1);
-			
-
-			proc->SetRegisterLow(REG_AX, tInt1);
-			break;
-
-		case ADD_AX_WORD:
-			tInt1 = proc->GetRegister(REG_AX) + mInst[1] + (mInst[2] << 8);
-
-			proc->SetFlag(FLAGS_CF, tInt1 > 0xFFFF);
-			tInt1 &= 0xFFFF;
-
-			proc->SetFlag(FLAGS_OF, tInt1 > 0x8000 && proc->GetRegister(REG_AX) < 0x8000);
-			proc->SetFlag(FLAGS_SF, tInt1 > 0x8000);
-
-			proc->SetFlag(FLAGS_ZF, tInt1 == 0x0000);
-
-			proc->SetFlag(FLAGS_AF, tInt1 & 0xF0);
-
-			parity = tInt1;
-			parity ^= parity >> 8;
-			parity ^= parity >> 4;
-			parity &= 0xf;
-			proc->SetFlag(FLAGS_PF, (0x6996 >> parity) & 1);
-
-			proc->SetRegister(REG_AX, tInt1);
-			break;
-
-		default:
-			return -1;
-	}
-
+	dst->SetValue(newVal);
 
 	return 0;
 }
