@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Fri, Sep 28, 2012 10:41:26 AM
+|  Last Modified: Tue, Oct  2, 2012  1:55:08 PM
 |
 |  Created By: Robert Nelson
 |
@@ -63,6 +63,7 @@ int VM::Run() {
 
 		//This is where to change the base execution address.
 		mProc.ProcDump();
+		mProc.MemDump();
 		if(mProc.Step()) {
 			//Hit an error, quit
 			

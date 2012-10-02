@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Mon, Oct  1, 2012  9:22:12 PM
+|  Last Modified: Tue, Oct  2, 2012  1:40:32 PM
 |
 |  Created By: Robert Nelson
 |
@@ -83,7 +83,11 @@ class Processor {
 		unsigned int GetRegisterHigh(eRegisters reg);
 		void SetRegisterHigh(eRegisters reg, unsigned int val);
 
+		unsigned int GetMemory(unsigned int addr, unsigned int size);
+		void SetMemory(unsigned int addr, unsigned int size, unsigned int val);
+
 		void ProcDump();
+		void MemDump();
 
 
 		

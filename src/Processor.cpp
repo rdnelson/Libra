@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Mon, Oct  1, 2012 11:29:54 PM
+|  Last Modified: Tue, Oct  2, 2012  2:02:21 PM
 |
 |  Created By: Robert Nelson
 |
@@ -13,6 +13,8 @@
 #include "Processor.hpp"
 
 #include <iostream>
+#include <cstring>
+#include <cstdio>
 
 Processor::Processor(unsigned char* mem): mMem(mem) {
 
@@ -130,6 +132,16 @@ void Processor::SetRegisterHigh(eRegisters reg, unsigned int val) {
 	mRegisters[reg].SetValue((mRegisters[reg].GetValue() & 0xFF) | ((val & 0xFF) << 8));
 }
 
+unsigned int Processor::GetMemory(unsigned int addr, unsigned int size) {
+	unsigned int temp = 0;
+	memcpy(&temp, mMem + (addr % 0x10000), size);
+	return temp;
+}
+
+void Processor::SetMemory(unsigned int addr, unsigned int size, unsigned int val) {
+
+	memcpy(mMem + (addr % 0x10000), &val, size);
+}
 
 void Processor::ProcDump() {
 
@@ -164,10 +176,50 @@ void Processor::ProcDump() {
 	std::cout << "\tDF = " << GetFlag(FLAGS_DF) << std::endl;
 	std::cout << "\tOF = " << GetFlag(FLAGS_OF) << std::endl;
 
+	std::cout << std::dec;
 	std::cout << std::endl;
 
 
 	std::cout << "++++++++++++++++++++++++  END DUMP  ++++++++++++++++++++++++" << std::endl; 
 
+}
+
+void Processor::MemDump() {
+	std::cout << "++++++++++++++++++++++ BEGIN MEM DUMP ++++++++++++++++++++++" << std::endl;
+	std::cout << std::hex;
+	int lastSame = 0;
+	for(unsigned int i = 0; i < (0x10000 / 0x10); i++) {
+		bool same = true;
+		if(i != (0x10000 / 0x10) - 1) {
+			for(int j = 0; j < 0x10; j++) {
+				if (mMem[i * 0x10 + j] != mMem[(i + 1) * 0x10 + j]) {
+					same = false;
+					break;
+				}
+			}
+		}
+		//skip if same, not first, not last
+		if(same && (i != 0) && (i != (0x10000 / 0x10) - 1)) {
+			if(lastSame == 0) {
+				printf("0x%04X: ", i * 0x10);
+				for(int j = 0; j < 0x10; j++) {
+					printf("%02X ", mMem[i*0x10 + j]);
+				}
+				std::cout << std::endl;
+				lastSame++;
+			} else if(lastSame == 1) {
+				std::cout << "..." << std::endl;
+				lastSame++;
+			}
+		} else {
+			lastSame = 0;
+			printf("0x%04X: ", i * 0x10);
+			for(int j = 0; j < 0x10; j++) {
+				printf("%02X ", mMem[i*0x10 + j]);
+			}
+			std::cout << std::endl;
+		}
+	}
+	std::cout << "++++++++++++++++++++++  END MEM DUMP  ++++++++++++++++++++++" << std::endl;
 }
 
