@@ -4,7 +4,7 @@
 |
 |  Creation Date: 01-10-2012
 |
-|  Last Modified: Tue, Oct  2, 2012  2:10:48 PM
+|  Last Modified: Wed, Oct  3, 2012 12:07:28 PM
 |
 |  Created By: Robert Nelson
 |
@@ -30,5 +30,6 @@ class RegisterOperand : public Operand {
 	private:
 		eRegisters mReg;
 		Processor* mProc;
+		unsigned int mSection;
 
 };

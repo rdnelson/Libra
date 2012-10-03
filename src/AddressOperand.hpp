@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Tue, Oct  2, 2012  2:11:35 PM
+|  Last Modified: Wed, Oct  3, 2012 11:13:54 AM
 |
 |  Created By: Robert Nelson
 |
@@ -16,13 +16,23 @@
 
 class Processor;
 
+enum eModRm {
+	MOD,
+	RM,
+};
+
 class AddressOperand : public Operand {
 
 	public:
+		enum eModRm {
+			MOD,
+			REG,
+		};
+
 		void SetValue(unsigned int addr);
 		unsigned int GetValue();
 
-		static Operand* GetAddressOperand(Processor* proc, unsigned char* inst, unsigned int disp, unsigned int size);
+		static Operand* GetAddressOperand(Processor* proc, unsigned char* inst, eModRm modrm, unsigned int size);
 
 		unsigned int GetBitmask();
 		unsigned int GetBytecodeLen();

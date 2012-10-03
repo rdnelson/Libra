@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Tue, Oct  2, 2012  2:12:00 PM
+|  Last Modified: Wed, Oct  3, 2012 11:13:30 AM
 |
 |  Created By: Robert Nelson
 |
@@ -93,7 +93,7 @@ Operand* AddressOperand::GetRegister(Processor* proc, unsigned int val, unsigned
 
 }
 
-Operand* AddressOperand::GetAddressOperand(Processor* proc, unsigned char* inst, unsigned int position, unsigned int size) {
+Operand* AddressOperand::GetAddressOperand(Processor* proc, unsigned char* inst, eModRm position, unsigned int size) {
 
 	unsigned int addr = 0;
 	unsigned int disp = 0;
@@ -101,7 +101,7 @@ Operand* AddressOperand::GetAddressOperand(Processor* proc, unsigned char* inst,
 	unsigned char* modrm = inst + 1;
 	unsigned int byteCodeLen = 0;
 
-	if(position == Operand::SRC) {
+	if(position == AddressOperand::REG) {
 		return GetRegister(proc, (*modrm & 0x38) >> 3, size);
 	}
 

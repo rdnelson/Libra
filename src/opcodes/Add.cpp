@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Tue, Oct  2, 2012  3:02:06 PM
+|  Last Modified: Wed, Oct  3, 2012 12:21:51 PM
 |
 |  Created By: Robert Nelson
 |
@@ -80,33 +80,76 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 		case GRP1_ADD_MOD_IMM8:
 		case GRP1_ADD_MOD_IMM16:
+		case GRP1_ADD_MOD_SIMM8:
 
 			modrm = *(opLoc + 1);
 
 			if(((modrm & 0x38) >> 3) == 0) {
 				unsigned int immSize = (*opLoc == GRP1_ADD_MOD_IMM8) ? 1 : 2;
-				if(((modrm & 0xC0) >> 6) == 0) {
-					break;
-				}
 
 				Operand* dst = AddressOperand::GetAddressOperand(
-							proc, opLoc, Operand::DST, immSize);
+							proc, opLoc, AddressOperand::MOD, immSize);
 
 				tInt1 = (int)*(opLoc+2+dst->GetBytecodeLen());
-				if(immSize == 2) 
-					tInt1 = (tInt1 << 8) + (int)*(opLoc+3+dst->GetBytecodeLen());
+				if(immSize == 2) {
+					if(*opLoc == GRP1_ADD_MOD_IMM16) {
+						tInt1 += ((int)*(opLoc+3+dst->GetBytecodeLen())) << 8;
+					}else {
+						tInt1 = (tInt1 >= 0x80) ? 0xFF00 + tInt1 : tInt1;
+					}
+				}
 
 				if(immSize == 1)
 					sprintf(buf, "ADD %s, 0x%02X", "", tInt1);
 				else
 					sprintf(buf, "ADD %s, 0x%04X", "", tInt1);
 
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen());
+				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADD_MOD_SIMM8 ? 1 : 0));
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdd->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
 				newAdd->SetOperand(Operand::DST, dst);
 			}
 			break;
+
+		case ADD_MOD_REG8:
+		case ADD_MOD_REG16:
+			{
+				unsigned int size = *opLoc == ADD_MOD_REG8 ? 1 : 2;
+				modrm = *(opLoc + 1);
+				Operand* dst = AddressOperand::GetAddressOperand(
+						proc, opLoc, AddressOperand::MOD, size);
+				Operand* src = AddressOperand::GetAddressOperand(
+						proc, opLoc, AddressOperand::REG, size);
+				sprintf(buf, "ADD %s, %s", "", "");
+				unsigned int strSize = prefixLen + 2 + dst->GetBytecodeLen();
+				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
+				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+				newAdd->SetOperand(Operand::SRC, src);
+				newAdd->SetOperand(Operand::DST, dst);
+				
+				break;
+			}
+
+		case ADD_REG8_MOD:
+		case ADD_REG16_MOD:
+			{
+				unsigned int size = *opLoc == ADD_REG8_MOD ? 1 : 2;
+
+				modrm = *(opLoc + 1);
+				Operand* dst = AddressOperand::GetAddressOperand(
+						proc, opLoc, AddressOperand::REG, size);
+				Operand* src = AddressOperand::GetAddressOperand(
+						proc, opLoc, AddressOperand::MOD, size);
+				sprintf(buf, "ADD %s, %s", "", "");
+				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
+				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+				newAdd->SetOperand(Operand::SRC, src);
+				newAdd->SetOperand(Operand::DST, dst);
+				
+				break;
+
+
+			}
 
 		default:
 			break;
