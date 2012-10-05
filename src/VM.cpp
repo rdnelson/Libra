@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct  2, 2012  1:55:08 PM
+|  Last Modified: Thu, Oct  4, 2012  9:14:03 PM
 |
 |  Created By: Robert Nelson
 |
@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <cstdio>
 
 #define EVER ;;
 
@@ -70,6 +71,7 @@ int VM::Run() {
 			std::cout << "Encountered an error, quitting" << std::endl;
 			break;
 		}
+		getchar();
 	}
 
 	return 0;
