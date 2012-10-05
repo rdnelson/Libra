@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct  2, 2012  1:40:32 PM
+|  Last Modified: Thu, Oct  4, 2012  6:28:43 PM
 |
 |  Created By: Robert Nelson
 |
@@ -19,13 +19,13 @@
 
 enum eRegisters {
 	REG_AX,
-	REG_BX,
 	REG_CX,
 	REG_DX,
+	REG_BX,
+	REG_SP,
+	REG_BP,
 	REG_SI,
 	REG_DI,
-	REG_BP,
-	REG_SP,
 	REG_CS,
 	REG_DS,
 	REG_SS,
@@ -34,14 +34,14 @@ enum eRegisters {
 	REG_FLAGS,
 	NumRegisters,
 	REG_AL,
-	REG_BL,
 	REG_CL,
 	REG_DL,
+	REG_BL,
 	LowRegisters,
 	REG_AH,
-	REG_BH,
 	REG_CH,
 	REG_DH,
+	REG_BH,
 	HighRegisters,
 	AllRegisters=HighRegisters,
 };
