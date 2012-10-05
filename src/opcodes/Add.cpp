@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Wed, Oct  3, 2012 12:21:51 PM
+|  Last Modified: Thu, Oct  4, 2012  9:42:16 AM
 |
 |  Created By: Robert Nelson
 |
@@ -15,7 +15,7 @@
 #include "../Processor.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
-#include "../AddressOperand.hpp"
+#include "../ModrmOperand.hpp"
 
 #include <cstdlib>
 #include <cstdio>
@@ -87,8 +87,8 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			if(((modrm & 0x38) >> 3) == 0) {
 				unsigned int immSize = (*opLoc == GRP1_ADD_MOD_IMM8) ? 1 : 2;
 
-				Operand* dst = AddressOperand::GetAddressOperand(
-							proc, opLoc, AddressOperand::MOD, immSize);
+				Operand* dst = ModrmOperand::GetModrmOperand(
+							proc, opLoc, ModrmOperand::MOD, immSize);
 
 				tInt1 = (int)*(opLoc+2+dst->GetBytecodeLen());
 				if(immSize == 2) {
@@ -116,10 +116,10 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			{
 				unsigned int size = *opLoc == ADD_MOD_REG8 ? 1 : 2;
 				modrm = *(opLoc + 1);
-				Operand* dst = AddressOperand::GetAddressOperand(
-						proc, opLoc, AddressOperand::MOD, size);
-				Operand* src = AddressOperand::GetAddressOperand(
-						proc, opLoc, AddressOperand::REG, size);
+				Operand* dst = ModrmOperand::GetModrmOperand(
+						proc, opLoc, ModrmOperand::MOD, size);
+				Operand* src = ModrmOperand::GetModrmOperand(
+						proc, opLoc, ModrmOperand::REG, size);
 				sprintf(buf, "ADD %s, %s", "", "");
 				unsigned int strSize = prefixLen + 2 + dst->GetBytecodeLen();
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
@@ -136,10 +136,10 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				unsigned int size = *opLoc == ADD_REG8_MOD ? 1 : 2;
 
 				modrm = *(opLoc + 1);
-				Operand* dst = AddressOperand::GetAddressOperand(
-						proc, opLoc, AddressOperand::REG, size);
-				Operand* src = AddressOperand::GetAddressOperand(
-						proc, opLoc, AddressOperand::MOD, size);
+				Operand* dst = ModrmOperand::GetModrmOperand(
+						proc, opLoc, ModrmOperand::REG, size);
+				Operand* src = ModrmOperand::GetModrmOperand(
+						proc, opLoc, ModrmOperand::MOD, size);
 				sprintf(buf, "ADD %s, %s", "", "");
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);

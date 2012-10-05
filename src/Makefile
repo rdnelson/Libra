@@ -1,12 +1,14 @@
-OPCODE_SRC=opcodes/Add.cpp
+OPCODE_SRC=opcodes/Add.cpp \
+	   opcodes/Mov.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
 	Processor.cpp \
 	Prefix.cpp \
 	Operand.cpp \
-	AddressOperand.cpp \
+	ModrmOperand.cpp \
 	RegisterOperand.cpp \
+	AddressOperand.cpp \
 	$(OPCODE_SRC)
 ALL_OBJ=$(ALL_SRC:%.cpp=%.o)
 CPPFLAGS=-g -Wall

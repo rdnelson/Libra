@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Mon, Oct  1, 2012  9:56:39 PM
+|  Last Modified: Wed, Oct  3, 2012  4:08:11 PM
 |
 |  Created By: Robert Nelson
 |
@@ -65,4 +65,5 @@ void Instruction::SetOperand(const unsigned int opcode, Operand* newOp) {
 void Instruction::InitializeOpcodes() {
 
 	OPCODE(Add);
+	OPCODE(Mov);
 }	

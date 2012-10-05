@@ -1,10 +1,10 @@
 /*-------------------------------------*\
 |
-|  File Name: Address.hpp
+|  File Name: AddressOperand.hpp
 |
-|  Creation Date: 28-09-2012
+|  Creation Date: 04-10-2012
 |
-|  Last Modified: Wed, Oct  3, 2012 11:13:54 AM
+|  Last Modified: Thu, Oct  4, 2012  1:53:06 PM
 |
 |  Created By: Robert Nelson
 |
@@ -12,39 +12,15 @@
 
 #pragma once
 
-#include "Operand.hpp"
+#include "ModrmOperand.hpp"
 
-class Processor;
-
-enum eModRm {
-	MOD,
-	RM,
-};
-
-class AddressOperand : public Operand {
+class AddressOperand : public ModrmOperand {
 
 	public:
-		enum eModRm {
-			MOD,
-			REG,
-		};
-
-		void SetValue(unsigned int addr);
-		unsigned int GetValue();
-
-		static Operand* GetAddressOperand(Processor* proc, unsigned char* inst, eModRm modrm, unsigned int size);
-
-		unsigned int GetBitmask();
-		unsigned int GetBytecodeLen();
-
+		static Operand* GetAddressOperand(Processor* proc, unsigned int addr, unsigned int size);
 
 	private:
-		//Pass it the location of the opcode
 		AddressOperand(Processor* proc, unsigned int addr, unsigned int size, unsigned int bytelen);
 
-		static Operand* GetRegister(Processor* proc, unsigned int val, unsigned int size);
-		unsigned int mAddr;
-		unsigned int mSize;
-		Processor* mProc;
-		unsigned int mByteLen;
+
 };
