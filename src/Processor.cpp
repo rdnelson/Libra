@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Tue, Oct  2, 2012  2:02:21 PM
+|  Last Modified: Thu, Oct  4, 2012  6:43:14 PM
 |
 |  Created By: Robert Nelson
 |
@@ -149,21 +149,21 @@ void Processor::ProcDump() {
 
 	std::cout << "Registers:" << std::endl;
 	std::cout << std::hex;
-	std::cout << "\tAX = 0x" << mRegisters[REG_AX].GetValue();
-	std::cout << "\tBX = 0x" << mRegisters[REG_BX].GetValue() << std::endl;
-	std::cout << "\tCX = 0x" << mRegisters[REG_CX].GetValue();
-	std::cout << "\tDX = 0x" << mRegisters[REG_DX].GetValue() << std::endl;
-	std::cout << "\tSI = 0x" << mRegisters[REG_SI].GetValue();
-	std::cout << "\tDI = 0x" << mRegisters[REG_DI].GetValue() << std::endl;
-	std::cout << "\tBP = 0x" << mRegisters[REG_BP].GetValue();
-	std::cout << "\tSP = 0x" << mRegisters[REG_SP].GetValue() << std::endl;
+	printf( "\tAX = 0x%04X" , mRegisters[REG_AX].GetValue());
+	printf( "\tBX = 0x%04X\n" , mRegisters[REG_BX].GetValue());
+	printf( "\tCX = 0x%04X" , mRegisters[REG_CX].GetValue());
+	printf( "\tDX = 0x%04X\n" , mRegisters[REG_DX].GetValue());
+	printf( "\tSI = 0x%04X" , mRegisters[REG_SI].GetValue());
+	printf( "\tDI = 0x%04X\n" , mRegisters[REG_DI].GetValue());
+	printf( "\tBP = 0x%04X" , mRegisters[REG_BP].GetValue());
+	printf( "\tSP = 0x%04X\n" , mRegisters[REG_SP].GetValue());
 
-	std::cout << "\tCS = 0x" << mRegisters[REG_CS].GetValue();
-	std::cout << "\tDS = 0x" << mRegisters[REG_DS].GetValue() << std::endl;
-	std::cout << "\tSS = 0x" << mRegisters[REG_SS].GetValue();
-	std::cout << "\tES = 0x" << mRegisters[REG_ES].GetValue() << std::endl;
-	std::cout << "\tIP = 0x" << mRegisters[REG_IP].GetValue();
-	std::cout << "\tFLAGS = 0x" << mRegisters[REG_FLAGS].GetValue() << std::endl;
+	printf( "\tCS = 0x%04X" , mRegisters[REG_CS].GetValue());
+	printf( "\tDS = 0x%04X\n" , mRegisters[REG_DS].GetValue());
+	printf( "\tSS = 0x%04X" , mRegisters[REG_SS].GetValue());
+	printf( "\tES = 0x%04X\n" , mRegisters[REG_ES].GetValue());
+	printf( "\tIP = 0x%04X" , mRegisters[REG_IP].GetValue());
+	printf( "\tFLAGS = 0x%04X\n" , mRegisters[REG_FLAGS].GetValue());
 
 	std::cout << std::endl << "Flags:" << std::endl;
 	std::cout << "\tCF = " << GetFlag(FLAGS_CF);
