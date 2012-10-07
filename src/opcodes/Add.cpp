@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Oct  4, 2012  9:42:16 AM
+|  Last Modified: Sat, Oct  6, 2012 12:00:52 PM
 |
 |  Created By: Robert Nelson
 |
@@ -121,7 +121,6 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
 				sprintf(buf, "ADD %s, %s", "", "");
-				unsigned int strSize = prefixLen + 2 + dst->GetBytecodeLen();
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdd->SetOperand(Operand::SRC, src);
