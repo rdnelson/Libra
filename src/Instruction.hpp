@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Mon, Oct  1, 2012  9:55:04 PM
+|  Last Modified: Sun, Oct  7, 2012 12:41:29 PM
 |
 |  Created By: Robert Nelson
 |
@@ -17,6 +17,8 @@
 
 #include "Prefix.hpp"
 #include "Operand.hpp"
+
+#define GETINST(len) inst.insert(0, (char*)memLoc, len)
 
 class Processor;
 
