@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Wed, Oct  3, 2012  4:08:11 PM
+|  Last Modified: Sun, Oct  7, 2012  2:55:37 PM
 |
 |  Created By: Robert Nelson
 |
@@ -66,4 +66,6 @@ void Instruction::InitializeOpcodes() {
 
 	OPCODE(Add);
 	OPCODE(Mov);
+	OPCODE(Jcc);
+	OPCODE(Test);
 }	

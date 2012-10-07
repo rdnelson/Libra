@@ -1,0 +1,62 @@
+/*-------------------------------------*\
+|
+|  File Name: Jcc.hpp
+|
+|  Creation Date: 06-10-2012
+|
+|  Last Modified: Sat, Oct  6, 2012  1:31:13 PM
+|
+|  Created By: Robert Nelson
+|
+\*-------------------------------------*/
+
+#pragma once
+
+#include "../Instruction.hpp"
+
+class Jcc : public Instruction {
+
+	public:
+		static Instruction* CreateInstruction(unsigned char* memLoc, Processor* proc);
+		int Execute(Processor* proc);
+
+		enum eValidOpcodes {
+			JA	= 0x77,
+			JAE	= 0x73,
+			JB	= 0x72,
+			JBE	= 0x76,
+			//JC	= 0x72,
+			JCXZ	= 0xE3,
+			JE	= 0x74,
+			JG	= 0x7F,
+			JGE	= 0x7D,
+			JL	= 0x7C,
+			JLE	= 0x7E,
+			//JNA	= 0x76,
+			//JNAE	= 0x72,
+			//JNB	= 0x73,
+			//JNBE	= 0x77,
+			//JNC	= 0x73,
+			JNE	= 0x75,
+			//JNG	= 0x7E,
+			//JNGE	= 0x7C,
+			//JNL	= 0x7D,
+			//JNLE	= 0x7F,
+			JNO	= 0x71,
+			JNP	= 0x7B,
+			JNS	= 0x79,
+			//JNZ	= 0x75,
+			JO	= 0x70,
+			JP	= 0x7A,
+			//JPE	= 0x7A,
+			//JPO	= 0x7B,
+			JS	= 0x78,
+			//JZ	= 0x74,
+		};
+
+		static const unsigned int TWO_BYTE_OPCODE = 0x0F;
+		static const unsigned int TWO_BYTE_OFFSET = 0x10;
+
+	private:
+		Jcc(Prefix* pre, std::string text, std::string inst, int op);
+};	
