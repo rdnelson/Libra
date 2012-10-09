@@ -4,7 +4,7 @@
 |
 |  Creation Date: 06-10-2012
 |
-|  Last Modified: Sun, Oct  7, 2012 12:44:47 PM
+|  Last Modified: Tue, Oct  9, 2012  4:54:40 PM
 |
 |  Created By: Robert Nelson
 |
@@ -86,7 +86,7 @@ Instruction* Test::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 
-			GETINST(preSize + 1 + dst->GetBytecodeLen() + src->GetBytecodeLen());
+			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 			newTest = new Test(pre, buf, inst, (unsigned char)*opLoc);
 			newTest->SetOperand(Operand::SRC, src);
 			newTest->SetOperand(Operand::DST, dst);
