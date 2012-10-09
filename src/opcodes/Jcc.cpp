@@ -4,7 +4,7 @@
 |
 |  Creation Date: 06-10-2012
 |
-|  Last Modified: Sat, Oct  6, 2012  1:34:55 PM
+|  Last Modified: Sun, Oct  7, 2012  3:19:32 PM
 |
 |  Created By: Robert Nelson
 |
@@ -45,6 +45,7 @@ Instruction* Jcc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 	unsigned int val = (int)*(opLoc + 1);
 	if(*opLoc == TWO_BYTE_OPCODE) {
+		preSize++;
 		opLoc++;
 		opcodeOffset = TWO_BYTE_OFFSET;
 		val += (int)*(opLoc + 2) << 8;
@@ -72,6 +73,7 @@ Instruction* Jcc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case JP:
 		case JS:
 
+			GETINST(preSize + 1 + (opcodeOffset == TWO_BYTE_OFFSET ? 2 : 1));
 			src = new ImmediateOperand(val, opcodeOffset == TWO_BYTE_OFFSET ? 2 : 1);
 			newJcc = new Jcc(pre, buf, inst, (unsigned char)*opLoc - opcodeOffset);
 			newJcc->SetOperand(Operand::SRC, src);
