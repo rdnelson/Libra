@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Wed, Oct  3, 2012  4:08:28 PM
+|  Last Modified: Sun, Oct  7, 2012  2:56:00 PM
 |
 |  Created By: Robert Nelson
 |
@@ -14,3 +14,5 @@
 
 #include "Add.hpp"
 #include "Mov.hpp"
+#include "Jcc.hpp"
+#include "Test.hpp"
