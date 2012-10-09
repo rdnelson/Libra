@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  3:34:32 PM
+|  Last Modified: Tue, Oct  9, 2012  4:34:10 PM
 |
 |  Created By: Robert Nelson
 |
@@ -22,10 +22,17 @@ class Processor;
 std::vector<Instruction::PCreateInst> Instruction::AllInstructions;
 
 
-Instruction::Instruction() : mValid(false), mOpcode(-1), mInst(""), mText(""), modrm(0) {
+Instruction::Instruction() : mValid(false), mOpcode(-1), mInst(""), mText(""), modrm(0), mPrefix(0) {
 	mOperands[0] = 0;
 	mOperands[1] = 0;
 
+}
+
+Instruction::Instruction(Prefix* pre, std::string text, std::string inst, int op)
+	: mValid(true), mOpcode(op), mInst(inst), mText(text), modrm(0), mPrefix(pre)
+{
+	mOperands[0] = 0;
+	mOperands[1] = 0;
 }
 
 Instruction::~Instruction() {
