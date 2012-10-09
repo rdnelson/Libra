@@ -2,7 +2,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Mov.cpp \
 	   opcodes/Jcc.cpp \
 	   opcodes/Test.cpp \
-	   opcodes/Call.cpp
+	   opcodes/Call.cpp \
+	   opcodes/Ret.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \

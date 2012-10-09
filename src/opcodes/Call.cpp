@@ -4,7 +4,7 @@
 |
 |  Creation Date: 09-10-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  3:38:52 PM
+|  Last Modified: Tue, Oct  9, 2012  3:57:46 PM
 |
 |  Created By: Robert Nelson
 |
@@ -107,8 +107,8 @@ int Call::Execute(Processor* proc) {
 		case CALL_MOD16:
 		{
 		//case CALL_IND16_16:
-			proc->PushRegister(REG_IP);
 			proc->PushRegister(REG_CS);
+			proc->PushRegister(REG_IP);
 
 			unsigned int newIP = dst->GetValue();
 			newIP = (newIP & 0xFFFF) + ((newIP & 0xFFFF0000) >> 0xC);

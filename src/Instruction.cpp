@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  4:34:10 PM
+|  Last Modified: Tue, Oct  9, 2012  4:40:21 PM
 |
 |  Created By: Robert Nelson
 |
@@ -76,4 +76,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Jcc);
 	OPCODE(Test);
 	OPCODE(Call);
+	OPCODE(Ret);
 }	
