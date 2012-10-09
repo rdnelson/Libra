@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Oct  4, 2012  6:43:14 PM
+|  Last Modified: Tue, Oct  9, 2012  3:44:23 PM
 |
 |  Created By: Robert Nelson
 |
@@ -141,6 +141,16 @@ unsigned int Processor::GetMemory(unsigned int addr, unsigned int size) {
 void Processor::SetMemory(unsigned int addr, unsigned int size, unsigned int val) {
 
 	memcpy(mMem + (addr % 0x10000), &val, size);
+}
+
+void Processor::PushRegister(eRegisters reg) {
+	SetRegister(REG_SP, GetRegister(REG_SP) - 2);
+	SetMemory(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4), 2, GetRegister(reg));
+}
+
+void Processor::PopRegister(eRegisters reg) {
+	SetRegister(reg, GetMemory(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4), 2));
+	SetRegister(REG_SP, GetRegister(REG_SP) + 2);
 }
 
 void Processor::ProcDump() {

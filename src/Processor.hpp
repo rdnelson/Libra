@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct  4, 2012  6:28:43 PM
+|  Last Modified: Tue, Oct  9, 2012  3:39:30 PM
 |
 |  Created By: Robert Nelson
 |
@@ -85,6 +85,9 @@ class Processor {
 
 		unsigned int GetMemory(unsigned int addr, unsigned int size);
 		void SetMemory(unsigned int addr, unsigned int size, unsigned int val);
+
+		void PushRegister(eRegisters reg);
+		void PopRegister(eRegisters reg);
 
 		void ProcDump();
 		void MemDump();
