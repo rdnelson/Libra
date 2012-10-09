@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  3:39:30 PM
+|  Last Modified: Tue, Oct  9, 2012  4:00:42 PM
 |
 |  Created By: Robert Nelson
 |
@@ -88,6 +88,8 @@ class Processor {
 
 		void PushRegister(eRegisters reg);
 		void PopRegister(eRegisters reg);
+
+		void PopSize(unsigned int size);
 
 		void ProcDump();
 		void MemDump();

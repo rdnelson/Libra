@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  3:44:23 PM
+|  Last Modified: Tue, Oct  9, 2012  4:01:26 PM
 |
 |  Created By: Robert Nelson
 |
@@ -151,6 +151,10 @@ void Processor::PushRegister(eRegisters reg) {
 void Processor::PopRegister(eRegisters reg) {
 	SetRegister(reg, GetMemory(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4), 2));
 	SetRegister(REG_SP, GetRegister(REG_SP) + 2);
+}
+
+void Processor::PopSize(unsigned int size) {
+	SetRegister(REG_SP, GetRegister(REG_SP) + size);
 }
 
 void Processor::ProcDump() {
