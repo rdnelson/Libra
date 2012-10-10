@@ -4,7 +4,7 @@
 |
 |  Creation Date: 06-10-2012
 |
-|  Last Modified: Sat, Oct  6, 2012 10:33:39 PM
+|  Last Modified: Tue, Oct  9, 2012  8:53:12 PM
 |
 |  Created By: Robert Nelson
 |
@@ -31,7 +31,7 @@ class Test : public Instruction {
 
 		static const unsigned int TEST_SUB_OPCODE = 0x00;
 
-	private:
+	protected:
 		Test(Prefix* pre, std::string text, std::string inst, int op);
 
 };
