@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  8:52:44 PM
+|  Last Modified: Wed, Oct 10, 2012 10:56:56 AM
 |
 |  Created By: Robert Nelson
 |
@@ -19,3 +19,5 @@
 #include "Call.hpp"
 #include "Ret.hpp"
 #include "Aam.hpp"
+#include "Xor.hpp"
+
