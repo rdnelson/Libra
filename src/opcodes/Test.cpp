@@ -4,7 +4,7 @@
 |
 |  Creation Date: 06-10-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  4:54:40 PM
+|  Last Modified: Wed, Oct 10, 2012  9:24:12 AM
 |
 |  Created By: Robert Nelson
 |
@@ -113,6 +113,8 @@ int Test::Execute(Processor* proc) {
 	parity ^= parity >> 4;
 	parity &= 0x0f;
 	
+	proc->SetFlag(FLAGS_CF, false);
+	proc->SetFlag(FLAGS_OF, false);
 	proc->SetFlag(FLAGS_PF, (0x6996 >> parity) & 1);
 	proc->SetFlag(FLAGS_ZF, val == 0);
 	proc->SetFlag(FLAGS_SF, val >= sign);
