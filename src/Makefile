@@ -3,7 +3,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Jcc.cpp \
 	   opcodes/Test.cpp \
 	   opcodes/Call.cpp \
-	   opcodes/Ret.cpp
+	   opcodes/Ret.cpp \
+	   opcodes/Aam.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \

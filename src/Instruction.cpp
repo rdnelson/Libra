@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  4:40:21 PM
+|  Last Modified: Tue, Oct  9, 2012  8:51:53 PM
 |
 |  Created By: Robert Nelson
 |
@@ -77,4 +77,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Test);
 	OPCODE(Call);
 	OPCODE(Ret);
+	OPCODE(Aam);
 }	
