@@ -87,4 +87,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Call);
 	OPCODE(Ret);
 	OPCODE(Aam);
+	OPCODE(Xor);
 }	
