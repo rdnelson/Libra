@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  4:24:36 PM
+|  Last Modified: Wed, Oct 10, 2012 10:58:08 AM
 |
 |  Created By: Robert Nelson
 |
@@ -65,6 +65,8 @@ class Instruction {
 	protected:
 		Instruction();
 		Instruction(Prefix* pre, std::string text, std::string inst, int op);
+
+		bool Parity(unsigned int val);
 
 		bool mValid;
 		int mOpcode;
