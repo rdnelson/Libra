@@ -25,18 +25,16 @@ class Cmp: public Instruction {
 		enum eValidOpcodes {
 			CMP_AL_IMM8			= 0x3C,
 			CMP_AX_IMM16		= 0x3D,
-			CMP_MOD8_IMM8		= 0x80,
-			CMP_MOD16_IMM16		= 0x81,
-			CMP_MOD16_IMM8		= 0x83,
-			CMP_MOD8_REG8		= 0x38,
-			CMP_MOD16_REG16		= 0x39,
-
 		};
 
 		enum eValidGroup {
-			GRP1_ADD_MOD_IMM8	= 0x80,
-			GRP1_ADD_MOD_IMM16	= 0x81,
-			GRP1_ADD_MOD_SIMM8	= 0x83,
+			GRP1_CMP_MOD8_IMM8		= 0x80,
+			GRP1_CMP_MOD16_IMM16	= 0x81,
+			GRP1_CMP_MOD16_IMM8		= 0x83,
+			GRP1_CMP_MOD8_REG8		= 0x38,
+			GRP1_CMP_MOD16_REG16	= 0x39,
+			GRP1_CMP_REG8_MOD8		= 0x3A,
+			GRP1_CMP_REG16_MOD16	= 0x3B,
 		};
 
 

@@ -73,6 +73,7 @@
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\ModrmOperand.cpp" />
     <ClCompile Include="..\src\opcodes\Add.cpp" />
+    <ClCompile Include="..\src\opcodes\Cmp.cpp" />
     <ClCompile Include="..\src\opcodes\Mov.cpp" />
     <ClCompile Include="..\src\Operand.cpp" />
     <ClCompile Include="..\src\Prefix.cpp" />
@@ -87,6 +88,7 @@
     <ClInclude Include="..\src\ModrmOperand.hpp" />
     <ClInclude Include="..\src\opcodes\Add.hpp" />
     <ClInclude Include="..\src\opcodes\AllOpcodes.hpp" />
+    <ClInclude Include="..\src\opcodes\Cmp.hpp" />
     <ClInclude Include="..\src\opcodes\Mov.hpp" />
     <ClInclude Include="..\src\Operand.hpp" />
     <ClInclude Include="..\src\Peripheral.hpp" />
