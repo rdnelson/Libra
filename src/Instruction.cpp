@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  8:51:53 PM
+|  Last Modified: Wed, Oct 10, 2012 10:59:28 AM
 |
 |  Created By: Robert Nelson
 |
@@ -66,6 +66,15 @@ void Instruction::SetOperand(const unsigned int opcode, Operand* newOp) {
 		default:
 			break;
 	}
+}
+
+bool Instruction::Parity(unsigned int parity) {
+
+	parity ^= parity >> 16;
+	parity ^= parity >> 8;
+	parity ^= parity >> 4;
+	parity &= 0x0F;
+	return (0x6996 >> parity) & 1;
 }
 
 //New mnemonics need to be added here to be registered
