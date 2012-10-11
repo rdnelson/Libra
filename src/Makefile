@@ -10,7 +10,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Aaa.cpp \
 	   opcodes/CLSTX.cpp \
 	   opcodes/Aad.cpp \
-	   opcodes/Aas.cpp
+	   opcodes/Aas.cpp \
+	   opcodes/And.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
