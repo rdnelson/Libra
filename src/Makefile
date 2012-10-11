@@ -12,7 +12,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Aad.cpp \
 	   opcodes/Aas.cpp \
 	   opcodes/And.cpp \
-	   opcodes/Adc.cpp
+	   opcodes/Adc.cpp \
+	   opcodes/Cbw.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
