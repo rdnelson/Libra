@@ -4,7 +4,7 @@
 |
 |  Creation Date: 06-10-2012
 |
-|  Last Modified: Wed, Oct 10, 2012  9:24:12 AM
+|  Last Modified: Thu, Oct 11, 2012  5:36:16 PM
 |
 |  Created By: Robert Nelson
 |
@@ -72,7 +72,7 @@ Instruction* Test::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = new ImmediateOperand(val, size);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 
-			GETINST(preSize + 1 + size + dst->GetBytecodeLen());
+			GETINST(preSize + 2 + size + dst->GetBytecodeLen());
 			newTest = new Test(pre, buf, inst, (unsigned char)*opLoc);
 			newTest->SetOperand(Operand::SRC, src);
 			newTest->SetOperand(Operand::DST, dst);
@@ -107,15 +107,9 @@ int Test::Execute(Processor* proc) {
 	unsigned int val = mOperands[Operand::SRC]->GetValue() & mOperands[Operand::DST]->GetValue();
 	unsigned int sign = mOperands[Operand::DST]->GetBitmask() == 0xFF ? 0x80 : 0x8000;
 
-	unsigned int parity = val;
-	parity ^= parity >> 16;
-	parity ^= parity >> 8;
-	parity ^= parity >> 4;
-	parity &= 0x0f;
-	
 	proc->SetFlag(FLAGS_CF, false);
 	proc->SetFlag(FLAGS_OF, false);
-	proc->SetFlag(FLAGS_PF, (0x6996 >> parity) & 1);
+	proc->SetFlag(FLAGS_PF, Parity(val));
 	proc->SetFlag(FLAGS_ZF, val == 0);
 	proc->SetFlag(FLAGS_SF, val >= sign);
 
