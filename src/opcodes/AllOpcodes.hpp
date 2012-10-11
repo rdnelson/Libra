@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Wed, Oct 10, 2012 12:52:03 PM
+|  Last Modified: Thu, Oct 11, 2012  1:44:14 PM
 |
 |  Created By: Robert Nelson
 |
@@ -21,3 +21,4 @@
 #include "Aam.hpp"
 #include "Xor.hpp"
 #include "Aaa.hpp"
+#include "CLSTX.hpp"
