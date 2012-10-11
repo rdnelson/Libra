@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 11, 2012  3:35:38 PM
+|  Last Modified: Thu, Oct 11, 2012  5:51:34 PM
 |
 |  Created By: Robert Nelson
 |
@@ -93,4 +93,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Aad);
 	OPCODE(Aas);
 	OPCODE(And);
+	OPCODE(Adc);
 }	
