@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 11, 2012  1:44:31 PM
+|  Last Modified: Thu, Oct 11, 2012  2:09:22 PM
 |
 |  Created By: Robert Nelson
 |
@@ -90,4 +90,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Xor);
 	OPCODE(Aaa);
 	OPCODE(CLSTX);
+	OPCODE(Aad);
 }	
