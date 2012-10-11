@@ -5,7 +5,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Call.cpp \
 	   opcodes/Ret.cpp \
 	   opcodes/Aam.cpp \
-	   opcodes/Xor.cpp
+	   opcodes/Xor.cpp \
+	   opcodes/Aaa.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
