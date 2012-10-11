@@ -1,3 +1,4 @@
+RM=rm -rf
 OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Mov.cpp \
 	   opcodes/Jcc.cpp \
