@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  4:01:26 PM
+|  Last Modified: Thu, Oct 11, 2012  2:14:16 PM
 |
 |  Created By: Robert Nelson
 |
@@ -115,7 +115,7 @@ unsigned int Processor::GetRegisterHigh(eRegisters reg) {
 		return 0;
 	}
 
-	return mRegisters[reg].GetValue() & 0xFF00;
+	return (mRegisters[reg].GetValue() & 0xFF00) >> 8;
 };
 
 void Processor::SetRegisterLow(eRegisters reg, unsigned int val) {
