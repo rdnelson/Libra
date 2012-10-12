@@ -34,7 +34,7 @@ Instruction* Aas::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	if(*opLoc == AAS) {
 
 		GETINST(preSize + 1);
-		sprintf(buf, "AAS");
+		snprintf(buf, 65, "AAS");
 
 		newAas = new Aas(pre, buf, inst, (int)*opLoc);
 	}

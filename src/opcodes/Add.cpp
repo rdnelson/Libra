@@ -55,7 +55,7 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	//Switch for the different valid opcodes
 	switch(*opLoc) {
 		case ADD_AL_BYTE:
-			sprintf(buf, "ADD AL, 0x%02X", (int)*(opLoc + 1));
+			snprintf(buf, 65, "ADD AL, 0x%02X", (int)*(opLoc + 1));
 
 			inst.insert(0, (char*)memLoc, prefixLen + 2);	
 
@@ -68,7 +68,7 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			tInt1 = (unsigned char)*(opLoc + 1);
 			tInt1 |= (((unsigned char)*(opLoc + 2)) << 8);
 
-			sprintf(buf, "ADD AX, 0x%04X", tInt1);
+			snprintf(buf, 65, "ADD AX, 0x%04X", tInt1);
 
 			inst.insert(0, (char*)memLoc, prefixLen + 3);
 
@@ -100,9 +100,9 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				}
 
 				if(immSize == 1)
-					sprintf(buf, "ADD %s, 0x%02X", "", tInt1);
+					snprintf(buf, 65, "ADD %s, 0x%02X", "", tInt1);
 				else
-					sprintf(buf, "ADD %s, 0x%04X", "", tInt1);
+					snprintf(buf, 65, "ADD %s, 0x%04X", "", tInt1);
 
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADD_MOD_SIMM8 ? 1 : 0));
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
@@ -120,7 +120,7 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::MOD, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
-				sprintf(buf, "ADD %s, %s", "", "");
+				snprintf(buf, 65, "ADD %s, %s", "", "");
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdd->SetOperand(Operand::SRC, src);
@@ -139,7 +139,7 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::REG, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::MOD, size);
-				sprintf(buf, "ADD %s, %s", "", "");
+				snprintf(buf, 65, "ADD %s, %s", "", "");
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdd->SetOperand(Operand::SRC, src);

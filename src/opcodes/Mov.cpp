@@ -54,7 +54,7 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 
-			sprintf(buf, "MOV %s, %s", "", "");
+			snprintf(buf, 65, "MOV %s, %s", "", "");
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
@@ -70,7 +70,7 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
 
-			sprintf(buf, "MOV %s, %s", "", "");
+			snprintf(buf, 65, "MOV %s, %s", "", "");
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
@@ -83,7 +83,7 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::SEGREG, 2);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
 
-			sprintf(buf, "MOV %s, %s", "", "");
+			snprintf(buf, 65, "MOV %s, %s", "", "");
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
@@ -97,7 +97,7 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::SEGREG, 2);
 
-			sprintf(buf, "MOV %s, %s", "", "");
+			snprintf(buf, 65, "MOV %s, %s", "", "");
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
@@ -117,7 +117,7 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			Operand* src = AddressOperand::GetAddressOperand(proc, val, size);
 
-			sprintf(buf, "MOV %s, %s", "", "");
+			snprintf(buf, 65, "MOV %s, %s", "", "");
 			GETINST(preSize + 3);
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
@@ -137,7 +137,7 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			Operand* dst = AddressOperand::GetAddressOperand(proc, val, size);
 
-			sprintf(buf, "MOV %s, %s", "", "");
+			snprintf(buf, 65, "MOV %s, %s", "", "");
 			GETINST(preSize + 3);
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
@@ -183,7 +183,7 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				val += (int)*(opLoc + 2 + dst->GetBytecodeLen()) << 8;
 			}
 			Operand* src = new ImmediateOperand(val, size);
-			sprintf(buf, "MOV %s, %s", "", "");
+			snprintf(buf, 65, "MOV %s, %s", "", "");
 			GETINST(preSize + 1 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
@@ -203,7 +203,7 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				val += (int)*(opLoc + 3 + dst->GetBytecodeLen()) << 8;
 			}
 			Operand* src = new ImmediateOperand(val, size);
-			sprintf(buf, "MOV %s, %s", "", "");
+			snprintf(buf, 65, "MOV %s, %s", "", "");
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);

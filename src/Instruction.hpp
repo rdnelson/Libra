@@ -20,6 +20,10 @@
 
 #define GETINST(len) inst.insert(0, (char*)memLoc, len)
 
+#ifdef WIN32
+#define snprintf sprintf_s
+#endif
+
 class Processor;
 
 class Instruction {

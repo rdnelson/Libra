@@ -46,7 +46,7 @@ Instruction* Xor::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			}
 
 			GETINST(preSize + 1 + size);
-			sprintf(buf, "XOR %s, %s", "", "");
+			snprintf(buf, 65, "XOR %s, %s", "", "");
 
 			Operand* dst = new RegisterOperand(size == 1 ? REG_AL : REG_AX, proc);
 			Operand* src = new ImmediateOperand(val, size);
@@ -76,7 +76,7 @@ Instruction* Xor::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = new ImmediateOperand(val, size);
 			
 			GETINST(preSize + 2 + (*opLoc == XOR_MOD16_IMM8 ? 1 : size) + dst->GetBytecodeLen());
-			sprintf(buf, "XOR %s, %s", "", "");
+			snprintf(buf, 65, "XOR %s, %s", "", "");
 
 			newXor = new Xor(pre, buf, inst, (int)*opLoc);
 			newXor->SetOperand(Operand::SRC, src);
@@ -104,7 +104,7 @@ Instruction* Xor::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 					size);
 
 			GETINST(preSize + 2 + src->GetBytecodeLen() + dst->GetBytecodeLen());
-			sprintf(buf, "XOR %s, %s", "", "");
+			snprintf(buf, 65, "XOR %s, %s", "", "");
 			newXor = new Xor(pre, buf, inst, (int)*opLoc);
 			newXor->SetOperand(Operand::SRC, src);
 			newXor->SetOperand(Operand::DST, dst);

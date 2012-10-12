@@ -56,7 +56,7 @@ Instruction* Call::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* dst = new ImmediateOperand(val, size);
 
 
-			sprintf(buf, "CALL %s", "");
+			snprintf(buf, 65, "CALL %s", "");
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 
 			newCall = new Call(pre, buf, inst, (unsigned int)*opLoc);
@@ -73,7 +73,7 @@ Instruction* Call::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 
-			sprintf(buf, "CALL %s", "");
+			snprintf(buf, 65, "CALL %s", "");
 			GETINST(preSize + 2 + dst->GetBytecodeLen());
 
 			newCall = new Call(pre, buf, inst, (unsigned int)*opLoc);

@@ -31,7 +31,7 @@ Instruction* Cbw::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	}
 
 	if(*opLoc == CBW) {
-		sprintf(buf, "CBW");
+		snprintf(buf, 65, "CBW");
 		GETINST(preSize + 1);
 		return new Cbw(pre, buf, inst, (int)*opLoc);
 	}

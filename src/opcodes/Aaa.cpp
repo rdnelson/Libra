@@ -34,7 +34,7 @@ Instruction* Aaa::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	if(*opLoc == AAA) {
 
 		GETINST(preSize + 1);
-		sprintf(buf, "AAA");
+		snprintf(buf, 65, "AAA");
 
 		newAaa = new Aaa(pre, buf, inst, (int)*opLoc);
 	}
