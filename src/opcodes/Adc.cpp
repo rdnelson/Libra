@@ -4,7 +4,7 @@
 |
 |  Creation Date: 11-10-2012
 |
-|  Last Modified: Thu, Oct 11, 2012  5:53:21 PM
+|  Last Modified: Fri, Oct 12, 2012  1:21:11 PM
 |
 |  Created By: Robert Nelson
 |
@@ -163,17 +163,17 @@ int Adc::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
 
-	unsigned int newVal = dst->GetValue();
+	unsigned int dstVal = dst->GetValue();
 	unsigned int srcVal = src->GetValue();
 	unsigned int sign = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
-	newVal += srcVal + (proc->GetFlag(FLAGS_CF) ? 1 : 0);
+	unsigned int newVal = dstVal + srcVal + (proc->GetFlag(FLAGS_CF) ? 1 : 0);
 	proc->SetFlag(FLAGS_CF, newVal > dst->GetBitmask());
 	newVal &= dst->GetBitmask();
 
-	proc->SetFlag(FLAGS_OF, newVal >= sign && dst->GetValue() < sign);
+	proc->SetFlag(FLAGS_OF, OverflowAdd(newVal, dstVal, srcVal, sign == 0x80 ? 1 : 2));
 	proc->SetFlag(FLAGS_SF, newVal >= sign);
 	proc->SetFlag(FLAGS_ZF, newVal == 0x00);
-	proc->SetFlag(FLAGS_AF, (newVal & ~0x0F) != 0);
+	proc->SetFlag(FLAGS_AF, AdjustAdd(dstVal, srcVal));
 	proc->SetFlag(FLAGS_PF, Parity(newVal));
 
 	dst->SetValue(newVal);
