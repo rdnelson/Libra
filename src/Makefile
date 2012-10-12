@@ -13,7 +13,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Aas.cpp \
 	   opcodes/And.cpp \
 	   opcodes/Adc.cpp \
-	   opcodes/Cbw.cpp
+	   opcodes/Cbw.cpp \
+	   opcodes/CmpsX.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
