@@ -31,11 +31,11 @@ Instruction* CmpsX::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	}
 
 	if(*opLoc == CMPSB) {
-		sprintf(buf, "CMPSB");
+		snprintf(buf, 65, "CMPSB");
 		GETINST(preSize + 1);
 		return new CmpsX(pre, buf, inst, (int)*opLoc);
 	} else if ( *opLoc == CMPSW){
-		sprintf(buf, "CMPSW");
+		snprintf(buf, 65, "CMPSW");
 		GETINST(preSize + 1);
 		return new CmpsX(pre, buf, inst, (int)*opLoc);
 	}

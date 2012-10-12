@@ -36,7 +36,7 @@ Instruction* Ret::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case RET_NEAR:
 		case RET_FAR:
 			GETINST(preSize + 1);
-			sprintf(buf, "RET");
+			snprintf(buf, 65, "RET");
 			newRet = new Ret(pre, buf, inst, (unsigned int)*opLoc);
 			break;
 		case RET_NEAR_POP:
@@ -44,7 +44,7 @@ Instruction* Ret::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		{
 			unsigned int val = (unsigned int)*(opLoc + 1) + ((unsigned int)*(opLoc + 2) << 8);
 			Operand* dst = new ImmediateOperand(val, 2);
-			sprintf(buf, "RET %s", "");
+			snprintf(buf, 65, "RET %s", "");
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newRet = new Ret(pre, buf, inst, (unsigned int)*opLoc);
 			newRet->SetOperand(Operand::DST, dst);
