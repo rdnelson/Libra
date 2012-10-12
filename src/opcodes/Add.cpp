@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Sat, Oct  6, 2012 12:00:52 PM
+|  Last Modified: Fri, Oct 12, 2012  1:20:31 PM
 |
 |  Created By: Robert Nelson
 |
@@ -160,28 +160,22 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 int Add::Execute(Processor* proc) {
 
-	unsigned int parity = 0;
-
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
 
-	unsigned int newVal = dst->GetValue();
+	unsigned int dstVal = dst->GetValue();
 	unsigned int srcVal = src->GetValue();
-	newVal += srcVal;
+	unsigned int newVal = dstVal + srcVal;
+	unsigned int sign = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
 	proc->SetFlag(FLAGS_CF, newVal > dst->GetBitmask());
 	newVal &= dst->GetBitmask();
 
-	proc->SetFlag(FLAGS_OF, newVal >= 0x80 && dst->GetValue() < 0x80);
-	proc->SetFlag(FLAGS_SF, newVal >= 0x80);
+	proc->SetFlag(FLAGS_OF, OverflowAdd(newVal, dstVal, srcVal, sign == 0x80 ? 1 : 2));
+	proc->SetFlag(FLAGS_SF, newVal >= sign);
 	proc->SetFlag(FLAGS_ZF, newVal == 0x00);
-	proc->SetFlag(FLAGS_AF, (newVal & ~0x0F) != 0);
+	proc->SetFlag(FLAGS_AF, AdjustAdd(dstVal, srcVal));
 
-	parity = newVal;
-	parity ^= parity >> 16;
-	parity ^= parity >> 8;
-	parity ^= parity >> 4;
-	parity &= 0x0f;
-	proc->SetFlag(FLAGS_PF, (0x6996 >> parity) & 1);
+	proc->SetFlag(FLAGS_PF, Parity(newVal));
 
 	dst->SetValue(newVal);
 

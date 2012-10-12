@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  9:52:49 AM
+|  Last Modified: Fri, Oct 12, 2012  1:10:09 PM
 |
 |  Created By: Robert Nelson
 |
@@ -69,6 +69,8 @@ class Instruction {
 		bool Parity(unsigned int val);
 		bool OverflowAdd(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
 		bool OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
+		bool AdjustAdd(unsigned int op1, unsigned int op2);
+		bool AdjustSub(unsigned int op1, unsigned int op2);
 
 		bool mValid;
 		int mOpcode;
