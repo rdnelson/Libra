@@ -4,7 +4,7 @@
 |
 |  Creation Date: 06-10-2012
 |
-|  Last Modified: Thu, Oct 11, 2012  5:36:16 PM
+|  Last Modified: Fri, Oct 12, 2012  5:23:59 PM
 |
 |  Created By: Robert Nelson
 |
@@ -61,6 +61,9 @@ Instruction* Test::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case TEST_MOD8_IMM8:
 		case TEST_MOD16_IMM16:
 		{
+			if(((*(opLoc + 1) & 0x38) >> 3) != TEST_SUB_OPCODE)
+				return 0;
+
 			unsigned int size = (*opLoc == TEST_MOD8_IMM8 ? 1 : 2);
 
 			unsigned int val = (int)*(opLoc + 1);
