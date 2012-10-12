@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct  4, 2012  9:14:03 PM
+|  Last Modified: Fri, Oct 12, 2012  3:10:27 PM
 |
 |  Created By: Robert Nelson
 |
@@ -42,7 +42,7 @@ int VM::LoadObjectFile(char* filename) {
 
 	int i = 0;
 	while(!fin.eof()) {
-		fin.read((char*)(mMem + (i++) * 1024), 1024);
+		fin.read((char*)(mMem + VM_PROG_START + (i++) * 1024), 1024);
 		if(fin.bad()) { //an error occurred
 			fin.close();
 			return VM_ERR_FREAD;
@@ -53,11 +53,13 @@ int VM::LoadObjectFile(char* filename) {
 
 }
 
-
+int VM::GetProgramStart() {
+	return VM_PROG_START;
+}
 
 int VM::Run() {
 
-	mProc.Initialize();
+	mProc.Initialize(GetProgramStart());
 	Instruction::InitializeOpcodes();
 	
 	for(EVER) {

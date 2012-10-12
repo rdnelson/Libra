@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Sep 27, 2012  2:06:12 PM
+|  Last Modified: Fri, Oct 12, 2012  3:09:43 PM
 |
 |  Created By: Robert Nelson
 |
@@ -27,11 +27,14 @@ class VM {
 		int LoadObjectFile(char* filename);
 		int LoadVirgoFile(char* filename);
 
+		int GetProgramStart();
+
 		const static int MEM_SIZE = 0x10000;
 
 		const static int VM_SUCCESS	= 0x00;
 		const static int VM_ERR_FOPEN	= 0x01;
 		const static int VM_ERR_FREAD	= 0x02;
+		const static int VM_PROG_START	= 0x0400; //IVT is in 0x0000 - 0x03FF
 
 	private:
 
