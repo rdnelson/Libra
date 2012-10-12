@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Oct 11, 2012  2:14:16 PM
+|  Last Modified: Fri, Oct 12, 2012  3:18:53 PM
 |
 |  Created By: Robert Nelson
 |
@@ -202,8 +202,11 @@ void Processor::MemDump() {
 	std::cout << "++++++++++++++++++++++ BEGIN MEM DUMP ++++++++++++++++++++++" << std::endl;
 	std::cout << std::hex;
 	int lastSame = 0;
+	//start at beginning, count by rows of 16 bytes
 	for(unsigned int i = 0; i < (0x10000 / 0x10); i++) {
+		//assume matching
 		bool same = true;
+		//if not the last row
 		if(i != (0x10000 / 0x10) - 1) {
 			for(int j = 0; j < 0x10; j++) {
 				if (mMem[i * 0x10 + j] != mMem[(i + 1) * 0x10 + j]) {
@@ -214,6 +217,7 @@ void Processor::MemDump() {
 		}
 		//skip if same, not first, not last
 		if(same && (i != 0) && (i != (0x10000 / 0x10) - 1)) {
+			//print the bookends
 			if(lastSame == 0) {
 				printf("0x%04X: ", i * 0x10);
 				for(int j = 0; j < 0x10; j++) {
@@ -222,14 +226,19 @@ void Processor::MemDump() {
 				std::cout << std::endl;
 				lastSame++;
 			} else if(lastSame == 1) {
+				//only print the ... once
 				std::cout << "..." << std::endl;
 				lastSame++;
 			}
 		} else {
+			//first, last or not same
 			lastSame = 0;
 			printf("0x%04X: ", i * 0x10);
 			for(int j = 0; j < 0x10; j++) {
 				printf("%02X ", mMem[i*0x10 + j]);
+			}
+			if(i == 0 && same) {
+				lastSame++;
 			}
 			std::cout << std::endl;
 		}
