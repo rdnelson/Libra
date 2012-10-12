@@ -55,7 +55,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	//Switch for the different valid opcodes
 	switch(*opLoc) {
 		case ADC_AL_BYTE:
-			sprintf(buf, "ADC AL, 0x%02X", (int)*(opLoc + 1));
+			snprintf(buf, 65, "ADC AL, 0x%02X", (int)*(opLoc + 1));
 
 			inst.insert(0, (char*)memLoc, prefixLen + 2);	
 
@@ -68,7 +68,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			tInt1 = (unsigned char)*(opLoc + 1);
 			tInt1 |= (((unsigned char)*(opLoc + 2)) << 8);
 
-			sprintf(buf, "ADC AX, 0x%04X", tInt1);
+			snprintf(buf, 65, "ADC AX, 0x%04X", tInt1);
 
 			inst.insert(0, (char*)memLoc, prefixLen + 3);
 
@@ -100,9 +100,9 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				}
 
 				if(immSize == 1)
-					sprintf(buf, "ADC %s, 0x%02X", "", tInt1);
+					snprintf(buf, 65, "ADC %s, 0x%02X", "", tInt1);
 				else
-					sprintf(buf, "ADC %s, 0x%04X", "", tInt1);
+					snprintf(buf, 65, "ADC %s, 0x%04X", "", tInt1);
 
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADC_MOD_SIMM8 ? 1 : 0));
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
@@ -120,7 +120,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::MOD, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
-				sprintf(buf, "ADC %s, %s", "", "");
+				snprintf(buf, 65, "ADC %s, %s", "", "");
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdc->SetOperand(Operand::SRC, src);
@@ -139,7 +139,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::REG, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::MOD, size);
-				sprintf(buf, "ADC %s, %s", "", "");
+				snprintf(buf, 65, "ADC %s, %s", "", "");
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdc->SetOperand(Operand::SRC, src);

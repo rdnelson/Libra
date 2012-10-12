@@ -31,7 +31,7 @@ Instruction* Cwd::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	}
 
 	if(*opLoc == CWD) {
-		sprintf(buf, "CWD");
+		snprintf(buf, 65, "CWD");
 		GETINST(preSize + 1);
 		return new Cwd(pre, buf, inst, (int)*opLoc);
 	}

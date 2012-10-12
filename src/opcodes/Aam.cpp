@@ -37,7 +37,7 @@ Instruction* Aam::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		Operand* dst = new ImmediateOperand(val, 1);
 
 		GETINST(preSize + 1 + dst->GetBytecodeLen());
-		sprintf(buf, "AAM %s", "");
+		snprintf(buf, 65, "AAM %s", "");
 
 		newAam = new Aam(pre, buf, inst, (int)*opLoc);
 		newAam->SetOperand(Operand::DST, dst);

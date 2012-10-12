@@ -37,7 +37,7 @@ Instruction* Aad::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		Operand* dst = new ImmediateOperand(val, 1);
 
 		GETINST(preSize + 1 + dst->GetBytecodeLen());
-		sprintf(buf, "AAD %s", "");
+		snprintf(buf, 65, "AAD %s", "");
 
 		newAad = new Aad(pre, buf, inst, (int)*opLoc);
 		newAad->SetOperand(Operand::DST, dst);

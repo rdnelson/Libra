@@ -33,25 +33,25 @@ Instruction* CLSTX::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 	switch(*opLoc) {
 		case CLC:
-			sprintf(buf, "CLC");
+			snprintf(buf, 65, "CLC");
 			break;
 		case CLD:
-			sprintf(buf, "CLD");
+			snprintf(buf, 65, "CLD");
 			break;
 		case CLI:
-			sprintf(buf, "CLI");
+			snprintf(buf, 65, "CLI");
 			break;
 		case CMC:
-			sprintf(buf, "CMC");
+			snprintf(buf, 65, "CMC");
 			break;
 		case STC:
-			sprintf(buf, "STC");
+			snprintf(buf, 65, "STC");
 			break;
 		case STD:
-			sprintf(buf, "STD");
+			snprintf(buf, 65, "STD");
 			break;
 		case STI:
-			sprintf(buf, "STI");
+			snprintf(buf, 65, "STI");
 			break;
 		default:
 			return 0;
