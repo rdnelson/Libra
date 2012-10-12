@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Oct 11, 2012  6:14:40 PM
+|  Last Modified: Fri, Oct 12, 2012  9:54:04 AM
 |
 |  Created By: Robert Nelson
 |
@@ -27,3 +27,4 @@
 #include "And.hpp"
 #include "Adc.hpp"
 #include "Cbw.hpp"
+#include "CmpsX.hpp"

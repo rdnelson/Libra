@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  9:53:51 AM
+|  Last Modified: Fri, Oct 12, 2012 10:02:44 AM
 |
 |  Created By: Robert Nelson
 |
@@ -119,4 +119,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(And);
 	OPCODE(Adc);
 	OPCODE(Cbw);
+	OPCODE(CmpsX);
 }	
