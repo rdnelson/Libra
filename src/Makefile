@@ -14,7 +14,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/And.cpp \
 	   opcodes/Adc.cpp \
 	   opcodes/Cbw.cpp \
-	   opcodes/CmpsX.cpp
+	   opcodes/CmpsX.cpp \
+	   opcodes/Cwd.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
