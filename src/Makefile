@@ -1,7 +1,21 @@
+RM=rm -rf
 OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Mov.cpp \
 	   opcodes/Jcc.cpp \
-	   opcodes/Test.cpp
+	   opcodes/Test.cpp \
+	   opcodes/Call.cpp \
+	   opcodes/Ret.cpp \
+	   opcodes/Aam.cpp \
+	   opcodes/Xor.cpp \
+	   opcodes/Aaa.cpp \
+	   opcodes/CLSTX.cpp \
+	   opcodes/Aad.cpp \
+	   opcodes/Aas.cpp \
+	   opcodes/And.cpp \
+	   opcodes/Adc.cpp \
+	   opcodes/Cbw.cpp \
+	   opcodes/CmpsX.cpp \
+	   opcodes/Cwd.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \

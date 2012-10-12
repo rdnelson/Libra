@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Sun, Oct  7, 2012  2:55:37 PM
+|  Last Modified: Fri, Oct 12, 2012 10:09:28 AM
 |
 |  Created By: Robert Nelson
 |
@@ -22,10 +22,17 @@ class Processor;
 std::vector<Instruction::PCreateInst> Instruction::AllInstructions;
 
 
-Instruction::Instruction() : mValid(false), mOpcode(-1), mInst(""), mText(""), modrm(0) {
+Instruction::Instruction() : mValid(false), mOpcode(-1), mInst(""), mText(""), modrm(0), mPrefix(0) {
 	mOperands[0] = 0;
 	mOperands[1] = 0;
 
+}
+
+Instruction::Instruction(Prefix* pre, std::string text, std::string inst, int op)
+	: mValid(true), mOpcode(op), mInst(inst), mText(text), modrm(0), mPrefix(pre)
+{
+	mOperands[0] = 0;
+	mOperands[1] = 0;
 }
 
 Instruction::~Instruction() {
@@ -61,6 +68,39 @@ void Instruction::SetOperand(const unsigned int opcode, Operand* newOp) {
 	}
 }
 
+bool Instruction::Parity(unsigned int parity) {
+
+	parity ^= parity >> 16;
+	parity ^= parity >> 8;
+	parity ^= parity >> 4;
+	parity &= 0x0F;
+	return (0x6996 >> parity) & 1;
+}
+
+bool Instruction::OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
+
+	unsigned int msb = 1 << (8 * size);
+	if(dst & msb && !(src & msb) && !(val & msb)) {
+		return true;
+	}
+	if(!(dst & msb) && (src & msb) && (val & msb)) {
+		return true;
+	}
+	return false;
+}
+
+bool Instruction::OverflowAdd(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
+
+	unsigned int msb = 1 << (8 * size);
+	if(!(dst & msb) && !(src & msb) && (val & msb)) {
+		return true;
+	}
+	if((dst & msb) && (src & msb) && !(val & msb)) {
+		return true;
+	}
+	return false;
+}
+
 //New mnemonics need to be added here to be registered
 void Instruction::InitializeOpcodes() {
 
@@ -68,4 +108,17 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Mov);
 	OPCODE(Jcc);
 	OPCODE(Test);
+	OPCODE(Call);
+	OPCODE(Ret);
+	OPCODE(Aam);
+	OPCODE(Xor);
+	OPCODE(Aaa);
+	OPCODE(CLSTX);
+	OPCODE(Aad);
+	OPCODE(Aas);
+	OPCODE(And);
+	OPCODE(Adc);
+	OPCODE(Cbw);
+	OPCODE(CmpsX);
+	OPCODE(Cwd);
 }	
