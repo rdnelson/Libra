@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 11, 2012  6:14:54 PM
+|  Last Modified: Fri, Oct 12, 2012  9:53:51 AM
 |
 |  Created By: Robert Nelson
 |
@@ -75,6 +75,30 @@ bool Instruction::Parity(unsigned int parity) {
 	parity ^= parity >> 4;
 	parity &= 0x0F;
 	return (0x6996 >> parity) & 1;
+}
+
+bool Instruction::OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
+
+	unsigned int msb = 1 << (8 * size);
+	if(dst & msb && !(src & msb) && !(val & msb)) {
+		return true;
+	}
+	if(!(dst & msb) && (src & msb) && (val & msb)) {
+		return true;
+	}
+	return false;
+}
+
+bool Instruction::OverflowAdd(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
+
+	unsigned int msb = 1 << (8 * size);
+	if(!(dst & msb) && !(src & msb) && (val & msb)) {
+		return true;
+	}
+	if((dst & msb) && (src & msb) && !(val & msb)) {
+		return true;
+	}
+	return false;
 }
 
 //New mnemonics need to be added here to be registered

@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Wed, Oct 10, 2012 10:58:08 AM
+|  Last Modified: Fri, Oct 12, 2012  9:52:49 AM
 |
 |  Created By: Robert Nelson
 |
@@ -67,6 +67,8 @@ class Instruction {
 		Instruction(Prefix* pre, std::string text, std::string inst, int op);
 
 		bool Parity(unsigned int val);
+		bool OverflowAdd(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
+		bool OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
 
 		bool mValid;
 		int mOpcode;
