@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Fri, Oct 12, 2012 10:09:28 AM
+|  Last Modified: Fri, Oct 12, 2012  2:40:06 PM
 |
 |  Created By: Robert Nelson
 |
@@ -70,20 +70,19 @@ void Instruction::SetOperand(const unsigned int opcode, Operand* newOp) {
 
 bool Instruction::Parity(unsigned int parity) {
 
-	parity ^= parity >> 16;
-	parity ^= parity >> 8;
+	parity &= 0xFF;
 	parity ^= parity >> 4;
 	parity &= 0x0F;
-	return (0x6996 >> parity) & 1;
+	return (0x9669 >> parity) & 1;
 }
 
 bool Instruction::OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
 
-	unsigned int msb = 1 << (8 * size);
-	if(dst & msb && !(src & msb) && !(val & msb)) {
+	unsigned int msb = 1 << (8 * size - 1);
+	if(dst & msb && ~(src & msb) && ~(val & msb)) {
 		return true;
 	}
-	if(!(dst & msb) && (src & msb) && (val & msb)) {
+	if(~(dst & msb) && (src & msb) && (val & msb)) {
 		return true;
 	}
 	return false;
@@ -91,14 +90,22 @@ bool Instruction::OverflowSub(unsigned int val, unsigned int dst, unsigned int s
 
 bool Instruction::OverflowAdd(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
 
-	unsigned int msb = 1 << (8 * size);
-	if(!(dst & msb) && !(src & msb) && (val & msb)) {
+	unsigned int msb = 1 << (8 * size - 1);
+	if(~(dst & msb) && ~(src & msb) && (val & msb)) {
 		return true;
 	}
-	if((dst & msb) && (src & msb) && !(val & msb)) {
+	if((dst & msb) && (src & msb) && ~(val & msb)) {
 		return true;
 	}
 	return false;
+}
+
+bool Instruction::AdjustAdd(unsigned int op1, unsigned int op2) {
+	return (((op1 & 0x0F) + (op2 & 0x0F)) & ~0x0F) != 0;
+}
+
+bool Instruction::AdjustSub(unsigned int op1, unsigned int op2) {
+	return (((op1 & 0x0F) - (op2 & 0x0F)) & ~0x0F) != 0;
 }
 
 //New mnemonics need to be added here to be registered
