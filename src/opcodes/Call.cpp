@@ -4,7 +4,7 @@
 |
 |  Creation Date: 09-10-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  3:57:46 PM
+|  Last Modified: Sun, Oct 14, 2012  5:46:53 PM
 |
 |  Created By: Robert Nelson
 |
@@ -18,7 +18,7 @@
 
 #include <cstdio>
 
-Call::Call(Prefix* pre, std::string text, std::string inst, int op) {
+Call::Call(Prefix* pre, std::string text, std::string inst, int op) : mType(0) {
 
 	mPrefix = pre;
 	mText = text;
@@ -66,18 +66,18 @@ Instruction* Call::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case CALL_MOD16:
 		//case CALL_IND16_16:
 		{
-			unsigned int size = (*opLoc) == CALL_MOD16 ? 2 : 4;
 			unsigned int digit = (*(opLoc + 1) & 0x38) >> 3;
 			if(digit != CALL_MOD_CONST && digit != CALL_IND_CONST)
 				break;
 
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
 
 			snprintf(buf, 65, "CALL %s", "");
 			GETINST(preSize + 2 + dst->GetBytecodeLen());
 
 			newCall = new Call(pre, buf, inst, (unsigned int)*opLoc);
 			newCall->SetOperand(Operand::DST, dst);
+			((Call*)newCall)->mType = digit;
 			break;
 		}
 	}
@@ -107,13 +107,19 @@ int Call::Execute(Processor* proc) {
 		case CALL_MOD16:
 		{
 		//case CALL_IND16_16:
-			proc->PushRegister(REG_CS);
-			proc->PushRegister(REG_IP);
 
-			unsigned int newIP = dst->GetValue();
-			newIP = (newIP & 0xFFFF) + ((newIP & 0xFFFF0000) >> 0xC);
-			proc->SetRegister(REG_IP, newIP & 0xFFFF);
-			proc->SetRegister(REG_CS, (newIP & 0xFFFF0000) >> 0x10);
+			if(mType == CALL_IND_CONST) {
+				proc->PushRegister(REG_CS);
+				proc->PushRegister(REG_IP);
+				unsigned int newIP = dst->GetValue(4);
+				newIP = (newIP & 0xFFFF) + ((newIP & 0xFFFF0000) >> 0xC);
+				proc->SetRegister(REG_IP, newIP & 0xFFFF);
+				proc->SetRegister(REG_CS, (newIP & 0xFFFF0000) >> 0x10);
+			} else if(mType == CALL_MOD_CONST) {
+				proc->PushRegister(REG_IP);
+				unsigned int newIP = dst->GetValue();
+				proc->SetRegister(REG_IP, newIP);
+			}
 			break;
 		}
 		default:

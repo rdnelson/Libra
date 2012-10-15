@@ -4,7 +4,7 @@
 |
 |  Creation Date: 09-10-2012
 |
-|  Last Modified: Tue, Oct  9, 2012 12:35:52 PM
+|  Last Modified: Sun, Oct 14, 2012  5:33:59 PM
 |
 |  Created By: Robert Nelson
 |
@@ -31,5 +31,6 @@ class Call : public Instruction {
 
 	protected:
 		Call(Prefix* pre, std::string text, std::string inst, int op);
+		unsigned int mType;
 
 };

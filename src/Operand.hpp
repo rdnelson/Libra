@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Tue, Oct  2, 2012  2:07:13 PM
+|  Last Modified: Fri, Oct 12, 2012  6:53:32 PM
 |
 |  Created By: Robert Nelson
 |
@@ -16,6 +16,7 @@ class Operand {
 
 	public:
 		virtual void SetValue(unsigned int val) = 0;
+		virtual unsigned int GetValue(unsigned int size) { return GetValue(); }
 		virtual unsigned int GetValue() = 0;
 		virtual unsigned int GetBitmask() = 0;
 		virtual unsigned int GetBytecodeLen() = 0;
