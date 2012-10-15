@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Thu, Oct  4, 2012  7:21:26 PM
+|  Last Modified: Fri, Oct 12, 2012  6:45:32 PM
 |
 |  Created By: Robert Nelson
 |
@@ -19,9 +19,9 @@
 ModrmOperand::ModrmOperand(Processor* proc, unsigned int addr, unsigned int size, unsigned int bytelen )
 	: mAddr(addr), mSize(size), mProc(proc), mByteLen(bytelen) {}
 
-unsigned int ModrmOperand::GetValue() {
+unsigned int ModrmOperand::GetValue(unsigned int size) {
 
-	return mProc->GetMemory(mAddr, mSize);
+	return mProc->GetMemory(mAddr, size == 0 ? mSize : size);
 }
 
 void ModrmOperand::SetValue(unsigned int val) {

@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Thu, Oct  4, 2012  1:47:14 PM
+|  Last Modified: Fri, Oct 12, 2012  6:47:09 PM
 |
 |  Created By: Robert Nelson
 |
@@ -26,7 +26,8 @@ class ModrmOperand : public Operand {
 		};
 
 		void SetValue(unsigned int addr);
-		unsigned int GetValue();
+		unsigned int GetValue() { return GetValue(0); }
+		unsigned int GetValue(unsigned int size);
 
 		static Operand* GetModrmOperand(Processor* proc, unsigned char* inst, eModRm modrm, unsigned int size);
 
