@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  5:12:49 PM
+|  Last Modified: Sun, Oct 14, 2012  5:50:55 PM
 |
 |  Created By: Robert Nelson
 |
@@ -130,4 +130,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Cwd);
 	OPCODE(IncDec);
 	OPCODE(Div);
+	OPCODE(Jmp);
 }	
