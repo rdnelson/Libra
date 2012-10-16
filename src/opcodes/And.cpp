@@ -85,8 +85,10 @@ Instruction* And::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			newAnd = new And(pre, buf, inst, (unsigned char)*opLoc);
 			newAnd->SetOperand(Operand::SRC, src);
 			newAnd->SetOperand(Operand::DST, dst);
-			break;
+			
 		}
+		break;
+
 		case AND_MOD8_REG8:
 		case AND_MOD16_REG16:
 		{

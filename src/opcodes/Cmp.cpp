@@ -88,7 +88,7 @@ Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case GRP1_CMP_MOD16_IMM8:
 			modrm = *(opLoc + 1);
 			if(((modrm & 0x38) >> 3) == 7) {
-				unsigned int immSize = (*opLoc == GRP1_CMP_MOD16_IMM16) ? 2 : 1;
+				unsigned int immSize = (*opLoc == GRP1_CMP_MOD8_IMM8) ? 1 : 2;
 
 				Operand* dst = ModrmOperand::GetModrmOperand(
 							proc, opLoc, ModrmOperand::MOD, immSize);
@@ -173,7 +173,7 @@ int Cmp::Execute(Processor* proc) {
 	unsigned int newVal = dstVal - srcVal;
 	unsigned int sign = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
 	
-	proc->SetFlag(FLAGS_CF, newVal > srcVal);
+	proc->SetFlag(FLAGS_CF, newVal > dstVal);
 	newVal &= dst->GetBitmask();
 
 	proc->SetFlag(FLAGS_OF, OverflowSub(newVal, dstVal, srcVal, sign == 0x80 ? 1 : 2));
