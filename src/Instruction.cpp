@@ -79,7 +79,7 @@ bool Instruction::Parity(unsigned int parity) {
 bool Instruction::OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
 
 	unsigned int msb = 1 << (8 * size - 1);
-	if(dst & msb && ~(src & msb) && ~(val & msb)) {
+	if((dst & msb) && ~(src & msb) && ~(val & msb)) {
 		return true;
 	}
 	if(~(dst & msb) && (src & msb) && (val & msb)) {
@@ -110,7 +110,7 @@ bool Instruction::AdjustSub(unsigned int op1, unsigned int op2) {
 
 //New mnemonics need to be added here to be registered
 void Instruction::InitializeOpcodes() {
-
+	
 	OPCODE(Add);
 	OPCODE(Mov);
 	OPCODE(Jcc);
@@ -123,6 +123,7 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(CLSTX);
 	OPCODE(Aad);
 	OPCODE(Aas);
+	OPCODE(Cmp);
 	OPCODE(And);
 	OPCODE(Adc);
 	OPCODE(Cbw);

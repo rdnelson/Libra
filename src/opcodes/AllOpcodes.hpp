@@ -24,6 +24,7 @@
 #include "CLSTX.hpp"
 #include "Aad.hpp"
 #include "Aas.hpp"
+#include "Cmp.hpp"
 #include "And.hpp"
 #include "Adc.hpp"
 #include "Cbw.hpp"

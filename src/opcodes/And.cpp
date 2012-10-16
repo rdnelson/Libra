@@ -28,6 +28,7 @@ Instruction* And::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	unsigned char* opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	unsigned char modrm = 0;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
@@ -61,6 +62,9 @@ Instruction* And::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case AND_MOD8_IMM8:
 		case AND_MOD16_IMM16:
 		case AND_MOD16_IMM8:
+		
+		modrm = *(opLoc + 1);
+		if(((modrm & 0x38) >> 3) == 4)
 		{
 			unsigned int size = (*opLoc == AND_MOD8_IMM8 ? 1 : 2);
 
