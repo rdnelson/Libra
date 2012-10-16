@@ -18,7 +18,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Cwd.cpp \
 	   opcodes/IncDec.cpp \
 	   opcodes/Div.cpp \
-	   opcodes/Jmp.cpp
+	   opcodes/Jmp.cpp \
+	   opcodes/IDiv.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
