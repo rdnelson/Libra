@@ -4,7 +4,7 @@
 |
 |  Creation Date: 06-10-2012
 |
-|  Last Modified: Sun, Oct  7, 2012  3:19:32 PM
+|  Last Modified: Wed, Oct 17, 2012 11:20:24 AM
 |
 |  Created By: Robert Nelson
 |
@@ -48,7 +48,7 @@ Instruction* Jcc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		preSize++;
 		opLoc++;
 		opcodeOffset = TWO_BYTE_OFFSET;
-		val += (int)*(opLoc + 2) << 8;
+		val = (int)*(opLoc + 1) + ((int)*(opLoc + 2) << 8);
 	}
 
 	Operand* src = 0;
@@ -149,11 +149,8 @@ int Jcc::Execute(Processor* proc) {
 	if(jmp) {
 		unsigned int newIP = proc->GetRegister(REG_IP);
 		unsigned int relAddr = mOperands[Operand::SRC]->GetValue();
-		if(relAddr < (mOperands[Operand::SRC]->GetBitmask() == 0xFF ? 0x80 : 0x8000))
-			newIP += relAddr;
-		else
-			newIP -= relAddr;
-		newIP &= 0xFFFF;
+		newIP += relAddr;
+		newIP &= mOperands[Operand::SRC]->GetBitmask();
 		proc->SetRegister(REG_IP, newIP);
 	}
 
