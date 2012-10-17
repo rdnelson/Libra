@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  1:10:09 PM
+|  Last Modified: Wed, Oct 17, 2012 10:01:23 AM
 |
 |  Created By: Robert Nelson
 |
@@ -86,6 +86,6 @@ class Instruction {
 
 		static std::vector<PCreateInst> AllInstructions;
 
-		Operand* mOperands[2];
+		Operand* mOperands[4];
 
 };

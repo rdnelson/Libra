@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  6:53:32 PM
+|  Last Modified: Wed, Oct 17, 2012 10:02:31 AM
 |
 |  Created By: Robert Nelson
 |
@@ -22,8 +22,10 @@ class Operand {
 		virtual unsigned int GetBytecodeLen() = 0;
 
 		unsigned int GetType() { return mType; }
-		static const unsigned int SRC = 0;
-		static const unsigned int DST = 1;
+		static const unsigned int DST	= 0;
+		static const unsigned int SRC	= 1;
+		static const unsigned int OP3	= 2;
+		static const unsigned int OP4	= 3;
 
 	protected:
 		Operand();

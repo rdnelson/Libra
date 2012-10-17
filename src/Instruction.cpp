@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct 16, 2012  1:27:06 PM
+|  Last Modified: Wed, Oct 17, 2012  1:04:54 PM
 |
 |  Created By: Robert Nelson
 |
@@ -56,16 +56,9 @@ Instruction* Instruction::ReadInstruction(unsigned char* memLoc, Processor* proc
 }
 
 void Instruction::SetOperand(const unsigned int opcode, Operand* newOp) {
-	switch(opcode) {
-		case Operand::SRC:
-			mOperands[opcode] = newOp;
-			break;
-		case Operand::DST:
-			mOperands[opcode] = newOp;
-			break;
-		default:
-			break;
-	}
+	if(opcode >= 4) 
+		return;
+	mOperands[opcode] = newOp;
 }
 
 bool Instruction::Parity(unsigned int parity) {
@@ -132,4 +125,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Div);
 	OPCODE(Jmp);
 	OPCODE(IDiv);
+	OPCODE(IMul);
 }	
