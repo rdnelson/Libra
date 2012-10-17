@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Sun, Oct 14, 2012  5:51:06 PM
+|  Last Modified: Tue, Oct 16, 2012  1:27:36 PM
 |
 |  Created By: Robert Nelson
 |
@@ -33,3 +33,4 @@
 #include "IncDec.hpp"
 #include "Div.hpp"
 #include "Jmp.hpp"
+#include "IDiv.hpp"
