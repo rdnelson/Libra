@@ -105,6 +105,9 @@
     <ClCompile Include="..\src\opcodes\Jmp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\opcodes\IDiv.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\AddressOperand.hpp">
@@ -204,6 +207,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\opcodes\Jmp.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opcodes\IDiv.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

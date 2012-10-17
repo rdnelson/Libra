@@ -86,6 +86,7 @@
     <ClCompile Include="..\src\opcodes\CmpsX.cpp" />
     <ClCompile Include="..\src\opcodes\Cwd.cpp" />
     <ClCompile Include="..\src\opcodes\Div.cpp" />
+    <ClCompile Include="..\src\opcodes\IDiv.cpp" />
     <ClCompile Include="..\src\opcodes\IncDec.cpp" />
     <ClCompile Include="..\src\opcodes\Jcc.cpp" />
     <ClCompile Include="..\src\opcodes\Jmp.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="..\src\opcodes\CmpsX.hpp" />
     <ClInclude Include="..\src\opcodes\Cwd.hpp" />
     <ClInclude Include="..\src\opcodes\Div.hpp" />
+    <ClInclude Include="..\src\opcodes\IDiv.hpp" />
     <ClInclude Include="..\src\opcodes\IncDec.hpp" />
     <ClInclude Include="..\src\opcodes\Jcc.hpp" />
     <ClInclude Include="..\src\opcodes\Jmp.hpp" />
