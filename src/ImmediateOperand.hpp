@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Tue, Oct  2, 2012  2:12:42 PM
+|  Last Modified: Wed, Oct 17, 2012 11:06:31 AM
 |
 |  Created By: Robert Nelson
 |
@@ -25,7 +25,7 @@ class ImmediateOperand : public Operand {
 		unsigned int GetBitmask() { 
 			unsigned int bm = 0;
 			for(unsigned int i = 0; i < mSize; i++)
-				bm = (bm << 8) & 0xFF;
+				bm = (bm << 8) | 0xFF;
 			return bm;
 		}
 		unsigned int GetBytecodeLen() { return mSize; }
