@@ -4,7 +4,7 @@
 |
 |  Creation Date: 12-10-2012
 |
-|  Last Modified: Mon, Oct 15, 2012 12:33:45 PM
+|  Last Modified: Wed, Oct 17, 2012 10:33:48 AM
 |
 |  Created By: Robert Nelson
 |
@@ -92,14 +92,14 @@ int Jmp::Execute(Processor* proc) {
 	switch(mOpcode) {
 		case JMP_REL8:
 			if(dst->GetValue() >= 0x80)
-				ip -= (~dst->GetValue()) & 0xFF;
+				ip -= (~dst->GetValue() + 1) & 0xFF;
 			else
 				ip += dst->GetValue();
 			proc->SetRegister(REG_IP, ip & 0xFFFF);
 			break;
 		case JMP_REL16:
 			if(dst->GetValue() >= 0x8000)
-				ip -= (~dst->GetValue()) & 0xFFFF;
+				ip -= (~dst->GetValue() + 1) & 0xFFFF;
 			else
 				ip += dst->GetValue();
 			proc->SetRegister(REG_IP, ip & 0xFFFF);
