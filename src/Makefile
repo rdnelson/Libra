@@ -19,7 +19,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/IncDec.cpp \
 	   opcodes/Div.cpp \
 	   opcodes/Jmp.cpp \
-	   opcodes/IDiv.cpp
+	   opcodes/IDiv.cpp \
+	   opcodes/IMul.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
@@ -42,4 +43,4 @@ $(TARGET): $(ALL_OBJ)
 	$(CC) $(LDFLAGS) -o $@ $(ALL_OBJ)
 
 clean:
-	$(RM) *.o $(TARGET)
+	$(RM) *.o opcodes/*.o $(TARGET)
