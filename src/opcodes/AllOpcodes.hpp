@@ -38,3 +38,4 @@
 #include "IMul.hpp"
 #include "Sub.hpp"
 #include "Neg.hpp"
+#include "Not.hpp"
