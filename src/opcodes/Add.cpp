@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  1:20:31 PM
+|  Last Modified: Thu, Oct 18, 2012  5:04:38 PM
 |
 |  Created By: Robert Nelson
 |
@@ -170,7 +170,7 @@ int Add::Execute(Processor* proc) {
 	proc->SetFlag(FLAGS_CF, newVal > dst->GetBitmask());
 	newVal &= dst->GetBitmask();
 
-	proc->SetFlag(FLAGS_OF, OverflowAdd(newVal, dstVal, srcVal, sign == 0x80 ? 1 : 2));
+	proc->SetFlag(FLAGS_OF, OverflowAdd(dstVal, srcVal, sign == 0x80 ? 1 : 2));
 	proc->SetFlag(FLAGS_SF, newVal >= sign);
 	proc->SetFlag(FLAGS_ZF, newVal == 0x00);
 	proc->SetFlag(FLAGS_AF, AdjustAdd(dstVal, srcVal));

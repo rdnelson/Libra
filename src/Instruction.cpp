@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  4:57:30 PM
+|  Last Modified: Thu, Oct 18, 2012  5:03:53 PM
 |
 |  Created By: Robert Nelson
 |
@@ -69,44 +69,15 @@ bool Instruction::Parity(unsigned int parity) {
 	return (0x9669 >> parity) & 1;
 }
 
-bool Instruction::OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
+bool Instruction::OverflowSub(unsigned int dst, unsigned int src, unsigned int size) {
 
-	unsigned int msb = 1 << (8 * size - 1);
-
-	if ((src & msb != 0) ? ~src + 1 : src > (dst & msb != 0) ? dst + 1 : dst) {
-		if(((dst & msb) != 0) && ((src & msb) != 0) && !((val & msb) != 0)) {
-			return true;
-		}
-		if(!((dst & msb) != 0) && !((src & msb) != 0) && ((val & msb) != 0)) {
-			return true;
-		}
-	} else if ((src & msb != 0) ? ~src + 1 : src < (dst & msb != 0) ? dst + 1 : dst) {
-		if(((dst & msb) != 0) && ((src & msb) != 0) && ((val & msb) != 0)) {
-			return true;
-		}
-		if(!((dst & msb) != 0) && !((src & msb) != 0) && !((val & msb) != 0)) {
-			return true;
-		}
-	}
-	if(((dst & msb) != 0) && !((src & msb) != 0) && !((val & msb) != 0)) {
-		return true;
-	}
-	if(!((dst & msb) != 0) && ((src & msb) != 0) && ((val & msb) != 0)) {
-		return true;
-	}
-	return false;
+	return OverflowAdd(dst, ~src + 1, size);
 }
 
-bool Instruction::OverflowAdd(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
+bool Instruction::OverflowAdd(unsigned int dst, unsigned int src, unsigned int size) {
 
 	unsigned int msb = 1 << (8 * size - 1);
-	if(~(dst & msb) && ~(src & msb) && (val & msb)) {
-		return true;
-	}
-	if((dst & msb) && (src & msb) && ~(val & msb)) {
-		return true;
-	}
-	return false;
+	return (((src ^ dst) ^ msb) & ((src + dst) ^ src) & msb);
 }
 
 bool Instruction::AdjustAdd(unsigned int op1, unsigned int op2) {

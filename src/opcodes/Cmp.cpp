@@ -4,7 +4,7 @@
 |
 |  Creation Date: 09-10-2012
 |
-|  Last Modified: Tues, Oct 9, 2012 12:00:52 PM
+|  Last Modified: Thu, Oct 18, 2012  5:09:48 PM
 |
 |  Created By: Darren Stahl
 |
@@ -173,7 +173,6 @@ int Cmp::Execute(Processor* proc) {
 
 unsigned int Cmp::compare(Processor* proc, Operand* dst, Operand* src) {
 	
-	unsigned int parity = 0;
 	unsigned int dstVal = dst->GetValue();
 	unsigned int srcVal = src->GetValue();
 	unsigned int newVal = dstVal - srcVal;
@@ -182,7 +181,7 @@ unsigned int Cmp::compare(Processor* proc, Operand* dst, Operand* src) {
 	proc->SetFlag(FLAGS_CF, newVal > dstVal);
 	newVal &= dst->GetBitmask();
 
-	proc->SetFlag(FLAGS_OF, OverflowSub(newVal, dstVal, srcVal, sign == 0x80 ? 1 : 2));
+	proc->SetFlag(FLAGS_OF, OverflowSub(dstVal, srcVal, sign == 0x80 ? 1 : 2));
 	proc->SetFlag(FLAGS_SF, newVal >= sign);
 	proc->SetFlag(FLAGS_ZF, newVal == 0x00);
 	proc->SetFlag(FLAGS_AF, AdjustSub(dstVal, srcVal));
