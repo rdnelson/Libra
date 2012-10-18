@@ -12,6 +12,7 @@
 
 #pragma once
 
+
 #include "Add.hpp"
 #include "Mov.hpp"
 #include "Jcc.hpp"
@@ -34,3 +35,4 @@
 #include "Div.hpp"
 #include "Jmp.hpp"
 #include "IDiv.hpp"
+#include "Sub.hpp"

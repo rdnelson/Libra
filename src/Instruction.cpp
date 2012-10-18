@@ -79,10 +79,26 @@ bool Instruction::Parity(unsigned int parity) {
 bool Instruction::OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
 
 	unsigned int msb = 1 << (8 * size - 1);
-	if((dst & msb) && ~(src & msb) && ~(val & msb)) {
+
+	if ((src & msb != 0) ? ~src + 1 : src > (dst & msb != 0) ? dst + 1 : dst) {
+		if(((dst & msb) != 0) && ((src & msb) != 0) && !((val & msb) != 0)) {
+			return true;
+		}
+		if(!((dst & msb) != 0) && !((src & msb) != 0) && ((val & msb) != 0)) {
+			return true;
+		}
+	} else if ((src & msb != 0) ? ~src + 1 : src < (dst & msb != 0) ? dst + 1 : dst) {
+		if(((dst & msb) != 0) && ((src & msb) != 0) && ((val & msb) != 0)) {
+			return true;
+		}
+		if(!((dst & msb) != 0) && !((src & msb) != 0) && !((val & msb) != 0)) {
+			return true;
+		}
+	}
+	if(((dst & msb) != 0) && !((src & msb) != 0) && !((val & msb) != 0)) {
 		return true;
 	}
-	if(~(dst & msb) && (src & msb) && (val & msb)) {
+	if(!((dst & msb) != 0) && ((src & msb) != 0) && ((val & msb) != 0)) {
 		return true;
 	}
 	return false;
@@ -133,4 +149,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Div);
 	OPCODE(Jmp);
 	OPCODE(IDiv);
+	OPCODE(Sub);
 }	

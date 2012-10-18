@@ -92,6 +92,7 @@
     <ClCompile Include="..\src\opcodes\Jmp.cpp" />
     <ClCompile Include="..\src\opcodes\Mov.cpp" />
     <ClCompile Include="..\src\opcodes\Ret.cpp" />
+    <ClCompile Include="..\src\opcodes\Sub.cpp" />
     <ClCompile Include="..\src\opcodes\Test.cpp" />
     <ClCompile Include="..\src\opcodes\Xor.cpp" />
     <ClCompile Include="..\src\Operand.cpp" />
@@ -126,6 +127,7 @@
     <ClInclude Include="..\src\opcodes\Jmp.hpp" />
     <ClInclude Include="..\src\opcodes\Mov.hpp" />
     <ClInclude Include="..\src\opcodes\Ret.hpp" />
+    <ClInclude Include="..\src\opcodes\Sub.hpp" />
     <ClInclude Include="..\src\opcodes\Test.hpp" />
     <ClInclude Include="..\src\opcodes\Xor.hpp" />
     <ClInclude Include="..\src\Operand.hpp" />

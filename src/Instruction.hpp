@@ -65,16 +65,16 @@ class Instruction {
 		void SetOperand(const unsigned int operand, Operand* newOp);
 
 		virtual ~Instruction();
+		
+		static bool Parity(unsigned int val);
+		static bool OverflowAdd(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
+		static bool OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
+		static bool AdjustAdd(unsigned int op1, unsigned int op2);
+		static bool AdjustSub(unsigned int op1, unsigned int op2);
 
 	protected:
 		Instruction();
 		Instruction(Prefix* pre, std::string text, std::string inst, int op);
-
-		bool Parity(unsigned int val);
-		bool OverflowAdd(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
-		bool OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
-		bool AdjustAdd(unsigned int op1, unsigned int op2);
-		bool AdjustSub(unsigned int op1, unsigned int op2);
 
 		bool mValid;
 		int mOpcode;

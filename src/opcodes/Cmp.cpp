@@ -163,11 +163,17 @@ Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 int Cmp::Execute(Processor* proc) {
 
-	unsigned int parity = 0;
-
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
+	
+	compare(proc, dst, src);
 
+	return 0;
+}
+
+unsigned int Cmp::compare(Processor* proc, Operand* dst, Operand* src) {
+	
+	unsigned int parity = 0;
 	unsigned int dstVal = dst->GetValue();
 	unsigned int srcVal = src->GetValue();
 	unsigned int newVal = dstVal - srcVal;
@@ -183,5 +189,5 @@ int Cmp::Execute(Processor* proc) {
 
 	proc->SetFlag(FLAGS_PF, Parity(newVal));
 
-	return 0;
+	return newVal;
 }
