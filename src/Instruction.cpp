@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  5:03:53 PM
+|  Last Modified: Thu, Oct 18, 2012  5:33:01 PM
 |
 |  Created By: Robert Nelson
 |
@@ -14,7 +14,12 @@
 
 #include "opcodes/AllOpcodes.hpp"
 
+#ifdef UNIT_TEST
+#define OPCODE(op)
+#else
 #define OPCODE(op) Instruction::AllInstructions.push_back(&op::CreateInstruction)
+#endif
+
 
 class Processor;
 
