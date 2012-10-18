@@ -118,3 +118,4 @@ UpgradeLog*.XML
 
 # NuGet
 packages/
+lib/gtest-1.6.0/*

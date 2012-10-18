@@ -4,7 +4,7 @@
 |
 |  Creation Date: 11-10-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  9:54:24 AM
+|  Last Modified: Thu, Oct 18, 2012  5:05:26 PM
 |
 |  Created By: Robert Nelson
 |
@@ -59,7 +59,7 @@ int CmpsX::Execute(Processor* proc) {
 	proc->SetFlag(FLAGS_CF, val > 0xFFFF);
 	val &= 0xFFFF;
 
-	proc->SetFlag(FLAGS_OF, OverflowAdd(val, dst, src, size));
+	proc->SetFlag(FLAGS_OF, OverflowAdd(dst, src, size));
 	proc->SetFlag(FLAGS_ZF, val == 0);
 	proc->SetFlag(FLAGS_PF, Parity(val));
 	proc->SetFlag(FLAGS_SF, (val & (1 << (8 * size))) != 0);

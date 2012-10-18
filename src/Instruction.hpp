@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Wed, Oct 17, 2012 10:01:23 AM
+|  Last Modified: Thu, Oct 18, 2012  5:04:06 PM
 |
 |  Created By: Robert Nelson
 |
@@ -67,8 +67,8 @@ class Instruction {
 		virtual ~Instruction();
 		
 		static bool Parity(unsigned int val);
-		static bool OverflowAdd(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
-		static bool OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size);
+		static bool OverflowAdd(unsigned int dst, unsigned int src, unsigned int size);
+		static bool OverflowSub(unsigned int dst, unsigned int src, unsigned int size);
 		static bool AdjustAdd(unsigned int op1, unsigned int op2);
 		static bool AdjustSub(unsigned int op1, unsigned int op2);
 
