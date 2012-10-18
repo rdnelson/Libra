@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Wed, Oct 17, 2012  1:04:54 PM
+|  Last Modified: Thu, Oct 18, 2012  4:57:30 PM
 |
 |  Created By: Robert Nelson
 |
@@ -72,10 +72,26 @@ bool Instruction::Parity(unsigned int parity) {
 bool Instruction::OverflowSub(unsigned int val, unsigned int dst, unsigned int src, unsigned int size) {
 
 	unsigned int msb = 1 << (8 * size - 1);
-	if(dst & msb && ~(src & msb) && ~(val & msb)) {
+
+	if ((src & msb != 0) ? ~src + 1 : src > (dst & msb != 0) ? dst + 1 : dst) {
+		if(((dst & msb) != 0) && ((src & msb) != 0) && !((val & msb) != 0)) {
+			return true;
+		}
+		if(!((dst & msb) != 0) && !((src & msb) != 0) && ((val & msb) != 0)) {
+			return true;
+		}
+	} else if ((src & msb != 0) ? ~src + 1 : src < (dst & msb != 0) ? dst + 1 : dst) {
+		if(((dst & msb) != 0) && ((src & msb) != 0) && ((val & msb) != 0)) {
+			return true;
+		}
+		if(!((dst & msb) != 0) && !((src & msb) != 0) && !((val & msb) != 0)) {
+			return true;
+		}
+	}
+	if(((dst & msb) != 0) && !((src & msb) != 0) && !((val & msb) != 0)) {
 		return true;
 	}
-	if(~(dst & msb) && (src & msb) && (val & msb)) {
+	if(!((dst & msb) != 0) && ((src & msb) != 0) && ((val & msb) != 0)) {
 		return true;
 	}
 	return false;
@@ -103,7 +119,7 @@ bool Instruction::AdjustSub(unsigned int op1, unsigned int op2) {
 
 //New mnemonics need to be added here to be registered
 void Instruction::InitializeOpcodes() {
-
+	
 	OPCODE(Add);
 	OPCODE(Mov);
 	OPCODE(Jcc);
@@ -116,6 +132,7 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(CLSTX);
 	OPCODE(Aad);
 	OPCODE(Aas);
+	OPCODE(Cmp);
 	OPCODE(And);
 	OPCODE(Adc);
 	OPCODE(Cbw);
@@ -126,4 +143,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Jmp);
 	OPCODE(IDiv);
 	OPCODE(IMul);
+	OPCODE(Sub);
 }	

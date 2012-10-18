@@ -4,13 +4,14 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Wed, Oct 17, 2012 12:26:12 PM
+|  Last Modified: Thu, Oct 18, 2012  4:57:51 PM
 |
 |  Created By: Robert Nelson
 |
 \*-------------------------------------*/
 
 #pragma once
+
 
 #include "Add.hpp"
 #include "Mov.hpp"
@@ -24,6 +25,7 @@
 #include "CLSTX.hpp"
 #include "Aad.hpp"
 #include "Aas.hpp"
+#include "Cmp.hpp"
 #include "And.hpp"
 #include "Adc.hpp"
 #include "Cbw.hpp"
@@ -34,3 +36,4 @@
 #include "Jmp.hpp"
 #include "IDiv.hpp"
 #include "IMul.hpp"
+#include "Sub.hpp"
