@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  4:00:42 PM
+|  Last Modified: Thu, Oct 18, 2012  1:49:29 PM
 |
 |  Created By: Robert Nelson
 |
@@ -74,8 +74,8 @@ class Processor {
 		bool GetFlag(eFlags flag);
 		void SetFlag(eFlags flag, bool val);
 
-		unsigned int GetRegister(eRegisters reg);
-		void SetRegister(eRegisters reg, unsigned int val);
+		virtual unsigned int GetRegister(eRegisters reg);
+		virtual void SetRegister(eRegisters reg, unsigned int val);
 
 		unsigned int GetRegisterLow(eRegisters reg);
 		void SetRegisterLow(eRegisters reg, unsigned int val);
@@ -83,8 +83,8 @@ class Processor {
 		unsigned int GetRegisterHigh(eRegisters reg);
 		void SetRegisterHigh(eRegisters reg, unsigned int val);
 
-		unsigned int GetMemory(unsigned int addr, unsigned int size);
-		void SetMemory(unsigned int addr, unsigned int size, unsigned int val);
+		virtual unsigned int GetMemory(unsigned int addr, unsigned int size);
+		virtual void SetMemory(unsigned int addr, unsigned int size, unsigned int val);
 
 		void PushRegister(eRegisters reg);
 		void PopRegister(eRegisters reg);
