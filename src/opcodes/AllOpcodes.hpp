@@ -39,3 +39,5 @@
 #include "Sub.hpp"
 #include "Push.hpp"
 #include "Neg.hpp"
+#include "Not.hpp"
+#include "Or.hpp"

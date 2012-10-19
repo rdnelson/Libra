@@ -43,7 +43,7 @@ Instruction* Neg::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				unsigned int size = (*opLoc == NEG_MOD8 ? 1 : 2);
 				Operand* dst = ModrmOperand::GetModrmOperand
 					(proc, opLoc, ModrmOperand::MOD, size);
-				snprintf(buf, 65, "NEG %s", "");
+				snprintf(buf, 65, "NEG %s", dst->GetDisasm().c_str());
 				GETINST(preLen + 2 + dst->GetBytecodeLen());
 				newNeg = new Neg(pre, buf, inst, (int)*opLoc);
 				newNeg->SetOperand(Operand::DST, dst);
