@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  9:03:13 PM
+|  Last Modified: Thu, Oct 18, 2012 10:30:26 PM
 |
 |  Created By: Robert Nelson
 |
@@ -14,6 +14,7 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include "Prefix.hpp"
 #include "Operand.hpp"
@@ -73,6 +74,12 @@ class Instruction {
 		static bool AdjustSub(unsigned int op1, unsigned int op2);
 
 		inline std::string GetDisasm() { return mText; }
+
+		void AddLengthToDisasm() {
+			std::stringstream ss;
+			ss << mInst.size();
+			mText += " (" + ss.str() + ")";
+		}
 
 	protected:
 		Instruction();
