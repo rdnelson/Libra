@@ -37,6 +37,8 @@ Instruction* Push::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	switch(*opLoc) {
 		case PUSH_MOD16:
 		{
+			if((*(opLoc + 1) & 0x38) >> 3 != PUSH_SUB_OPCODE)
+				return newPush;
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
 			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen());
