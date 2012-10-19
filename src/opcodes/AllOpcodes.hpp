@@ -37,3 +37,4 @@
 #include "IDiv.hpp"
 #include "IMul.hpp"
 #include "Sub.hpp"
+#include "Neg.hpp"

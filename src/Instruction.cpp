@@ -120,4 +120,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(IDiv);
 	OPCODE(IMul);
 	OPCODE(Sub);
+	OPCODE(Neg);
 }	

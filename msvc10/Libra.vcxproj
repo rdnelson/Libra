@@ -87,10 +87,12 @@
     <ClCompile Include="..\src\opcodes\Cwd.cpp" />
     <ClCompile Include="..\src\opcodes\Div.cpp" />
     <ClCompile Include="..\src\opcodes\IDiv.cpp" />
+    <ClCompile Include="..\src\opcodes\IMul.cpp" />
     <ClCompile Include="..\src\opcodes\IncDec.cpp" />
     <ClCompile Include="..\src\opcodes\Jcc.cpp" />
     <ClCompile Include="..\src\opcodes\Jmp.cpp" />
     <ClCompile Include="..\src\opcodes\Mov.cpp" />
+    <ClCompile Include="..\src\opcodes\Neg.cpp" />
     <ClCompile Include="..\src\opcodes\Ret.cpp" />
     <ClCompile Include="..\src\opcodes\Sub.cpp" />
     <ClCompile Include="..\src\opcodes\Test.cpp" />
@@ -122,10 +124,12 @@
     <ClInclude Include="..\src\opcodes\Cwd.hpp" />
     <ClInclude Include="..\src\opcodes\Div.hpp" />
     <ClInclude Include="..\src\opcodes\IDiv.hpp" />
+    <ClInclude Include="..\src\opcodes\IMul.hpp" />
     <ClInclude Include="..\src\opcodes\IncDec.hpp" />
     <ClInclude Include="..\src\opcodes\Jcc.hpp" />
     <ClInclude Include="..\src\opcodes\Jmp.hpp" />
     <ClInclude Include="..\src\opcodes\Mov.hpp" />
+    <ClInclude Include="..\src\opcodes\Neg.hpp" />
     <ClInclude Include="..\src\opcodes\Ret.hpp" />
     <ClInclude Include="..\src\opcodes\Sub.hpp" />
     <ClInclude Include="..\src\opcodes\Test.hpp" />
