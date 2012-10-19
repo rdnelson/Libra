@@ -27,9 +27,6 @@
     <ClCompile Include="..\src\ModrmOperand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Operand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Prefix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

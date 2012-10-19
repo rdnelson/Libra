@@ -99,7 +99,6 @@
     <ClCompile Include="..\src\opcodes\Sub.cpp" />
     <ClCompile Include="..\src\opcodes\Test.cpp" />
     <ClCompile Include="..\src\opcodes\Xor.cpp" />
-    <ClCompile Include="..\src\Operand.cpp" />
     <ClCompile Include="..\src\Prefix.cpp" />
     <ClCompile Include="..\src\Processor.cpp" />
     <ClCompile Include="..\src\RegisterOperand.cpp" />
