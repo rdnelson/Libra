@@ -4,7 +4,7 @@
 |
 |  Creation Date: 12-10-2012
 |
-|  Last Modified: Wed, Oct 17, 2012 10:33:48 AM
+|  Last Modified: Thu, Oct 18, 2012  9:56:21 PM
 |
 |  Created By: Robert Nelson
 |
@@ -43,7 +43,7 @@ Instruction* Jmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				val += *(opLoc + 2) << 8;
 			}
 			Operand* dst = new ImmediateOperand(val, size);
-			snprintf(buf, 65, "JMP %s", "");
+			snprintf(buf, 65, "JMP %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 1 + size);
 			newJmp = new Jmp(pre, buf, inst, (int)*opLoc);
 			newJmp->SetOperand(Operand::DST, dst);
@@ -55,7 +55,7 @@ Instruction* Jmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				((*(opLoc + 1) & 0x38) >> 3) == JMP_SUB_SEG_OPCODE)
 		{
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
-			snprintf(buf, 65, "JMP %s", "");
+			snprintf(buf, 65, "JMP %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 3 + dst->GetBytecodeLen());
 			newJmp = new Jmp(pre,buf, inst, (int)*opLoc);
 			newJmp->SetOperand(Operand::DST, dst);
@@ -69,7 +69,7 @@ Instruction* Jmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				(*(opLoc + 3)) +
 				(*(opLoc + 4) << 0x08)) << 0x4);
 			Operand* dst = new ImmediateOperand(val & 0xFFFF, 2);
-			snprintf(buf, 65, "JMP %s", "");
+			snprintf(buf, 65, "JMP %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 4);
 			newJmp = new Jmp(pre, buf, inst, (int)*opLoc);
 			newJmp->SetOperand(Operand::DST, dst);

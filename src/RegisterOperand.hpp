@@ -4,7 +4,7 @@
 |
 |  Creation Date: 01-10-2012
 |
-|  Last Modified: Wed, Oct  3, 2012 12:07:28 PM
+|  Last Modified: Thu, Oct 18, 2012  9:27:05 PM
 |
 |  Created By: Robert Nelson
 |
@@ -26,6 +26,7 @@ class RegisterOperand : public Operand {
 		unsigned int GetBytecodeLen() { return 0; }
 
 		unsigned int GetBitmask();
+		const std::string GetDisasm();
 
 	private:
 		eRegisters mReg;

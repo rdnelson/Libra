@@ -28,7 +28,6 @@ ALL_SRC=VM.cpp \
 	Instruction.cpp \
 	Processor.cpp \
 	Prefix.cpp \
-	Operand.cpp \
 	ModrmOperand.cpp \
 	RegisterOperand.cpp \
 	AddressOperand.cpp \

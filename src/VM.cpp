@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct  4, 2012  9:14:03 PM
+|  Last Modified: Thu, Oct 18, 2012  9:02:14 PM
 |
 |  Created By: Robert Nelson
 |
@@ -65,13 +65,13 @@ int VM::Run() {
 		//This is where to change the base execution address.
 		mProc.ProcDump();
 		mProc.MemDump();
+		getchar();
 		if(mProc.Step()) {
 			//Hit an error, quit
 			
 			std::cout << "Encountered an error, quitting" << std::endl;
 			break;
 		}
-		getchar();
 	}
 
 	return 0;

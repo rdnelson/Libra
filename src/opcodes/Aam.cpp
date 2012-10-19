@@ -4,7 +4,7 @@
 |
 |  Creation Date: 09-10-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  8:57:49 PM
+|  Last Modified: Thu, Oct 18, 2012  9:48:56 PM
 |
 |  Created By: Robert Nelson
 |
@@ -37,7 +37,7 @@ Instruction* Aam::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		Operand* dst = new ImmediateOperand(val, 1);
 
 		GETINST(preSize + 1 + dst->GetBytecodeLen());
-		snprintf(buf, 65, "AAM %s", "");
+		snprintf(buf, 65, "AAM %s", dst->GetDisasm().c_str());
 
 		newAam = new Aam(pre, buf, inst, (int)*opLoc);
 		newAam->SetOperand(Operand::DST, dst);

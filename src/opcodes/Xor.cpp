@@ -4,7 +4,7 @@
 |
 |  Creation Date: 10-10-2012
 |
-|  Last Modified: Wed, Oct 10, 2012 11:08:49 AM
+|  Last Modified: Thu, Oct 18, 2012 10:00:23 PM
 |
 |  Created By: Robert Nelson
 |
@@ -46,10 +46,10 @@ Instruction* Xor::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			}
 
 			GETINST(preSize + 1 + size);
-			snprintf(buf, 65, "XOR %s, %s", "", "");
 
 			Operand* dst = new RegisterOperand(size == 1 ? REG_AL : REG_AX, proc);
 			Operand* src = new ImmediateOperand(val, size);
+			snprintf(buf, 65, "XOR %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			newXor = new Xor(pre, buf, inst, (int)*opLoc);
 			newXor->SetOperand(Operand::SRC, src);
 			newXor->SetOperand(Operand::DST, dst);
@@ -76,7 +76,7 @@ Instruction* Xor::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = new ImmediateOperand(val, size);
 			
 			GETINST(preSize + 2 + (*opLoc == XOR_MOD16_IMM8 ? 1 : size) + dst->GetBytecodeLen());
-			snprintf(buf, 65, "XOR %s, %s", "", "");
+			snprintf(buf, 65, "XOR %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 
 			newXor = new Xor(pre, buf, inst, (int)*opLoc);
 			newXor->SetOperand(Operand::SRC, src);
@@ -104,7 +104,7 @@ Instruction* Xor::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 					size);
 
 			GETINST(preSize + 2 + src->GetBytecodeLen() + dst->GetBytecodeLen());
-			snprintf(buf, 65, "XOR %s, %s", "", "");
+			snprintf(buf, 65, "XOR %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			newXor = new Xor(pre, buf, inst, (int)*opLoc);
 			newXor->SetOperand(Operand::SRC, src);
 			newXor->SetOperand(Operand::DST, dst);

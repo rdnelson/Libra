@@ -4,7 +4,7 @@
 |
 |  Creation Date: 16-10-2012
 |
-|  Last Modified: Wed, Oct 17, 2012 12:46:15 PM
+|  Last Modified: Thu, Oct 18, 2012  9:55:50 PM
 |
 |  Created By: Robert Nelson
 |
@@ -50,7 +50,7 @@ Instruction* IMul::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			unsigned int size = *opLoc == IMUL_MOD8 ? 1 : 2;
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
-			snprintf(buf, 65, "IMUL %s", "");
+			snprintf(buf, 65, "IMUL %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 2 + dst->GetBytecodeLen());
 			newIMul = new IMul(pre, buf, inst, (int)*opLoc);
 			newIMul->SetOperand(Operand::DST, dst);
@@ -63,7 +63,7 @@ Instruction* IMul::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			}
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, 2);
 			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
-			snprintf(buf, 65, "IMUL %s, %s", "", "");
+			snprintf(buf, 65, "IMUL %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 			newIMul = new IMul(pre, buf, inst, (int)*opLoc);
 			newIMul->SetOperand(Operand::DST, dst);
@@ -81,7 +81,7 @@ Instruction* IMul::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				val += (int)*(opLoc + 3 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 			}
 			Operand* op3 = new ImmediateOperand(val, size);
-			snprintf(buf, 65, "IMUL %s, %s, %s", "", "", "");
+			snprintf(buf, 65, "IMUL %s, %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str(), op3->GetDisasm().c_str());
 			GETINST(preLen + 2 + dst->GetBytecodeLen() +
 					src->GetBytecodeLen() + op3->GetBytecodeLen());
 			newIMul = new IMul(pre, buf, inst, (int)*opLoc);

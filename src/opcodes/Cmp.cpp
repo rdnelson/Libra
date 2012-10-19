@@ -4,7 +4,7 @@
 |
 |  Creation Date: 09-10-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  5:09:48 PM
+|  Last Modified: Thu, Oct 18, 2012  9:54:44 PM
 |
 |  Created By: Darren Stahl
 |
@@ -123,7 +123,7 @@ Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::MOD, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
-				sprintf(buf, "CMP %s, %s", "", "");
+				sprintf(buf, "CMP %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
 				newCmp->SetOperand(Operand::SRC, src);
@@ -142,7 +142,7 @@ Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::REG, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::MOD, size);
-				sprintf(buf, "CMP %s, %s", "", "");
+				sprintf(buf, "CMP %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
 				newCmp->SetOperand(Operand::SRC, src);

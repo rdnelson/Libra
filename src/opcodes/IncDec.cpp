@@ -4,7 +4,7 @@
 |
 |  Creation Date: 12-10-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  4:27:11 PM
+|  Last Modified: Thu, Oct 18, 2012 10:08:39 PM
 |
 |  Created By: Robert Nelson
 |
@@ -44,7 +44,7 @@ Instruction* IncDec::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				unsigned int size = (*opLoc == DEC_MOD8 ? 1 : 2);
 				Operand* dst = ModrmOperand::GetModrmOperand
 					(proc, opLoc, ModrmOperand::MOD, size);
-				snprintf(buf, 65, "%s %s", subCode == DEC_SUB_OPCODE ? "DEC" : "INC", "");
+				snprintf(buf, 65, "%s %s", subCode == DEC_SUB_OPCODE ? "DEC" : "INC", dst->GetDisasm().c_str());
 				GETINST(preLen + 2 + dst->GetBytecodeLen());
 				newIncDec = new IncDec(pre, buf, inst, (int)*opLoc);
 				((IncDec*)newIncDec)->mType = subCode == DEC_SUB_OPCODE ? DEC : INC;
@@ -55,14 +55,14 @@ Instruction* IncDec::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 	}
 	if(*opLoc >= DEC_REG16 && *opLoc <= DEC_REG16 + 8) {
 		Operand* dst = new RegisterOperand((eRegisters)(*opLoc - DEC_REG16), proc);
-		snprintf(buf, 65, "DEC %s", "");
+		snprintf(buf, 65, "DEC %s", dst->GetDisasm().c_str());
 		GETINST(preLen + 1);
 		newIncDec = new IncDec(pre, buf, inst, (int)*opLoc);
 		newIncDec->SetOperand(Operand::DST, dst);
 		((IncDec*)newIncDec)->mType = DEC;
 	} else if(*opLoc >= INC_REG16 && *opLoc <= INC_REG16 + 8) {
 		Operand* dst = new RegisterOperand((eRegisters)(*opLoc - INC_REG16), proc);
-		snprintf(buf, 65, "INC %s", "");
+		snprintf(buf, 65, "INC %s", dst->GetDisasm().c_str());
 		GETINST(preLen + 1);
 		newIncDec = new IncDec(pre, buf, inst, (int)*opLoc);
 		newIncDec->SetOperand(Operand::DST, dst);
