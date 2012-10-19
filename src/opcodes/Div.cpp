@@ -4,7 +4,7 @@
 |
 |  Creation Date: 12-10-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  5:26:32 PM
+|  Last Modified: Thu, Oct 18, 2012  9:55:02 PM
 |
 |  Created By: Robert Nelson
 |
@@ -36,7 +36,7 @@ Instruction* Div::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			(((*(opLoc + 1) & 0x38) >> 3) == DIV_SUB_OPCODE)) {
 		unsigned int size = *opLoc == DIV_MOD8 ? 1 : 2;
 		Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
-		snprintf(buf, 65, "DIV %s", "");
+		snprintf(buf, 65, "DIV %s", dst->GetDisasm().c_str());
 		GETINST(preLen + 2 + dst->GetBytecodeLen());
 		newDiv = new Div(pre, buf, inst, (int)*opLoc);
 		newDiv->SetOperand(Operand::DST, dst);

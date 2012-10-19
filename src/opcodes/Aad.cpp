@@ -4,7 +4,7 @@
 |
 |  Creation Date: 11-10-2012
 |
-|  Last Modified: Thu, Oct 11, 2012  2:12:35 PM
+|  Last Modified: Thu, Oct 18, 2012  9:48:36 PM
 |
 |  Created By: Robert Nelson
 |
@@ -37,7 +37,7 @@ Instruction* Aad::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		Operand* dst = new ImmediateOperand(val, 1);
 
 		GETINST(preSize + 1 + dst->GetBytecodeLen());
-		snprintf(buf, 65, "AAD %s", "");
+		snprintf(buf, 65, "AAD %s", dst->GetDisasm().c_str());
 
 		newAad = new Aad(pre, buf, inst, (int)*opLoc);
 		newAad->SetOperand(Operand::DST, dst);

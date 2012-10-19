@@ -4,13 +4,15 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Wed, Oct 17, 2012 10:02:31 AM
+|  Last Modified: Thu, Oct 18, 2012  9:38:52 PM
 |
 |  Created By: Robert Nelson
 |
 \*-------------------------------------*/
 
 #pragma once
+
+#include <string>
 
 class Operand {
 
@@ -20,6 +22,7 @@ class Operand {
 		virtual unsigned int GetValue() = 0;
 		virtual unsigned int GetBitmask() = 0;
 		virtual unsigned int GetBytecodeLen() = 0;
+		virtual const std::string GetDisasm() = 0;
 
 		unsigned int GetType() { return mType; }
 		static const unsigned int DST	= 0;
@@ -28,8 +31,7 @@ class Operand {
 		static const unsigned int OP4	= 3;
 
 	protected:
-		Operand();
-
 		unsigned int mType;
+		std::string mText;
 
 };

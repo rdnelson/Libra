@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Fri, Oct 12, 2012  6:47:09 PM
+|  Last Modified: Thu, Oct 18, 2012  9:37:36 PM
 |
 |  Created By: Robert Nelson
 |
@@ -33,6 +33,8 @@ class ModrmOperand : public Operand {
 
 		unsigned int GetBitmask();
 		unsigned int GetBytecodeLen();
+
+		const std::string GetDisasm();
 
 
 	protected:

@@ -4,7 +4,7 @@
 |
 |  Creation Date: 17-10-2012
 |
-|  Last Modified: Wed, Oct  17, 2012  9:54:26 PM
+|  Last Modified: Thu, Oct 18, 2012  9:59:29 PM
 |
 |  Created By: Darren Stahl
 |
@@ -123,7 +123,7 @@ Instruction* Sub::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::MOD, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
-				sprintf(buf, "SUB %s, %s", "", "");
+				sprintf(buf, "SUB %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
 				newSub->SetOperand(Operand::SRC, src);
@@ -142,7 +142,7 @@ Instruction* Sub::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::REG, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::MOD, size);
-				sprintf(buf, "SUB %s, %s", "", "");
+				sprintf(buf, "SUB %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
 				newSub->SetOperand(Operand::SRC, src);

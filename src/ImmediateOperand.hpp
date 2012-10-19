@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Wed, Oct 17, 2012 11:06:31 AM
+|  Last Modified: Thu, Oct 18, 2012 10:06:47 PM
 |
 |  Created By: Robert Nelson
 |
@@ -13,14 +13,25 @@
 #pragma once
 
 #include "Operand.hpp"
+#include <sstream>
 
 class ImmediateOperand : public Operand {
 
 	public:
-		ImmediateOperand(unsigned int val, unsigned int size) : mValue(val), mSize(size) {}
+		ImmediateOperand(unsigned int val, unsigned int size) : mValue(val), mSize(size) {
+			std::stringstream ss;
+			ss << "0x" << std::uppercase << std::hex << val << std::nouppercase << std::dec;
+			mText = ss.str();
+		}
+
 
 		unsigned int GetValue() { return mValue; }
-		void SetValue(unsigned int val) { mValue = val; }
+		void SetValue(unsigned int val) { 
+			std::stringstream ss;
+			ss << "0x" << std::uppercase << std::hex << val << std::nouppercase << std::dec;
+			mText = ss.str();
+			mValue = val; 
+		}
 
 		unsigned int GetBitmask() { 
 			unsigned int bm = 0;
@@ -29,6 +40,9 @@ class ImmediateOperand : public Operand {
 			return bm;
 		}
 		unsigned int GetBytecodeLen() { return mSize; }
+		const std::string GetDisasm() {
+			return mText;
+		}
 
 
 	private:
