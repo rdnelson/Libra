@@ -91,6 +91,7 @@ class Processor {
 
 		void PopRegister(eRegisters reg);
 		void PopSize(unsigned int size);
+		unsigned int PopValue();
 
 		void ProcDump();
 		void MemDump();
