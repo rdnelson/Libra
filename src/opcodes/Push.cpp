@@ -4,7 +4,7 @@
 |
 |  Creation Date: 18-10-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  8:02:11 PM
+|  Last Modified: Thu, Oct 18, 2012 10:38:51 PM
 |
 |  Created By: Robert Nelson
 |
@@ -38,7 +38,7 @@ Instruction* Push::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case PUSH_MOD16:
 		{
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
-			snprintf(buf, 65, "PUSH %s", "");
+			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen());
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
 			newPush->SetOperand(Operand::DST, dst);
@@ -55,7 +55,7 @@ Instruction* Push::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		{
 			Operand* dst = new RegisterOperand((eRegisters)(*opLoc - PUSH_REG_AX + REG_AX),
 				       proc);
-			snprintf(buf, 65, "PUSH %s", "");
+			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
 			newPush->SetOperand(Operand::DST, dst);
@@ -68,14 +68,14 @@ Instruction* Push::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			unsigned int size = *opLoc == PUSH_IMM8 ? 1 : 2;
 
 			if(size == 2) {
-				val += *(opLoc + 2);
+				val += *(opLoc + 2) << 0x8;
 			} else {
 				val += (val >= 0x80) ? 0xFF00 : 0x0000;
 			}
 
 			Operand* dst = new ImmediateOperand(val, 2);
-			snprintf(buf, 65, "PUSH %s", "");
-			GETINST(preSize + 1 + dst->GetBytecodeLen());
+			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
+			GETINST(preSize + 1 + size);
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
 			newPush->SetOperand(Operand::DST, dst);
 			break;
@@ -85,8 +85,18 @@ Instruction* Push::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case PUSH_DS:
 		case PUSH_ES:
 		{
-			Operand* dst = new RegisterOperand((eRegisters)(*opLoc - PUSH_CS + REG_CS), proc);
-			snprintf(buf, 65, "PUSH %s", "");
+			eRegisters reg = REG_CS;
+			if(*opLoc == PUSH_CS)
+				reg = REG_CS;
+			else if(*opLoc == PUSH_DS)
+				reg = REG_DS;
+			else if(*opLoc == PUSH_SS)
+				reg = REG_SS;
+			else if(*opLoc == PUSH_ES)
+				reg = REG_ES;
+
+			Operand* dst = new RegisterOperand(reg, proc);
+			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
 			newPush->SetOperand(Operand::DST, dst);
