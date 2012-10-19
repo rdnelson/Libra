@@ -124,4 +124,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Neg);
 	OPCODE(Not);
 	OPCODE(Or);
+	OPCODE(Pop);
 }	
