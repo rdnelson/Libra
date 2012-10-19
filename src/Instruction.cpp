@@ -128,4 +128,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Lahf);
 	OPCODE(Mul);
 	OPCODE(Sahf);
+	OPCODE(Sxx);
 }	
