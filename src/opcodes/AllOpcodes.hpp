@@ -45,3 +45,4 @@
 #include "Lahf.hpp"
 #include "Mul.hpp"
 #include "Sahf.hpp"
+#include "Sxx.hpp"
