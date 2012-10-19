@@ -34,7 +34,6 @@ class Operand {
 
 
 	protected:
-		Operand();
 		unsigned int mType;
 		std::string mText;
 

@@ -57,15 +57,15 @@ Instruction* Neg::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 int Neg::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
-	unsigned int dstVal = dst->GetValue();
+	unsigned int dstVal = ~dst->GetValue() + 1;
 	unsigned int sign = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
 	proc->SetFlag(FLAGS_CF, dstVal != 0);
 	proc->SetFlag(FLAGS_SF, dstVal >= sign);
 	proc->SetFlag(FLAGS_ZF, dstVal == 0x00);
 	proc->SetFlag(FLAGS_PF, Parity(dstVal));
 	proc->SetFlag(FLAGS_AF, AdjustSub(dstVal, dstVal*2));
-	proc->SetFlag(FLAGS_OF, dstVal == (~dstVal + 1));
+	proc->SetFlag(FLAGS_OF, dstVal == (~dstVal + 1) & dst->GetBitmask());
 
-	dst->SetValue((~dstVal + 1) & dst->GetBitmask());
+	dst->SetValue(dstVal & dst->GetBitmask());
 	return 0;
 }

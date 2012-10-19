@@ -92,6 +92,7 @@
     <ClCompile Include="..\src\opcodes\Jcc.cpp" />
     <ClCompile Include="..\src\opcodes\Jmp.cpp" />
     <ClCompile Include="..\src\opcodes\Mov.cpp" />
+    <ClCompile Include="..\src\opcodes\Mul.cpp" />
     <ClCompile Include="..\src\opcodes\Neg.cpp" />
     <ClCompile Include="..\src\opcodes\Not.cpp" />
     <ClCompile Include="..\src\opcodes\Or.cpp" />
@@ -99,7 +100,6 @@
     <ClCompile Include="..\src\opcodes\Sub.cpp" />
     <ClCompile Include="..\src\opcodes\Test.cpp" />
     <ClCompile Include="..\src\opcodes\Xor.cpp" />
-    <ClCompile Include="..\src\Operand.cpp" />
     <ClCompile Include="..\src\Prefix.cpp" />
     <ClCompile Include="..\src\Processor.cpp" />
     <ClCompile Include="..\src\RegisterOperand.cpp" />
@@ -131,6 +131,7 @@
     <ClInclude Include="..\src\opcodes\Jcc.hpp" />
     <ClInclude Include="..\src\opcodes\Jmp.hpp" />
     <ClInclude Include="..\src\opcodes\Mov.hpp" />
+    <ClInclude Include="..\src\opcodes\Mul.hpp" />
     <ClInclude Include="..\src\opcodes\Neg.hpp" />
     <ClInclude Include="..\src\opcodes\Not.hpp" />
     <ClInclude Include="..\src\opcodes\Or.hpp" />

@@ -40,3 +40,4 @@
 #include "Neg.hpp"
 #include "Not.hpp"
 #include "Or.hpp"
+#include "Mul.hpp"
