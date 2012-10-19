@@ -23,7 +23,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/IMul.cpp \
 	   opcodes/Cmp.cpp \
 	   opcodes/Sub.cpp \
-	   opcodes/Push.cpp
+	   opcodes/Push.cpp \
+	   opcodes/Neg.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
