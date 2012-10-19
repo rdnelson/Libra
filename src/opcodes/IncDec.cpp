@@ -4,7 +4,7 @@
 |
 |  Creation Date: 12-10-2012
 |
-|  Last Modified: Thu, Oct 18, 2012 10:08:39 PM
+|  Last Modified: Thu, Oct 18, 2012 10:12:36 PM
 |
 |  Created By: Robert Nelson
 |
@@ -53,7 +53,7 @@ Instruction* IncDec::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			}
 		}
 	}
-	if(*opLoc >= DEC_REG16 && *opLoc <= DEC_REG16 + 8) {
+	if(*opLoc >= DEC_REG16 && *opLoc < DEC_REG16 + 8) {
 		Operand* dst = new RegisterOperand((eRegisters)(*opLoc - DEC_REG16), proc);
 		snprintf(buf, 65, "DEC %s", dst->GetDisasm().c_str());
 		GETINST(preLen + 1);
