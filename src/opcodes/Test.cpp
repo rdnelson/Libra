@@ -16,6 +16,8 @@
 #include "../RegisterOperand.hpp"
 #include "../Processor.hpp"
 
+#include <cstdio>
+
 Test::Test(Prefix* pre, std::string text, std::string inst, int op) {
 	mPrefix = pre;
 	mText = text;
@@ -50,9 +52,11 @@ Instruction* Test::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			GETINST(preSize + 1 + size);
 
+
 			Operand* src = new ImmediateOperand(val, size);
 			Operand* dst = new RegisterOperand(*opLoc == TEST_AL_IMM8 ? REG_AL : REG_AX, proc);
 
+			snprintf(buf, 65, "TEST %s, %s", size == 1 ? "AL" : "AH", src->GetDisasm().c_str());
 			newTest = new Test(pre, buf, inst, (unsigned char)*opLoc);
 			newTest->SetOperand(Operand::SRC, src);
 			newTest->SetOperand(Operand::DST, dst);
@@ -75,6 +79,7 @@ Instruction* Test::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = new ImmediateOperand(val, size);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 
+			snprintf(buf, 65, "TEST %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2 + size + dst->GetBytecodeLen());
 			newTest = new Test(pre, buf, inst, (unsigned char)*opLoc);
 			newTest->SetOperand(Operand::SRC, src);
@@ -89,6 +94,7 @@ Instruction* Test::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 
+			snprintf(buf, 65, "TEST %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 			newTest = new Test(pre, buf, inst, (unsigned char)*opLoc);
 			newTest->SetOperand(Operand::SRC, src);

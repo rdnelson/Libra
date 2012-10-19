@@ -127,4 +127,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Pop);
 	OPCODE(Lahf);
 	OPCODE(Mul);
+	OPCODE(Sahf);
 }	
