@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  9:02:14 PM
+|  Last Modified: Thu, Oct 18, 2012 10:22:41 PM
 |
 |  Created By: Robert Nelson
 |
@@ -59,19 +59,25 @@ int VM::Run() {
 
 	mProc.Initialize();
 	Instruction::InitializeOpcodes();
-	
+
+	std::cout << "Initial State" << std::endl;
+	mProc.ProcDump();
+	mProc.MemDump();
+	getchar();
+
 	for(EVER) {
 
 		//This is where to change the base execution address.
-		mProc.ProcDump();
-		mProc.MemDump();
-		getchar();
 		if(mProc.Step()) {
 			//Hit an error, quit
 			
 			std::cout << "Encountered an error, quitting" << std::endl;
 			break;
 		}
+		mProc.ProcDump();
+		mProc.MemDump();
+		getchar();
+
 	}
 
 	return 0;

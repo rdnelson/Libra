@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  1:49:29 PM
+|  Last Modified: Thu, Oct 18, 2012  7:54:57 PM
 |
 |  Created By: Robert Nelson
 |
@@ -87,8 +87,9 @@ class Processor {
 		virtual void SetMemory(unsigned int addr, unsigned int size, unsigned int val);
 
 		void PushRegister(eRegisters reg);
-		void PopRegister(eRegisters reg);
+		void PushValue(unsigned int val);
 
+		void PopRegister(eRegisters reg);
 		void PopSize(unsigned int size);
 
 		void ProcDump();

@@ -4,7 +4,7 @@
 |
 |  Creation Date: 12-10-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  9:56:21 PM
+|  Last Modified: Thu, Oct 18, 2012 10:44:02 PM
 |
 |  Created By: Robert Nelson
 |
@@ -60,8 +60,8 @@ Instruction* Jmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			newJmp = new Jmp(pre,buf, inst, (int)*opLoc);
 			newJmp->SetOperand(Operand::DST, dst);
 			((Jmp*)newJmp)->mType = (*(opLoc + 1) & 0x38) >> 3;
-			break;
 		}
+		break;
 		case JMP_PTR16_16:
 		{
 			unsigned int val = *(opLoc + 1) +
