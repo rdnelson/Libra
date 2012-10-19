@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  6:09:45 PM
+|  Last Modified: Thu, Oct 18, 2012  9:00:56 PM
 |
 |  Created By: Robert Nelson
 |
@@ -120,4 +120,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(IDiv);
 	OPCODE(IMul);
 	OPCODE(Sub);
+	OPCODE(Push);
 }	

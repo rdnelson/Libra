@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  9:14:23 PM
+|  Last Modified: Thu, Oct 18, 2012 10:11:01 PM
 |
 |  Created By: Robert Nelson
 |
@@ -148,6 +148,11 @@ void Processor::SetMemory(unsigned int addr, unsigned int size, unsigned int val
 void Processor::PushRegister(eRegisters reg) {
 	SetRegister(REG_SP, GetRegister(REG_SP) - 2);
 	SetMemory(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4), 2, GetRegister(reg));
+}
+
+void Processor::PushValue(unsigned int val) {
+	SetRegister(REG_SP, GetRegister(REG_SP) - 2);
+	SetMemory(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4), 2, val & 0xFFFF);
 }
 
 void Processor::PopRegister(eRegisters reg) {
