@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  5:04:38 PM
+|  Last Modified: Thu, Oct 18, 2012  9:52:41 PM
 |
 |  Created By: Robert Nelson
 |
@@ -100,9 +100,9 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				}
 
 				if(immSize == 1)
-					snprintf(buf, 65, "ADD %s, 0x%02X", "", tInt1);
+					snprintf(buf, 65, "ADD %s, 0x%02X", dst->GetDisasm().c_str(), tInt1);
 				else
-					snprintf(buf, 65, "ADD %s, 0x%04X", "", tInt1);
+					snprintf(buf, 65, "ADD %s, 0x%04X", dst->GetDisasm().c_str(), tInt1);
 
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADD_MOD_SIMM8 ? 1 : 0));
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
@@ -120,7 +120,7 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::MOD, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
-				snprintf(buf, 65, "ADD %s, %s", "", "");
+				snprintf(buf, 65, "ADD %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdd->SetOperand(Operand::SRC, src);
@@ -139,7 +139,7 @@ Instruction* Add::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::REG, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::MOD, size);
-				snprintf(buf, 65, "ADD %s, %s", "", "");
+				snprintf(buf, 65, "ADD %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdd->SetOperand(Operand::SRC, src);

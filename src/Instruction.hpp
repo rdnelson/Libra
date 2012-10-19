@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  5:04:06 PM
+|  Last Modified: Thu, Oct 18, 2012  9:03:13 PM
 |
 |  Created By: Robert Nelson
 |
@@ -71,6 +71,8 @@ class Instruction {
 		static bool OverflowSub(unsigned int dst, unsigned int src, unsigned int size);
 		static bool AdjustAdd(unsigned int op1, unsigned int op2);
 		static bool AdjustSub(unsigned int op1, unsigned int op2);
+
+		inline std::string GetDisasm() { return mText; }
 
 	protected:
 		Instruction();

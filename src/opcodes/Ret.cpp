@@ -4,7 +4,7 @@
 |
 |  Creation Date: 09-10-2012
 |
-|  Last Modified: Tue, Oct  9, 2012  4:47:21 PM
+|  Last Modified: Thu, Oct 18, 2012  9:59:11 PM
 |
 |  Created By: Robert Nelson
 |
@@ -44,7 +44,7 @@ Instruction* Ret::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		{
 			unsigned int val = (unsigned int)*(opLoc + 1) + ((unsigned int)*(opLoc + 2) << 8);
 			Operand* dst = new ImmediateOperand(val, 2);
-			snprintf(buf, 65, "RET %s", "");
+			snprintf(buf, 65, "RET %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newRet = new Ret(pre, buf, inst, (unsigned int)*opLoc);
 			newRet->SetOperand(Operand::DST, dst);

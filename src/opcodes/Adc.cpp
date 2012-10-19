@@ -4,7 +4,7 @@
 |
 |  Creation Date: 11-10-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  5:05:05 PM
+|  Last Modified: Thu, Oct 18, 2012 10:01:15 PM
 |
 |  Created By: Robert Nelson
 |
@@ -100,9 +100,9 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				}
 
 				if(immSize == 1)
-					snprintf(buf, 65, "ADC %s, 0x%02X", "", tInt1);
+					snprintf(buf, 65, "ADC %s, 0x%02X", dst->GetDisasm().c_str(), tInt1);
 				else
-					snprintf(buf, 65, "ADC %s, 0x%04X", "", tInt1);
+					snprintf(buf, 65, "ADC %s, 0x%04X", dst->GetDisasm().c_str(), tInt1);
 
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADC_MOD_SIMM8 ? 1 : 0));
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
@@ -120,7 +120,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::MOD, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
-				snprintf(buf, 65, "ADC %s, %s", "", "");
+				snprintf(buf, 65, "ADC %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdc->SetOperand(Operand::SRC, src);
@@ -139,7 +139,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 						proc, opLoc, ModrmOperand::REG, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::MOD, size);
-				snprintf(buf, 65, "ADC %s, %s", "", "");
+				snprintf(buf, 65, "ADC %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdc->SetOperand(Operand::SRC, src);

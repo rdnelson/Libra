@@ -4,7 +4,7 @@
 |
 |  Creation Date: 09-10-2012
 |
-|  Last Modified: Sun, Oct 14, 2012  5:46:53 PM
+|  Last Modified: Thu, Oct 18, 2012  9:54:25 PM
 |
 |  Created By: Robert Nelson
 |
@@ -56,7 +56,7 @@ Instruction* Call::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			Operand* dst = new ImmediateOperand(val, size);
 
 
-			snprintf(buf, 65, "CALL %s", "");
+			snprintf(buf, 65, "CALL %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 
 			newCall = new Call(pre, buf, inst, (unsigned int)*opLoc);
@@ -72,7 +72,7 @@ Instruction* Call::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
 
-			snprintf(buf, 65, "CALL %s", "");
+			snprintf(buf, 65, "CALL %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen());
 
 			newCall = new Call(pre, buf, inst, (unsigned int)*opLoc);
