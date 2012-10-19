@@ -43,3 +43,4 @@
 #include "Or.hpp"
 #include "Pop.hpp"
 #include "Lahf.hpp"
+#include "Mul.hpp"
