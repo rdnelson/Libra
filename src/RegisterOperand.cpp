@@ -4,7 +4,7 @@
 |
 |  Creation Date: 01-10-2012
 |
-|  Last Modified: Wed, Oct  3, 2012 12:29:21 PM
+|  Last Modified: Thu, Oct 18, 2012  9:28:09 PM
 |
 |  Created By: Robert Nelson
 |
@@ -45,4 +45,56 @@ unsigned int RegisterOperand::GetBitmask() {
 	if(mReg < AllRegisters)
 		return 0xFF;
 	return 0;
+}
+
+const std::string RegisterOperand::GetDisasm() {
+	switch(mReg) {
+		case REG_AX:
+			return "AX";
+		case REG_BX:
+			return "BX";
+		case REG_CX:
+			return "CX";
+		case REG_DX:
+			return "DX";
+		case REG_SP:
+			return "SP";
+		case REG_BP:
+			return "BP";
+		case REG_SI:
+			return "SI";
+		case REG_DI:
+			return "DI";
+		case REG_AH:
+			return "AH";
+		case REG_AL:
+			return "AL";
+		case REG_BH:
+			return "BH";
+		case REG_BL:
+			return "BL";
+		case REG_CH:
+			return "CH";
+		case REG_CL:
+			return "CL";
+		case REG_DH:
+			return "DH";
+		case REG_DL:
+			return "DL";
+		case REG_CS:
+			return "CS";
+		case REG_DS:
+			return "DS";
+		case REG_SS:
+			return "SS";
+		case REG_ES:
+			return "ES";
+		case REG_IP:
+			return "IP";
+		case REG_FLAGS:
+			return "FLAGS";
+		default:
+			return "INVALID";
+	};
+	return "INVALID";
 }

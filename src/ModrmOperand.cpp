@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Mon, Oct 15, 2012 12:49:18 PM
+|  Last Modified: Thu, Oct 18, 2012 10:06:04 PM
 |
 |  Created By: Robert Nelson
 |
@@ -15,6 +15,7 @@
 #include "RegisterOperand.hpp"
 
 #include <cstring>
+#include <sstream>
 
 ModrmOperand::ModrmOperand(Processor* proc, unsigned int addr, unsigned int size, unsigned int bytelen )
 	: mAddr(addr), mSize(size), mProc(proc), mByteLen(bytelen) {}
@@ -116,6 +117,8 @@ Operand* ModrmOperand::GetSegRegister(Processor* proc, unsigned int sreg) {
 
 Operand* ModrmOperand::GetModrmOperand(Processor* proc, unsigned char* inst, eModRm position, unsigned int size) {
 
+	std::stringstream ss;
+	ModrmOperand* newMod = 0;
 	unsigned int addr = 0;
 	unsigned int disp = 0;
 
@@ -136,7 +139,10 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, unsigned char* inst, eMo
 			//Special case for direct mem access
 			if((*modrm & 0x07) == 6) {
 				disp = *(modrm + 1) + ((*(modrm + 2)) << 8);
-				byteCodeLen = 2;
+				ss << "[" << disp << "]";
+				newMod = new ModrmOperand(proc, disp % 0x10000, size, 2);
+				newMod->mText = ss.str();
+				return newMod;
 			}
 			break;
 		case 0x01:
@@ -158,31 +164,46 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, unsigned char* inst, eMo
 	switch(*modrm & 0x07) {
 		case 0x00:
 			addr = proc->GetRegister(REG_BX) + proc->GetRegister(REG_SI);
+			ss << "[BX + SI";
 			break;
 		case 0x01:
 			addr = proc->GetRegister(REG_BX) + proc->GetRegister(REG_DI);
+			ss << "[BX + DI";
 			break;
 		case 0x02:
 			addr = proc->GetRegister(REG_BP) + proc->GetRegister(REG_SI);
+			ss << "[BP + SI";
 			break;
 		case 0x03:
 			addr = proc->GetRegister(REG_BP) + proc->GetRegister(REG_DI);
+			ss << "[BP + DI";
 			break;
 		case 0x04:
 			addr = proc->GetRegister(REG_SI);
+			ss << "[SI";
 			break;
 		case 0x05:
 			addr = proc->GetRegister(REG_DI);
+			ss << "[DI";
 			break;
 		case 0x06:
 			addr = proc->GetRegister(REG_BP);
+			ss << "[BP";
 			break;
 		case 0x07:
 			addr = proc->GetRegister(REG_BX);
+			ss << "[BX";
 			break;
 	}
 
-	return new ModrmOperand(proc, (addr + disp) % 0x10000, size, byteCodeLen);
+	newMod = new ModrmOperand(proc, (addr + disp) % 0x10000, size, byteCodeLen);
+	if(disp != 0) {
+		ss << " + 0x" << std::hex << std::uppercase << disp << std::nouppercase << std::dec;
+	}
+
+	ss << "]";
+	newMod->mText = ss.str();
+	return newMod;
 }
 
 unsigned int ModrmOperand::GetBitmask() {
@@ -196,3 +217,7 @@ unsigned int ModrmOperand::GetBytecodeLen() {
 	return mByteLen;
 
 }
+
+const std::string ModrmOperand::GetDisasm() { 
+	return mText;
+};

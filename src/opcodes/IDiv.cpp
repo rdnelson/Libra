@@ -4,7 +4,7 @@
 |
 |  Creation Date: 16-10-2012
 |
-|  Last Modified: Tue, Oct 16, 2012  6:24:07 PM
+|  Last Modified: Thu, Oct 18, 2012  9:55:13 PM
 |
 |  Created By: Robert Nelson
 |
@@ -36,7 +36,7 @@ Instruction* IDiv::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			(((*(opLoc + 1) & 0x38) >> 3) == IDIV_SUB_OPCODE)) {
 		unsigned int size = *opLoc == IDIV_MOD8 ? 1 : 2;
 		Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
-		snprintf(buf, 65, "IDIV %s", "");
+		snprintf(buf, 65, "IDIV %s", dst->GetDisasm().c_str());
 		GETINST(preLen + 2 + dst->GetBytecodeLen());
 		newIDiv = new IDiv(pre, buf, inst, (int)*opLoc);
 		newIDiv->SetOperand(Operand::DST, dst);
