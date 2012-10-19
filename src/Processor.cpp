@@ -165,6 +165,11 @@ void Processor::PopSize(unsigned int size) {
 	SetRegister(REG_SP, (GetRegister(REG_SP) + size) & 0xFFFF);
 }
 
+unsigned int Processor::PopValue() {
+	unsigned int val = GetMemory(GetRegister(REG_SP), 2) & 0xFFFF;
+	SetRegister(REG_SP, (GetRegister(REG_SP) + 2) & 0xFFFF);
+	return val;
+}
 void Processor::ProcDump() {
 
 	std::cout << "++++++++++++++++++++++++ BEGIN DUMP ++++++++++++++++++++++++" << std::endl; 

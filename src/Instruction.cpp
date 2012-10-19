@@ -122,4 +122,5 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Sub);
 	OPCODE(Push);
 	OPCODE(Neg);
+	OPCODE(Pop);
 }	
