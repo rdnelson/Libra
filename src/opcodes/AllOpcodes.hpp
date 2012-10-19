@@ -46,3 +46,4 @@
 #include "Mul.hpp"
 #include "Sahf.hpp"
 #include "Sxx.hpp"
+#include "Lxs.hpp"
