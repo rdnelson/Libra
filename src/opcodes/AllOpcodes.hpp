@@ -39,3 +39,4 @@
 #include "Sub.hpp"
 #include "Push.hpp"
 #include "Neg.hpp"
+#include "Pop.hpp"
