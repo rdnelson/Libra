@@ -17,8 +17,6 @@
 #include "../RegisterOperand.hpp"
 #include "../ModrmOperand.hpp"
 
-#include <assert.h>
-
 #include <cstdlib>
 #include <cstdio>
 

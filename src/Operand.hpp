@@ -30,7 +30,11 @@ class Operand {
 		static const unsigned int OP3	= 2;
 		static const unsigned int OP4	= 3;
 
+		
+
+
 	protected:
+		Operand();
 		unsigned int mType;
 		std::string mText;
 

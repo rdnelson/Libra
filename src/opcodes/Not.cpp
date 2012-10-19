@@ -43,7 +43,7 @@ Instruction* Not::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				unsigned int size = (*opLoc == NOT_MOD8 ? 1 : 2);
 				Operand* dst = ModrmOperand::GetModrmOperand
 					(proc, opLoc, ModrmOperand::MOD, size);
-				snprintf(buf, 65, "NOT %s", "");
+				snprintf(buf, 65, "NOT %s", dst->GetDisasm().c_str());
 				GETINST(preLen + 2 + dst->GetBytecodeLen());
 				newNot = new Not(pre, buf, inst, (int)*opLoc);
 				newNot->SetOperand(Operand::DST, dst);
