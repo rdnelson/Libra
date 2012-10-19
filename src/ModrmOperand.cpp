@@ -4,7 +4,7 @@
 |
 |  Creation Date: 28-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012 10:06:04 PM
+|  Last Modified: Thu, Oct 18, 2012 10:45:36 PM
 |
 |  Created By: Robert Nelson
 |
@@ -139,7 +139,8 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, unsigned char* inst, eMo
 			//Special case for direct mem access
 			if((*modrm & 0x07) == 6) {
 				disp = *(modrm + 1) + ((*(modrm + 2)) << 8);
-				ss << "[" << disp << "]";
+				ss << "[0x" << std::uppercase << std::hex
+					<< disp << std::nouppercase << std::dec << "]";
 				newMod = new ModrmOperand(proc, disp % 0x10000, size, 2);
 				newMod->mText = ss.str();
 				return newMod;
