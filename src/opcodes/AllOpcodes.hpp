@@ -47,3 +47,4 @@
 #include "Sahf.hpp"
 #include "Sxx.hpp"
 #include "Lxs.hpp"
+#include "Lea.hpp"
