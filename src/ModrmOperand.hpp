@@ -36,6 +36,8 @@ class ModrmOperand : public Operand {
 
 		const std::string GetDisasm();
 
+		unsigned int GetAddress() { return mAddr; }
+
 
 	protected:
 		//Pass it the location of the opcode
