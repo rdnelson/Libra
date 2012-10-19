@@ -28,7 +28,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Or.cpp \
 	   opcodes/Not.cpp \
 	   opcodes/Pop.cpp \
-	   opcodes/Lahf.cpp
+	   opcodes/Lahf.cpp \
+	   opcodes/Sahf.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
