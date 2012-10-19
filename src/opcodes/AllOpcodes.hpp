@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  7:56:52 PM
+|  Last Modified: Thu, Oct 18, 2012 11:01:59 PM
 |
 |  Created By: Robert Nelson
 |
@@ -38,3 +38,4 @@
 #include "IMul.hpp"
 #include "Sub.hpp"
 #include "Push.hpp"
+#include "Neg.hpp"
