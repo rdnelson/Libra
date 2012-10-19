@@ -4,7 +4,7 @@
 |
 |  Creation Date: 26-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  9:14:23 PM
+|  Last Modified: Thu, Oct 18, 2012 10:52:07 PM
 |
 |  Created By: Robert Nelson
 |
@@ -44,6 +44,7 @@ int Processor::Step() {
 	if(inst && inst->IsValid()) {
 		//Increment IP
 		SetRegister(REG_IP, GetRegister(REG_IP) + inst->GetLength());
+		inst->AddLengthToDisasm();
 
 		std::cout << inst->GetDisasm() << std::endl;
 
