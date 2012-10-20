@@ -57,6 +57,28 @@ class Jcc : public Instruction {
 		static const unsigned int TWO_BYTE_OPCODE = 0x0F;
 		static const unsigned int TWO_BYTE_OFFSET = 0x10;
 
+
 	private:
+		static const char JA_STR[];
+		static const char JB_STR[];
+		static const char JE_STR[];
+		static const char JG_STR[];
+		static const char JL_STR[];
+		static const char JNE_STR[];
+		static const char JNO_STR[];
+		static const char JNP_STR[];
+		static const char JNS_STR[];
+		static const char JO_STR[];
+		static const char JP_STR[];
+		static const char JS_STR[];
+		static const char JAE_STR[];
+		static const char JBE_STR[];
+		static const char JCXZ_STR[];
+		static const char JGE_STR[];
+		static const char JLE_STR[];
+
 		Jcc(Prefix* pre, std::string text, std::string inst, int op);
+
+		static const char* _GetStr(unsigned int opcode);
+		 
 };	

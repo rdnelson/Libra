@@ -20,6 +20,25 @@
 
 #define GETINST(len) inst.insert(0, (char*)memLoc, len)
 
+const char Jcc::JA_STR[] = "JA";
+const char Jcc::JB_STR[] = "JB";
+const char Jcc::JE_STR[] = "JE";
+const char Jcc::JG_STR[] = "JG";
+const char Jcc::JL_STR[] = "JL";
+const char Jcc::JNE_STR[] = "JNE";
+const char Jcc::JNO_STR[] = "JNO";
+const char Jcc::JNP_STR[] = "JNP";
+const char Jcc::JNS_STR[] = "JNS";
+const char Jcc::JO_STR[] = "JO";
+const char Jcc::JP_STR[] = "JP";
+const char Jcc::JS_STR[] = "JS";
+const char Jcc::JAE_STR[] = "JAE";
+const char Jcc::JBE_STR[] = "JBE";
+const char Jcc::JCXZ_STR[] = "JCXZ";
+const char Jcc::JGE_STR[] = "JGE";
+const char Jcc::JLE_STR[] = "JLE";
+
+
 Jcc::Jcc(Prefix* pre, std::string text, std::string inst, int op) {
 	mPrefix = pre;
 	mText = text;
@@ -75,6 +94,7 @@ Instruction* Jcc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			GETINST(preSize + 1 + (opcodeOffset == TWO_BYTE_OFFSET ? 2 : 1));
 			src = new ImmediateOperand(val, opcodeOffset == TWO_BYTE_OFFSET ? 2 : 1);
+			snprintf(buf, 65, "%s %s", _GetStr(*opLoc - opcodeOffset), src->GetDisasm().c_str());
 			newJcc = new Jcc(pre, buf, inst, (unsigned char)*opLoc - opcodeOffset);
 			newJcc->SetOperand(Operand::SRC, src);
 			break;
@@ -152,6 +172,64 @@ int Jcc::Execute(Processor* proc) {
 		newIP += relAddr;
 		newIP &= mOperands[Operand::SRC]->GetBitmask();
 		proc->SetRegister(REG_IP, newIP);
+	}
+
+	return 0;
+}
+
+const char* Jcc::_GetStr(unsigned int opcode) {
+	switch(opcode) {
+		case JA:
+			return JA_STR;
+			break;
+		case JAE:
+			return JAE_STR;
+			break;
+		case JB:
+			return JB_STR;
+			break;
+		case JBE:
+			return JBE_STR;
+			break;
+		case JCXZ:
+			return JCXZ_STR;
+			break;
+		case JE:
+			return JE_STR;
+			break;
+		case JG:
+			return JG_STR;
+			break;
+		case JGE:
+			return JGE_STR;
+			break;
+		case JL:
+			return JL_STR;
+			break;
+		case JLE:
+			return JLE_STR;
+			break;
+		case JNE:
+			return JNE_STR;
+			break;
+		case JNO:
+			return JNO_STR;
+			break;
+		case JNP:
+			return JNP_STR;
+			break;
+		case JNS:
+			return JNS_STR;
+			break;
+		case JO:
+			return JO_STR;
+			break;
+		case JP:
+			return JP_STR;
+			break;
+		case JS:
+			return JS_STR;
+			break;
 	}
 
 	return 0;
