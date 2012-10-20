@@ -97,4 +97,6 @@ class Instruction {
 
 		Operand* mOperands[4];
 
+		static unsigned int NumOpcodes;
+
 };

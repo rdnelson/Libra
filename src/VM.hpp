@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "Processor.hpp"
-#include "Peripheral.hpp"
+#include "IPeripheral.hpp"
 
 class VM {
 
@@ -39,7 +39,6 @@ class VM {
 
 		Processor	mProc;
 		unsigned char	mMem[MEM_SIZE];
-		std::vector<Peripheral*>	mDevs;
 		
 		
 };

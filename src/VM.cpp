@@ -74,11 +74,16 @@ int VM::Run() {
 			std::cout << "Encountered an error, quitting" << std::endl;
 			break;
 		}
+
 		mProc.ProcDump();
 		mProc.MemDump();
+		mProc.DeviceDump();
 		getchar();
 
 	}
+	mProc.ProcDump();
+	mProc.MemDump();
+	mProc.DeviceDump();
 
 	return 0;
 }

@@ -11,12 +11,13 @@
 \*-------------------------------------*/
 
 #include "Processor.hpp"
+#include "peripherals/AllPeripherals.hpp"
 
 #include <iostream>
 #include <cstring>
 #include <cstdio>
 
-Processor::Processor(unsigned char* mem): mMem(mem) {
+Processor::Processor(unsigned char* mem): mMem(mem), mLastPort(0xFFFFFFFF), mLastDevice(0) {
 
 }
 
@@ -30,8 +31,15 @@ int Processor::Initialize(unsigned int startAddr) {
 
 	SetRegister(REG_IP, startAddr);
 
+	_InitializeDevices();
+
 	return PROC_SUCCESS;
 
+}
+
+void Processor::_InitializeDevices() {
+
+	mDevices.push_back(new Screen());
 }
 
 //Execute a single instruction
@@ -44,7 +52,10 @@ int Processor::Step() {
 	if(inst && inst->IsValid()) {
 		//Increment IP
 		SetRegister(REG_IP, GetRegister(REG_IP) + inst->GetLength());
+
+#ifdef DEBUG
 		inst->AddLengthToDisasm();
+#endif
 
 		std::cout << inst->GetDisasm() << std::endl;
 
@@ -170,6 +181,64 @@ unsigned int Processor::PopValue() {
 	SetRegister(REG_SP, (GetRegister(REG_SP) + 2) & 0xFFFF);
 	return val;
 }
+
+void Processor::Outb(unsigned int port, unsigned char data) {
+	if(mLastPort == port && mLastDevice) {
+		mLastDevice->Put8(port, data);
+		return;
+	}
+	for(unsigned int i = 0; i < mDevices.size(); i++) {
+		if(mDevices[i]->Put8(port, data)){
+			mLastDevice = mDevices[i];
+			mLastPort = port;
+			break;
+		}
+	}
+}
+
+void Processor::Outw(unsigned int port, unsigned short data) {
+	if(mLastPort == port && mLastDevice) {
+		mLastDevice->Put16(port, data);
+		return;
+	}
+	for(unsigned int i = 0; i < mDevices.size(); i++) {
+		if(mDevices[i]->Put16(port, data)){
+			mLastDevice = mDevices[i];
+			mLastPort = port;
+			return;
+		}
+	}
+}
+
+unsigned char Processor::Inb(unsigned int port) {
+	if(mLastPort == port && mLastDevice) {
+		return mLastDevice->Get8(port);
+	}
+	unsigned int tmpRet = 0;
+	for(unsigned int i = 0; i < mDevices.size(); i++) {
+		if((tmpRet = mDevices[i]->Get8(port)) != 0xFFFFFFFF) {
+			mLastPort = port;
+			mLastDevice = mDevices[i];
+			return tmpRet;
+		}
+	}
+	return 0x00;
+}
+
+unsigned short Processor::Inw(unsigned int port) {
+	if(mLastPort == port && mLastDevice) {
+		return mLastDevice->Get16(port);
+	}
+	unsigned int tmpRet = 0;
+	for(unsigned int i = 0; i < mDevices.size(); i++) {
+		if((tmpRet = mDevices[i]->Get16(port)) != 0xFFFFFFFF) {
+			mLastPort = port;
+			mLastDevice = mDevices[i];
+			return tmpRet;
+		}
+	}
+	return 0x00;
+}
 void Processor::ProcDump() {
 
 	std::cout << "++++++++++++++++++++++++ BEGIN DUMP ++++++++++++++++++++++++" << std::endl; 
@@ -250,3 +319,8 @@ void Processor::MemDump() {
 	std::cout << "++++++++++++++++++++++  END MEM DUMP  ++++++++++++++++++++++" << std::endl;
 }
 
+void Processor::DeviceDump() {
+	for(unsigned int i = 0; i < mDevices.size(); i++) {
+		mDevices[i]->Dump();
+	}
+}
