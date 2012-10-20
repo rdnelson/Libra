@@ -16,6 +16,7 @@
 
 #include "Instruction.hpp"
 #include "Register.hpp"
+#include "IPeripheral.hpp"
 
 enum eRegisters {
 	REG_AX,
@@ -93,16 +94,31 @@ class Processor {
 		void PopSize(unsigned int size);
 		unsigned int PopValue();
 
+		void Outb(unsigned int port, unsigned char data);
+		void Outw(unsigned int port, unsigned short data);
+
+		unsigned char Inb(unsigned int port);
+		unsigned short Inw(unsigned int port);
+
 		void ProcDump();
 		void MemDump();
+		void DeviceDump();
 
 
 		
 	private:
 		
 		int Execute(Instruction* inst);
+
+		void _InitializeDevices();
 		
 		Register	mRegisters[NumRegisters];
 		unsigned char*	mMem;
+
+		std::vector<IPeripheral*> mDevices;
+
+		//Last Accessed port# and it's associated device
+		unsigned int mLastPort;
+		IPeripheral* mLastDevice;
 
 };

@@ -15,14 +15,11 @@
 class IPeripheral {
 
 	public:
-		virtual void Put8(unsigned int data) = 0;
-		virtual void Put16(unsigned int data) = 0;
+		virtual bool Put8(unsigned int port, unsigned int data) = 0;
+		virtual bool Put16(unsigned int port, unsigned int data) = 0;
 
-		virtual unsigned int Get8() = 0;
-		virtual unsigned int Get16() = 0;
-
-		virtual unsigned int GetVirgoPort() = 0;
-		virtual unsigned int GetX86Port() = 0;
+		virtual unsigned int Get8(unsigned int port) = 0;
+		virtual unsigned int Get16(unsigned int port) = 0;
 
 		virtual void Dump() = 0;
 
