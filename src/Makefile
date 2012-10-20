@@ -34,7 +34,8 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Sxx.cpp \
 	   opcodes/Lxs.cpp \
 	   opcodes/Lea.cpp \
-	   opcodes/Out.cpp
+	   opcodes/Out.cpp \
+	   opcodes/In.cpp
 PERIPHERAL_SRC=peripherals/Screen.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \

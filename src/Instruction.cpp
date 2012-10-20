@@ -134,6 +134,7 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Lxs);
 	OPCODE(Lea);
 	OPCODE(Out);
+	OPCODE(In);
 
 	NumOpcodes = AllInstructions.size();
 }	
