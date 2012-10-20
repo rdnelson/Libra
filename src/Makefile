@@ -34,6 +34,7 @@ OPCODE_SRC=opcodes/Add.cpp \
 	   opcodes/Sxx.cpp \
 	   opcodes/Lxs.cpp \
 	   opcodes/Lea.cpp
+PERIPHERAL_SRC=peripherals/Screen.cpp
 ALL_SRC=VM.cpp \
 	main.cpp \
 	Instruction.cpp \
@@ -42,7 +43,8 @@ ALL_SRC=VM.cpp \
 	ModrmOperand.cpp \
 	RegisterOperand.cpp \
 	AddressOperand.cpp \
-	$(OPCODE_SRC)
+	$(OPCODE_SRC) \
+	$(PERIPHERAL_SRC)
 ALL_OBJ=$(ALL_SRC:%.cpp=%.o)
 CPPFLAGS=-g -Wall
 LDFLAGS=
