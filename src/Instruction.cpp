@@ -20,6 +20,8 @@
 #define OPCODE(op) Instruction::AllInstructions.push_back(&op::CreateInstruction)
 #endif
 
+unsigned int Instruction::NumOpcodes = 0;
+
 
 class Processor;
 
@@ -52,7 +54,7 @@ Instruction::~Instruction() {
 Instruction* Instruction::ReadInstruction(unsigned char* memLoc, Processor* proc) {
 	Instruction* instr = NULL;
 
-	for(unsigned int i = 0; i < AllInstructions.size(); i++) {
+	for(unsigned int i = 0; i < NumOpcodes; i++) {
 		if((instr = AllInstructions[i](memLoc, proc)) != NULL) {
 			break;
 		}
@@ -131,4 +133,7 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Sxx);
 	OPCODE(Lxs);
 	OPCODE(Lea);
+	OPCODE(Out);
+
+	NumOpcodes = AllInstructions.size();
 }	
