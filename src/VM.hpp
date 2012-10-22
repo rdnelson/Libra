@@ -17,15 +17,25 @@
 #include "Processor.hpp"
 #include "IPeripheral.hpp"
 
+class Instruction;
+
 class VM {
 
 	public:
-		VM(int argc, char* argv[]);
+        VM();
 		
 		int Run();
+        int Step();
 
-		int LoadObjectFile(char* filename);
-		int LoadVirgoFile(char* filename);
+        int LoadObjectFile(const char* filename);
+        int LoadVirgoFile(const char* filename);
+
+        inline bool isLoaded() { return mLoaded; }
+        void Disassemble();
+        std::string GetInstructionStr(unsigned int index);
+        const unsigned int GetNumInstructions() { return mInstructions.size(); }
+        const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
+        const Processor & GetProc() { return mProc; }
 
 		const static int MEM_SIZE = 0x10000;
 
@@ -35,10 +45,11 @@ class VM {
 
 	private:
 
-		
+        bool mLoaded;
+        bool mRunning;
 
 		Processor	mProc;
 		unsigned char	mMem[MEM_SIZE];
-		
+        std::vector<Instruction*> mInstructions;
 		
 };

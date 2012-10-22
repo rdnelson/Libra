@@ -72,7 +72,7 @@ int Processor::Step() {
 
 }
 
-bool Processor::GetFlag(eFlags flag) {
+bool Processor::GetFlag(eFlags flag) const {
 	return (GetRegister(REG_FLAGS) & (1 << flag)) != 0;
 }
 
@@ -84,7 +84,7 @@ void Processor::SetFlag(eFlags flag, bool val) {
 }
 
 
-unsigned int Processor::GetRegister(eRegisters reg) {
+unsigned int Processor::GetRegister(eRegisters reg) const {
 	if(reg == NumRegisters || reg == HighRegisters || reg == LowRegisters) {
 		return 0;
 	}
@@ -99,6 +99,16 @@ unsigned int Processor::GetRegister(eRegisters reg) {
 		return GetRegisterHigh((eRegisters)(reg - LowRegisters - 1));
 	}
 	return 0;
+}
+
+const char* Processor::GetRegisterHex(eRegisters reg) const {
+    if(reg == NumRegisters || reg == HighRegisters || reg == LowRegisters) {
+        return 0;
+    }
+    if(reg < NumRegisters) {
+        return mRegisters[reg].GetHex();
+    }
+    return 0;
 }
 
 void Processor::SetRegister(eRegisters reg, unsigned int val) {
@@ -116,7 +126,7 @@ void Processor::SetRegister(eRegisters reg, unsigned int val) {
 
 }
 
-unsigned int Processor::GetRegisterLow(eRegisters reg) {
+unsigned int Processor::GetRegisterLow(eRegisters reg) const {
 	if(reg == NumRegisters) {
 		return 0;
 	}
@@ -124,7 +134,7 @@ unsigned int Processor::GetRegisterLow(eRegisters reg) {
 	return mRegisters[reg].GetValue() & 0xFF;
 }
 
-unsigned int Processor::GetRegisterHigh(eRegisters reg) {
+unsigned int Processor::GetRegisterHigh(eRegisters reg) const {
 	if(reg == NumRegisters) {
 		return 0;
 	}

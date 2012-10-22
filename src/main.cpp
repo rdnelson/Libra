@@ -10,11 +10,14 @@
 |
 \*-------------------------------------*/
 
-#include "VM.hpp"
+#include <QApplication>
+#include "MemWnd.hpp"
 
 int main(int argc, char* argv[]) {
 
-	VM virtualMachine(argc, argv);
-	return virtualMachine.Run();
+    QApplication a(argc, argv);
+    MemWnd w;
+    w.show();
 
+    return a.exec();
 }

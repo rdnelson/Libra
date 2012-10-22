@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>../res/run.ico</file>
+        <file>../res/open.ico</file>
+    </qresource>
+</RCC>

@@ -19,13 +19,14 @@
 
 #define EVER ;;
 
-VM::VM(int argc, char* argv[]) : mProc(mMem) {
+VM::VM() : mProc(mMem) {
 
 	//initialize main memory
 	memset(mMem, 0xFF, MEM_SIZE);
 	Instruction::InitializeOpcodes();
 
 	LoadVirgoFile(argv[1]);
+
 }
 
 
@@ -151,36 +152,51 @@ void VM::Disassemble() {
     }
 }
 
+std::string VM::GetInstructionStr(unsigned int index) {
+    if(mLoaded && index < mInstructions.size()) {
+        return mInstructions[index]->GetDisasm();
+    }
+    return "";
+}
+
+
 
 int VM::Run() {
 
-	mProc.Initialize();
-	Instruction::InitializeOpcodes();
-
-	std::cout << "Initial State" << std::endl;
+    /*std::cout << "Initial State" << std::endl;
 	mProc.ProcDump();
 	mProc.MemDump();
 	getchar();
-
+    */
 	for(EVER) {
+        if(!mRunning)
+            break;
 
 		//This is where to change the base execution address.
-		if(mProc.Step()) {
+        if(mProc.Step()) {
 			//Hit an error, quit
 			
 			std::cout << "Encountered an error, quitting" << std::endl;
 			break;
 		}
 
-		mProc.ProcDump();
+        /*mProc.ProcDump();
 		mProc.MemDump();
 		mProc.DeviceDump();
-		getchar();
+        getchar();*/
 
 	}
-	mProc.ProcDump();
+    /*mProc.ProcDump();
 	mProc.MemDump();
-	mProc.DeviceDump();
+    mProc.DeviceDump();*/
 
 	return 0;
+}
+
+int VM::Step() {
+    unsigned int err = 0;
+    if(err = mProc.Step()) {
+        std::cout << "Encountered an error (#" << err << "), quitting" << std::endl;
+    }
+    return err;
 }

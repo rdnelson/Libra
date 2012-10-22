@@ -72,16 +72,16 @@ class Processor {
 		static const int PROC_ERR_INV_INST 	= 2;
 		static const int PROC_ERR_INST		= 3;
 
-		bool GetFlag(eFlags flag);
+        bool GetFlag(eFlags flag) const;
 		void SetFlag(eFlags flag, bool val);
 
-		virtual unsigned int GetRegister(eRegisters reg);
+        virtual unsigned int GetRegister(eRegisters reg) const;
 		virtual void SetRegister(eRegisters reg, unsigned int val);
 
-		unsigned int GetRegisterLow(eRegisters reg);
+        unsigned int GetRegisterLow(eRegisters reg) const;
 		void SetRegisterLow(eRegisters reg, unsigned int val);
 
-		unsigned int GetRegisterHigh(eRegisters reg);
+        unsigned int GetRegisterHigh(eRegisters reg) const;
 		void SetRegisterHigh(eRegisters reg, unsigned int val);
 
 		virtual unsigned int GetMemory(unsigned int addr, unsigned int size);
@@ -99,6 +99,9 @@ class Processor {
 
 		unsigned char Inb(unsigned int port);
 		unsigned short Inw(unsigned int port);
+
+        const std::vector<IPeripheral*> & GetDevices() { return mDevices; }
+        const char* GetRegisterHex(eRegisters reg) const;
 
 		void ProcDump();
 		void MemDump();

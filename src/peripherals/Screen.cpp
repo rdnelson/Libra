@@ -14,6 +14,7 @@
 
 #include <cstring>
 #include <iostream>
+#include <sstream>
 
 Screen::Screen() : mCurX(0), mCurY(0), mFirstRow(0){
 	memset(mScreen, ' ', sizeof(mScreen));
@@ -131,4 +132,18 @@ void Screen::_PutChar(char chr) {
 
 void Screen::_PutColour(unsigned char colour) {
 	mScreen[mCurX][mCurY][1] = colour;
+}
+
+std::string Screen::GetStr() {
+    std::stringstream ss;
+    unsigned int row = mFirstRow;
+
+    do {
+        for(unsigned int col = 0; col < NUM_COLS; col++) {
+            ss << mScreen[col][row][0];
+        }
+        ss << std::endl;
+        row = (row + 1) % NUM_ROWS;
+    } while(row != mFirstRow);
+    return ss.str();
 }

@@ -13,6 +13,7 @@
 #pragma once
 
 #include "../IPeripheral.hpp"
+#include <string>
 
 class Screen : public IPeripheral {
 	public:
@@ -25,6 +26,10 @@ class Screen : public IPeripheral {
 		unsigned int Get16(unsigned int port);
 
 		virtual void Dump();
+
+        unsigned int GetType() { return PERIPH_SCREEN; }
+
+        std::string GetStr();
 
 	protected:
 

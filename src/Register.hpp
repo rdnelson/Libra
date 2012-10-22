@@ -12,14 +12,21 @@
 
 #pragma once
 
+#include <cstring>
+
 class Register {
 
 	public: 
-		Register() : mVal(0) { }
-		unsigned int GetValue() { return mVal; }
-		void SetValue(unsigned int newVal) { mVal = newVal; }
-		void AddValue(unsigned int addVal) { mVal += addVal; }
+        Register() : mVal(0) { strncpy(mHex, "0000", 7); }
+        unsigned int GetValue() const { return mVal; }
+        void SetValue(unsigned int newVal) { mVal = newVal; snprintf(mHex, 7, "%04X", mVal); }
+        void AddValue(unsigned int addVal) { mVal += addVal; snprintf(mHex, 7, "%04X", mVal); }
+        const char* GetHex() const {
+            return mHex;
+        }
 
 	protected:
-		unsigned int mVal;		
+        unsigned int mVal;
+        char mHex[7];
+
 };

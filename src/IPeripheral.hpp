@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <string>
+
 class IPeripheral {
 
 	public:
@@ -22,6 +24,13 @@ class IPeripheral {
 		virtual unsigned int Get16(unsigned int port) = 0;
 
 		virtual void Dump() = 0;
+
+        virtual unsigned int GetType() = 0;
+        virtual std::string GetStr() = 0;
+
+        enum ePeriphTypes {
+            PERIPH_SCREEN
+        };
 
 };
 
