@@ -14,13 +14,14 @@
 
 #include "Operand.hpp"
 #include <sstream>
+#include <iomanip>
 
 class ImmediateOperand : public Operand {
 
 	public:
 		ImmediateOperand(unsigned int val, unsigned int size) : mValue(val), mSize(size) {
 			std::stringstream ss;
-			ss << "0x" << std::uppercase << std::hex << val << std::nouppercase << std::dec;
+            ss << "0x" << std::uppercase << std::setw(size * 2) << std::setfill('0') << std::hex << val;
 			mText = ss.str();
 		}
 
@@ -28,7 +29,7 @@ class ImmediateOperand : public Operand {
 		unsigned int GetValue() { return mValue; }
 		void SetValue(unsigned int val) { 
 			std::stringstream ss;
-			ss << "0x" << std::uppercase << std::hex << val << std::nouppercase << std::dec;
+            ss << "0x" << std::uppercase << std::hex << std::setw(mSize * 2) << std::setfill('0') << val;
 			mText = ss.str();
 			mValue = val; 
 		}
@@ -40,7 +41,7 @@ class ImmediateOperand : public Operand {
 			return bm;
 		}
 		unsigned int GetBytecodeLen() { return mSize; }
-		const std::string GetDisasm() {
+        const std::string GetDisasm() {
 			return mText;
 		}
 
