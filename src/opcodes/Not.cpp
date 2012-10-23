@@ -57,6 +57,11 @@ Instruction* Not::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 int Not::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
+
+	if(!dst) {
+		return INVALID_ARGS;
+	}
+
 	unsigned int dstVal = dst->GetValue();
 
 	dst->SetValue((~dstVal) & dst->GetBitmask());

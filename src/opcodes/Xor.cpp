@@ -121,7 +121,7 @@ int Xor::Execute(Processor* proc) {
 	Operand* src = mOperands[Operand::SRC];
 
 	if(dst == 0 || src == 0)
-		return -1;
+		return INVALID_ARGS;
 
 	unsigned int val = dst->GetValue() ^ src->GetValue();
 

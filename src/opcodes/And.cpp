@@ -128,7 +128,7 @@ Instruction* And::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 int And::Execute(Processor* proc) {
 
 	if(mOperands[Operand::SRC] == 0 || mOperands[Operand::DST] == 0)
-		return -1;
+		return INVALID_ARGS;
 
 	unsigned int val = mOperands[Operand::SRC]->GetValue() & mOperands[Operand::DST]->GetValue();
 	unsigned int sign = mOperands[Operand::DST]->GetBitmask() == 0xFF ? 0x80 : 0x8000;

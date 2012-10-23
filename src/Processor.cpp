@@ -44,6 +44,7 @@ void Processor::_InitializeDevices() {
 
 //Execute a single instruction
 int Processor::Step() {
+    int retVal = PROC_SUCCESS;
 
 	//Fetch
 	Instruction* inst = Instruction::ReadInstruction(mMem + GetRegister(REG_IP), this);
@@ -60,7 +61,7 @@ int Processor::Step() {
 		std::cout << inst->GetDisasm() << std::endl;
 
 		//Execute
-		if(inst->Execute(this)) {
+        if((retVal = inst->Execute(this)) < 0) {
 			return PROC_ERR_INST;
 		}
 
@@ -68,7 +69,7 @@ int Processor::Step() {
 		return PROC_ERR_INV_INST;
 	}
 
-	return PROC_SUCCESS;
+    return retVal;
 
 }
 

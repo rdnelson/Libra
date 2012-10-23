@@ -76,7 +76,7 @@ Instruction* IncDec::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 int IncDec::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0) {
-		return -1;
+		return INVALID_ARGS;
 	}
 
 	if(mType == DEC) {

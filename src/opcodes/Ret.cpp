@@ -61,31 +61,31 @@ int Ret::Execute(Processor* proc) {
 	switch(mOpcode) {
 		case RET_NEAR:
 			proc->PopRegister(REG_IP);
-			return 0;
+			return RET_CALLED;
 			break;
 		case RET_FAR:
 			proc->PopRegister(REG_IP);
 			proc->PopRegister(REG_CS);
-			return 0;
+			return RET_CALLED;
 			break;
 		case RET_NEAR_POP:
 			if(dst == 0) {
-				return -1;
+				return INVALID_ARGS;
 			}
 			proc->PopRegister(REG_IP);
 			proc->PopSize(dst->GetValue());
-			return 0;
+			return RET_CALLED;
 			break;
 		case RET_FAR_POP:
 			if(dst == 0) {
-				return -1;
+				return INVALID_ARGS;
 			}
 			proc->PopRegister(REG_IP);
 			proc->PopRegister(REG_CS);
 			proc->PopSize(dst->GetValue());
-			return 0;
+			return RET_CALLED;
 			break;
 	}
-	return -1;
+	return INVALID_ARGS;
 
 }

@@ -166,6 +166,10 @@ int Sub::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
 
+	if(!dst || !src) {
+		return INVALID_ARGS;
+	}
+
 	dst->SetValue(Cmp::compare(proc, dst, src));
 
 	return 0;

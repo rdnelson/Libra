@@ -58,6 +58,11 @@ Instruction* Mul::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 int Mul::Execute(Processor* proc) {
 	Operand* src = mOperands[Operand::SRC];
+
+	if(!src) {
+		return INVALID_ARGS;
+	}
+
 	unsigned int srcVal = src->GetValue();
 	unsigned int dstVal;
 	unsigned int newVal;

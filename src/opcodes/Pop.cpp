@@ -92,7 +92,7 @@ int Pop::Execute(Processor* proc) {
 
 	Operand* dst = mOperands[Operand::DST];
 	if(!dst) {
-		return -1;
+		return INVALID_ARGS;
 	}
 
 	dst->SetValue(proc->PopValue());

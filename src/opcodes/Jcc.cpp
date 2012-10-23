@@ -108,6 +108,12 @@ Instruction* Jcc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 }
 
 int Jcc::Execute(Processor* proc) {
+	Operand* src = mOperands[Operand::SRC];
+
+	if(!src) {
+		return INVALID_ARGS;
+	}
+
 	bool jmp = false;
 
 	switch(mOpcode) {
@@ -168,9 +174,9 @@ int Jcc::Execute(Processor* proc) {
 
 	if(jmp) {
 		unsigned int newIP = proc->GetRegister(REG_IP);
-		unsigned int relAddr = mOperands[Operand::SRC]->GetValue();
+		unsigned int relAddr = src->GetValue();
 		newIP += relAddr;
-		newIP &= mOperands[Operand::SRC]->GetBitmask();
+		newIP &= src->GetBitmask();
 		proc->SetRegister(REG_IP, newIP);
 	}
 

@@ -163,39 +163,24 @@ std::string VM::GetInstructionStr(unsigned int index) {
 
 int VM::Run() {
 
-    /*std::cout << "Initial State" << std::endl;
-	mProc.ProcDump();
-	mProc.MemDump();
-	getchar();
-    */
+    int err = 0;
 	for(EVER) {
         if(!mRunning)
             break;
 
 		//This is where to change the base execution address.
-        if(mProc.Step()) {
+        if(err = mProc.Step() < 0) {
 			//Hit an error, quit
-			
-			std::cout << "Encountered an error, quitting" << std::endl;
 			break;
 		}
 
-        /*mProc.ProcDump();
-		mProc.MemDump();
-		mProc.DeviceDump();
-        getchar();*/
-
 	}
-    /*mProc.ProcDump();
-	mProc.MemDump();
-    mProc.DeviceDump();*/
-
-	return 0;
+    return err;
 }
 
 int VM::Step() {
-    unsigned int err = 0;
-    if(err = mProc.Step()) {
+    int err = 0;
+    if((err = mProc.Step()) < 0) {
         std::cout << "Encountered an error (#" << err << "), quitting" << std::endl;
     }
     return err;

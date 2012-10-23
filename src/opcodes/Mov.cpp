@@ -221,7 +221,7 @@ int Mov::Execute(Processor* proc) {
 		mOperands[Operand::DST]->SetValue(mOperands[Operand::SRC]->GetValue());
 		return 0;
 	}
-	return -1;
+	return INVALID_ARGS;
 
 }
 

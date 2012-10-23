@@ -48,7 +48,7 @@ Instruction* Div::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 int Div::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0)
-		return -1;
+		return INVALID_ARGS;
 
 	if(dst->GetValue() == 0) {
 		return DIV_BY_ZERO;
@@ -67,7 +67,7 @@ int Div::Execute(Processor* proc) {
 		proc->SetRegister(REG_AX, val);
 		proc->SetRegister(REG_DX, rem);
 	} else {
-		return -1;
+		return INVALID_ARGS;
 	}
 
 	return 0;

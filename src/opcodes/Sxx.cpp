@@ -105,7 +105,7 @@ int Sxx::Execute(Processor* proc) {
 	Operand* src = mOperands[Operand::SRC];
 
 	if(!dst || !src)
-		return -1;
+		return INVALID_ARGS;
 
 	unsigned int tmpCount = src->GetValue() & 0x1F;
 	unsigned int dstVal = dst->GetValue();

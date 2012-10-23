@@ -71,7 +71,7 @@ int Out::Execute(Processor* proc) {
 	Operand* src = mOperands[Operand::SRC];
 
 	if(!dst || !src) {
-		return -1;
+		return INVALID_ARGS;
 	}
 
 	if(mOpcode == OUT_IMM8_AL || mOpcode == OUT_DX_AL) {
@@ -82,5 +82,5 @@ int Out::Execute(Processor* proc) {
 		return 0;
 	}
 
-	return -1;
+	return INVALID_ARGS;
 }

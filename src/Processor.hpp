@@ -44,7 +44,7 @@ enum eRegisters {
 	REG_DH,
 	REG_BH,
 	HighRegisters,
-	AllRegisters=HighRegisters,
+    AllRegisters=HighRegisters
 };
 
 enum eFlags {
@@ -56,7 +56,7 @@ enum eFlags {
 	FLAGS_TF = 8,
 	FLAGS_IF = 9,
 	FLAGS_DF = 10,
-	FLAGS_OF = 11,
+    FLAGS_OF = 11
 };
 	
 
@@ -67,10 +67,10 @@ class Processor {
 		Processor(unsigned char* mem);
 		int Step();
 
-		static const int PROC_SUCCESS		= 0;
-		static const int PROC_ERR_INV_ADDR 	= 1;
-		static const int PROC_ERR_INV_INST 	= 2;
-		static const int PROC_ERR_INST		= 3;
+        static const int PROC_SUCCESS		=  0;
+        static const int PROC_ERR_INV_ADDR 	= -1;
+        static const int PROC_ERR_INV_INST 	= -2;
+        static const int PROC_ERR_INST		= -3;
 
         bool GetFlag(eFlags flag) const;
 		void SetFlag(eFlags flag, bool val);

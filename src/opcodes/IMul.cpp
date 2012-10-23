@@ -98,7 +98,7 @@ Instruction* IMul::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 int IMul::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0)
-		return -1;
+		return INVALID_ARGS;
 
 	switch(mOpcode) {
 		case IMUL_MOD8:
@@ -184,7 +184,7 @@ int IMul::Execute(Processor* proc) {
 			break;
 		}
 		default:
-			return -1;
+			return INVALID_ARGS;
 	}
 
 	return 0;

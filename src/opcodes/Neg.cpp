@@ -57,6 +57,10 @@ Instruction* Neg::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 int Neg::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
+
+	if(!dst) {
+		return INVALID_ARGS;
+	}
 	unsigned int dstVal = dst->GetValue();
 	unsigned int sign = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
 	proc->SetFlag(FLAGS_CF, dstVal != 0);

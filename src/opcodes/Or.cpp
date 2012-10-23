@@ -162,6 +162,10 @@ int Or::Execute(Processor* proc) {
 
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
+
+	if(!dst || !src) {
+		return INVALID_ARGS;
+	}
 	
 	unsigned int dstVal = dst->GetValue();
 	unsigned int srcVal = src->GetValue();

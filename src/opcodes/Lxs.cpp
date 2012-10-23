@@ -54,7 +54,7 @@ int Lxs::Execute(Processor* proc) {
 	Operand* src = mOperands[Operand::SRC];
 
 	if(!dst || !src) {
-		return -1;
+		return INVALID_ARGS;
 	}
 
 	unsigned int val = src->GetValue(4);
@@ -66,7 +66,7 @@ int Lxs::Execute(Processor* proc) {
 	} else if(mOpcode == LES) {
 		proc->SetRegister(REG_ES, (val & 0xFFFF0000) >> 0x10);
 	} else {
-		return -1;
+		return INVALID_ARGS;
 	}
 
 	return 0;

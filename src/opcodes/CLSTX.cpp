@@ -85,7 +85,7 @@ int CLSTX::Execute(Processor* proc) {
 			proc->SetFlag(FLAGS_IF, 1);
 			break;
 		default:
-			return -1;
+			return INVALID_ARGS;
 	}
 
 	return 0;

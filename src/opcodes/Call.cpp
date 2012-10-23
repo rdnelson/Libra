@@ -87,7 +87,7 @@ Instruction* Call::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 int Call::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0) {
-		return -1;
+		return INVALID_ARGS;
 	}
 
 	switch(mOpcode) {
@@ -123,9 +123,8 @@ int Call::Execute(Processor* proc) {
 			break;
 		}
 		default:
-			return -1;
+			return INVALID_ARGS;
 	}
 
-	return 0;
+	return CALL_CALLED;
 }
-

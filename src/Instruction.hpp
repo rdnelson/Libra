@@ -81,6 +81,14 @@ class Instruction {
 			mText += " (" + ss.str() + ")";
 		}
 
+		enum eExecuteRetCode {
+			SUCCESS		=  0,
+			INVALID_ARGS 	= -1,
+			RET_CALLED	=  1,
+			CALL_CALLED	=  2
+		};
+
+
 	protected:
 		Instruction();
 		Instruction(Prefix* pre, std::string text, std::string inst, int op);

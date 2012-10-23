@@ -163,6 +163,10 @@ int Cmp::Execute(Processor* proc) {
 
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
+
+	if(!dst || !src) {
+		return INVALID_ARGS;
+	}
 	
 	compare(proc, dst, src);
 
@@ -171,6 +175,10 @@ int Cmp::Execute(Processor* proc) {
 
 unsigned int Cmp::compare(Processor* proc, Operand* dst, Operand* src) {
 	
+	if(!dst || !src) {
+		return 0xFFFFFFFF;
+	}
+
 	unsigned int dstVal = dst->GetValue();
 	unsigned int srcVal = src->GetValue();
 	unsigned int newVal = dstVal - srcVal;

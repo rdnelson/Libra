@@ -85,7 +85,7 @@ Instruction* Jmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 int Jmp::Execute(Processor* proc) {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0) {
-		return -1;
+		return INVALID_ARGS;
 	}
 
 	unsigned int ip = proc->GetRegister(REG_IP);

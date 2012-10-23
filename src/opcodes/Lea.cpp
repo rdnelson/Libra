@@ -54,7 +54,7 @@ int Lea::Execute(Processor* proc) {
 	ModrmOperand* src = (ModrmOperand*)mOperands[Operand::SRC];
 
 	if(!dst || !src) {
-		return -1;
+		return INVALID_ARGS;
 	}
 
 	dst->SetValue(src->GetAddress());
