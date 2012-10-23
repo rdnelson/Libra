@@ -10,12 +10,16 @@ class VMWorker : public QObject
 public:
     VMWorker(VM* vm);
 
+    static const int VM_NOT_LOADED = 0xFF;
+
 public slots:
     void step();
     void run();
 
 signals:
-    void exception();
+    void quit();
+    void error(int);
+    void procReturn(int);
     void breakpoint();
     void stepDone();
     void runDone();

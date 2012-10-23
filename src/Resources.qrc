@@ -1,6 +1,12 @@
 <RCC>
     <qresource prefix="/">
-        <file>../res/run.ico</file>
-        <file>../res/open.ico</file>
+        <file>../res/runproject24.ico</file>
+        <file>../res/testproject24.ico</file>
+        <file>../res/openproject24.ico</file>
+        <file>../res/pause24.ico</file>
+        <file>../res/kill24.ico</file>
+        <file>../res/StepInto24.ico</file>
+        <file>../res/StepOut24.ico</file>
+        <file>../res/StepOver24.ico</file>
     </qresource>
 </RCC>

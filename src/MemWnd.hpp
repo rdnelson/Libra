@@ -19,11 +19,23 @@ public:
     ~MemWnd();
 
 public slots:
+    //action slots
     void loadObjFile();
+    void reloadObjFile();
+    void stepInVM();
+    void stepOutVM();
+    void stepOverVM();
     void runVM();
+
+    //VMWorker Slots
+    //trigger on breakpoint
     void vmBreakpoint();
+    //trigger on run finished
     void vmDone();
+    //trigger on step completion
     void stepDone();
+    //trigger on run error
+    void vmRunError(int err);
 
 signals:
     void vmResume();
@@ -32,7 +44,12 @@ signals:
 private:
     Ui::MemWnd *ui;
 
+    void UpdateGui();
+    void UpdateMemView();
+    void DisableRun(int err);
+
     VM mVM;
+    QString mFile;
 
 };
 

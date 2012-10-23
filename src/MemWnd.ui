@@ -23,7 +23,7 @@
    <string>MemWnd</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -53,11 +53,20 @@
            <height>400</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="autoScroll">
           <bool>false</bool>
          </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
          <property name="showDropIndicator" stdset="0">
           <bool>false</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::NoSelection</enum>
          </property>
         </widget>
        </item>
@@ -164,8 +173,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLabel" name="label_3">
@@ -195,8 +210,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLabel" name="label_4">
@@ -226,8 +247,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLabel" name="label_5">
@@ -257,8 +284,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLabel" name="label_6">
@@ -288,8 +321,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLabel" name="label_7">
@@ -319,8 +358,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLabel" name="label_8">
@@ -350,8 +395,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLabel" name="label_9">
@@ -381,8 +432,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLineEdit" name="txtFLAGS">
@@ -399,8 +456,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLabel" name="label_10">
@@ -430,8 +493,14 @@
                 <family>Courier New</family>
                </font>
               </property>
+              <property name="focusPolicy">
+               <enum>Qt::NoFocus</enum>
+              </property>
               <property name="text">
                <string>0000</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
               </property>
              </widget>
              <widget class="QLabel" name="label_11">
@@ -470,7 +539,7 @@
               <property name="geometry">
                <rect>
                 <x>10</x>
-                <y>30</y>
+                <y>20</y>
                 <width>71</width>
                 <height>17</height>
                </rect>
@@ -482,8 +551,8 @@
              <widget class="QCheckBox" name="chkOverflow">
               <property name="geometry">
                <rect>
-                <x>80</x>
-                <y>30</y>
+                <x>70</x>
+                <y>20</y>
                 <width>71</width>
                 <height>17</height>
                </rect>
@@ -496,7 +565,7 @@
               <property name="geometry">
                <rect>
                 <x>10</x>
-                <y>60</y>
+                <y>40</y>
                 <width>71</width>
                 <height>17</height>
                </rect>
@@ -508,8 +577,8 @@
              <widget class="QCheckBox" name="chkSign">
               <property name="geometry">
                <rect>
-                <x>80</x>
-                <y>60</y>
+                <x>70</x>
+                <y>40</y>
                 <width>71</width>
                 <height>17</height>
                </rect>
@@ -522,7 +591,7 @@
               <property name="geometry">
                <rect>
                 <x>10</x>
-                <y>90</y>
+                <y>60</y>
                 <width>71</width>
                 <height>17</height>
                </rect>
@@ -534,14 +603,53 @@
              <widget class="QCheckBox" name="chkAdjust">
               <property name="geometry">
                <rect>
-                <x>80</x>
-                <y>90</y>
+                <x>10</x>
+                <y>80</y>
                 <width>71</width>
                 <height>17</height>
                </rect>
               </property>
               <property name="text">
                <string>Adjust</string>
+              </property>
+             </widget>
+             <widget class="QCheckBox" name="chkTrap">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>100</y>
+                <width>71</width>
+                <height>17</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Trap</string>
+              </property>
+             </widget>
+             <widget class="QCheckBox" name="chkInterrupt">
+              <property name="geometry">
+               <rect>
+                <x>70</x>
+                <y>80</y>
+                <width>81</width>
+                <height>17</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Interrupt En.</string>
+              </property>
+             </widget>
+             <widget class="QCheckBox" name="chkDirection">
+              <property name="geometry">
+               <rect>
+                <x>70</x>
+                <y>60</y>
+                <width>71</width>
+                <height>17</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Direction</string>
               </property>
              </widget>
             </widget>
@@ -584,18 +692,26 @@
      </item>
     </layout>
    </widget>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="action_Load_Object_File"/>
+   <addaction name="action_Open"/>
+   <addaction name="actionReload_File"/>
+   <addaction name="separator"/>
+   <addaction name="actionRestart"/>
    <addaction name="actionRun"/>
+   <addaction name="actionPause"/>
+   <addaction name="actionStep_Into"/>
+   <addaction name="actionStep_Over"/>
+   <addaction name="actionStep_Out"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -612,6 +728,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_Open"/>
+    <addaction name="actionReload_File"/>
     <addaction name="separator"/>
     <addaction name="action"/>
    </widget>
@@ -619,8 +736,8 @@
     <property name="title">
      <string>&amp;Debug</string>
     </property>
-    <addaction name="action_Run"/>
-    <addaction name="action_Stop"/>
+    <addaction name="actionRun"/>
+    <addaction name="actionStep_Out"/>
     <addaction name="separator"/>
     <addaction name="actionStep_Into"/>
     <addaction name="actionStep_Over"/>
@@ -629,36 +746,31 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
+    <addaction name="actionHelp"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Debug"/>
    <addaction name="menu_Help"/>
   </widget>
-  <action name="action_Load_Object_File">
-   <property name="icon">
-    <iconset resource="Resources.qrc">
-     <normaloff>:/res/open.ico</normaloff>:/res/open.ico</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Load Object File</string>
-   </property>
-  </action>
   <action name="actionRun">
    <property name="enabled">
     <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="Resources.qrc">
-     <normaloff>:/res/run.ico</normaloff>:/res/run.ico</iconset>
+     <normaloff>:/res/runproject24.ico</normaloff>:/res/runproject24.ico</iconset>
    </property>
    <property name="text">
     <string>Run</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
   <action name="action_Open">
    <property name="icon">
     <iconset resource="Resources.qrc">
-     <normaloff>:/res/open.ico</normaloff>:/res/open.ico</iconset>
+     <normaloff>:/res/openproject24.ico</normaloff>:/res/openproject24.ico</iconset>
    </property>
    <property name="text">
     <string>&amp;Load Object File</string>
@@ -672,31 +784,103 @@
     <string>E&amp;xit</string>
    </property>
   </action>
-  <action name="action_Run">
+  <action name="actionStep_Into">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="Resources.qrc">
-     <normaloff>:/res/run.ico</normaloff>:/res/run.ico</iconset>
+     <normaloff>:/res/StepInto24.ico</normaloff>:/res/StepInto24.ico</iconset>
    </property>
-   <property name="text">
-    <string>&amp;Run</string>
-   </property>
-   <property name="shortcut">
-    <string>F5</string>
-   </property>
-  </action>
-  <action name="actionStep_Into">
    <property name="text">
     <string>Step &amp;Into</string>
    </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
   </action>
   <action name="actionStep_Over">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/res/StepOver24.ico</normaloff>:/res/StepOver24.ico</iconset>
+   </property>
    <property name="text">
     <string>Step &amp;Over</string>
    </property>
+   <property name="shortcut">
+    <string>F10</string>
+   </property>
   </action>
-  <action name="action_Stop">
+  <action name="actionStep_Out">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/res/StepOut24.ico</normaloff>:/res/StepOut24.ico</iconset>
+   </property>
    <property name="text">
-    <string>&amp;Stop</string>
+    <string>Step Out</string>
+   </property>
+   <property name="shortcut">
+    <string>F8</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/res/open.ico</normaloff>:/res/open.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/res/pause24.ico</normaloff>:/res/pause24.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="actionReload_File">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/res/testproject24.ico</normaloff>:/res/testproject24.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Reload File</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+R</string>
+   </property>
+  </action>
+  <action name="actionRestart">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/res/kill24.ico</normaloff>:/res/kill24.ico</iconset>
+   </property>
+   <property name="text">
+    <string>Restart</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

@@ -36,6 +36,7 @@ class VM {
         const unsigned int GetNumInstructions() { return mInstructions.size(); }
         const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
         const Processor & GetProc() { return mProc; }
+        const unsigned char GetMemory(unsigned int addr) const;
 
 		const static int MEM_SIZE = 0x10000;
 
@@ -47,6 +48,7 @@ class VM {
 
         bool mLoaded;
         bool mRunning;
+        bool mVirgo;
 
 		Processor	mProc;
 		unsigned char	mMem[MEM_SIZE];

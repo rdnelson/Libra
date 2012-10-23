@@ -7,16 +7,18 @@ VMWorker::VMWorker(VM* vm) : mVM(vm)
 }
 
 void VMWorker::run() {
+    int err;
     if(mVM && mVM->isLoaded()) {
         for(EVER) {
-            if(mVM->Step()) {
+            if((err = mVM->Step()) < 0) {
                 break;
+            } else if(err > 0) {
+                emit procReturn(err);
             }
-            emit stepDone();
         }
-        emit runDone();
+        emit error(err);
     } else {
-        emit exception();
+        emit quit();
     }
 }
 
@@ -25,6 +27,6 @@ void VMWorker::step() {
         //mVM->Step();
         emit stepDone();
     } else {
-        emit exception();
+        emit quit();
     }
 }

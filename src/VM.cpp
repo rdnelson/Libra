@@ -19,7 +19,7 @@
 
 #define EVER ;;
 
-VM::VM() : mProc(mMem) {
+VM::VM() : mProc(mMem), mVirgo(false) {
 
 	//initialize main memory
 	memset(mMem, 0xFF, MEM_SIZE);
@@ -40,7 +40,11 @@ int VM::LoadFlatFile(const char* filename) {
 	mLoaded = false;
 	mProc.Initialize();
 
-	std::ifstream fin;
+    //reset everything
+    mLoaded = false;
+    mProc.Initialize();
+
+    std::ifstream fin;
 	fin.open(filename, std::ios_base::in | std::ios_base::binary);
 	if(fin.fail()) { 
 		return VM_ERR_FOPEN;
@@ -184,4 +188,11 @@ int VM::Step() {
         std::cout << "Encountered an error (#" << err << "), quitting" << std::endl;
     }
     return err;
+}
+
+const unsigned char VM::GetMemory(unsigned int addr) const {
+    if(addr < MEM_SIZE) {
+        return mMem[addr];
+    }
+    return 0xFF;
 }
