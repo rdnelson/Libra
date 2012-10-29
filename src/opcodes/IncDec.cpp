@@ -79,10 +79,19 @@ int IncDec::Execute(Processor* proc) {
 		return -1;
 	}
 
+	unsigned int dstSign = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
+	unsigned int oriVal = dst->GetValue();
+
 	if(mType == DEC) {
 		dst->SetValue(dst->GetValue() - 1);
 	} else {
 		dst->SetValue(dst->GetValue() + 1);
 	}
+
+	proc->SetFlag(FLAGS_OF, dst->GetValue() == (mType == DEC ? dstSign - 1 : dstSign));
+	proc->SetFlag(FLAGS_PF, Parity(dst->GetValue()));
+	proc->SetFlag(FLAGS_AF, mType == DEC ? AdjustSub(oriVal, 1) : AdjustAdd(oriVal, 1));
+	proc->SetFlag(FLAGS_SF, (dst->GetValue() & dstSign) != 0);
+	proc->SetFlag(FLAGS_ZF, dst->GetValue() == 0);
 	return 0;
 }
