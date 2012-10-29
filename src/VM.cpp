@@ -38,6 +38,8 @@ int VM::LoadFlatFile(const char* filename) {
 	//reset everything
 	mLoaded = false;
 	mProc.Initialize();
+	mInstructions.clear();
+	memset(mMem, 0, MEM_SIZE);
 
 	//reset everything
 	mLoaded = false;
@@ -72,6 +74,8 @@ int VM::LoadVirgoFile(const char* filename) {
 
 	mLoaded = false;
 	mProc.Initialize();
+	mInstructions.clear();
+	memset(mMem, 0, MEM_SIZE);
 
 	mInstructions.clear();
 	memset(mMem, 0xFF, MEM_SIZE);

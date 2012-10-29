@@ -29,6 +29,15 @@ int Processor::Initialize(unsigned int startAddr) {
 		return PROC_ERR_INV_ADDR;
 	}
 
+	SetRegister(REG_AX, 0x0000);
+	SetRegister(REG_BX, 0x0000);
+	SetRegister(REG_CX, 0x0000);
+	SetRegister(REG_DX, 0x0000);
+	SetRegister(REG_SP, 0x0000);
+	SetRegister(REG_BP, 0x0000);
+	SetRegister(REG_SI, 0x0000);
+	SetRegister(REG_DI, 0x0000);
+	SetRegister(REG_FLAGS, 0x0000);
 	SetRegister(REG_IP, startAddr);
 
 	_InitializeDevices();
@@ -39,9 +48,9 @@ int Processor::Initialize(unsigned int startAddr) {
 
 void Processor::_InitializeDevices() {
 
-	for(int i = 0; i < mDevices.size(); i++)
+		for(int i = 0; i < mDevices.size(); i++) {
 		delete mDevices[i];
-
+	}
 	mDevices.clear();
 
 	mDevices.push_back(new Screen());
