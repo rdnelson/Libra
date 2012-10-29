@@ -77,7 +77,6 @@ int VM::LoadVirgoFile(const char* filename) {
 
 	//parse header
 	int numInitArgs, numLines, addrStart, bytesTotal;
-	char delim;
 	fin >> numInitArgs;
 	fin >> numLines;
 	fin >> addrStart;
@@ -136,6 +135,8 @@ int VM::LoadVirgoFile(const char* filename) {
 			break;
 
 	}
+
+	return VM_SUCCESS;
 }
 
 void VM::Disassemble() {
@@ -143,7 +144,7 @@ void VM::Disassemble() {
         if(!mVirgo) {
             unsigned int tmpIP = 0;
             Instruction* tmpInst = 0;
-            while(tmpInst = Instruction::ReadInstruction(mMem + tmpIP, &mProc )) {
+            while((tmpInst = Instruction::ReadInstruction(mMem + tmpIP, &mProc )) != 0) {
                 mInstructions.push_back(tmpInst);
                 tmpIP += tmpInst->GetLength() % MEM_SIZE;
             }
