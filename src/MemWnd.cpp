@@ -98,7 +98,7 @@ void MemWnd::loadObjFile() {
 			ui->lstInstructions->item(i)->setFlags(ui->lstInstructions->item(i)->flags() | Qt::ItemIsUserCheckable);
 			ui->lstInstructions->item(i)->setCheckState(Qt::Unchecked);
 		}
-        UpdateGui();
+		UpdateGui();
 	}
 }
 
@@ -188,32 +188,21 @@ void MemWnd::UpdateGui() {
 	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
 	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
 
-    unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
-    for(int i = 0; i < mVM.GetNumInstructions(); i++) {
-        if(mVM.GetInstructionAddr(i) == ip) {
-            ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
-            ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i));
-        } else {
-            ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
-        }
-    }
+	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
+	for(int i = 0; i < mVM.GetNumInstructions(); i++) {
+		if(mVM.GetInstructionAddr(i) == ip) {
+			ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
+			ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i));
+		} else {
+			ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
+		}
+	}
 }
 
 void MemWnd::UpdateMemView() {
 	QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
-    /*ui->tableView->setUpdatesEnabled(false);
-
-	for(int i = 0; i < 0x1000; i++) {
-		for(int j = 0; j < 0x10; j++) {
-			qMemModel->setItem(i,j,new QStandardItem(QString("%1").arg((int)mVM.GetMemory(i * 0x10 + j),2, 16, QChar('0')).toUpper()));
-		}
-	}
-	ui->tableView->setModel(qMemModel);
-
-    
-    ui->tableView->setUpdatesEnabled(true);*/
-    qMemModel->copyData(mVM.GetMemPtr());
-    qMemModel->update();
+	qMemModel->copyData(mVM.GetMemPtr());
+	qMemModel->update();
 }
 
 void MemWnd::stepInVM() {
