@@ -88,7 +88,8 @@ class Instruction {
 			SUCCESS		=  0,
 			INVALID_ARGS 	= -1,
 			RET_CALLED	=  1,
-			CALL_CALLED	=  2
+			CALL_CALLED	=  2,
+			RES_BREAKPOINT = 3
 		};
 
 

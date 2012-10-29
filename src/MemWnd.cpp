@@ -11,6 +11,7 @@
 #include "QThread"
 #include "Instruction.hpp"
 #include "QMemModel.hpp"
+#include "Breakpoint.hpp"
 
 #include <iostream>
 
@@ -69,6 +70,7 @@ MemWnd::MemWnd(QWidget *parent) :
 		ui->tableView->setColumnWidth(i, width);
 	}
 	ui->tableView->setMaximumWidth(width * 0x13);
+
 }
 
 MemWnd::~MemWnd()
@@ -96,6 +98,7 @@ void MemWnd::loadObjFile() {
 			ui->lstInstructions->item(i)->setFlags(ui->lstInstructions->item(i)->flags() | Qt::ItemIsUserCheckable);
 			ui->lstInstructions->item(i)->setCheckState(Qt::Unchecked);
 		}
+        UpdateGui();
 	}
 }
 
@@ -140,6 +143,9 @@ void MemWnd::runVM() {
 
 void MemWnd::vmBreakpoint() {
 
+	EnableRun();
+	UpdateGui();
+
 }
 
 void MemWnd::vmDone() {
@@ -181,6 +187,16 @@ void MemWnd::UpdateGui() {
 	ui->chkParity->setChecked(mVM.GetProc().GetFlag(FLAGS_PF));
 	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
 	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
+
+    unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
+    for(int i = 0; i < mVM.GetNumInstructions(); i++) {
+        if(mVM.GetInstructionAddr(i) == ip) {
+            ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
+            ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i));
+        } else {
+            ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
+        }
+    }
 }
 
 void MemWnd::UpdateMemView() {
@@ -252,4 +268,11 @@ void MemWnd::DisableRun(int err) {
 	ui->actionStep_Into->setEnabled(false);
 	ui->actionStep_Out->setEnabled(false);
 	ui->actionStep_Over->setEnabled(false);
+}
+
+void MemWnd::EnableRun() {
+	ui->actionRun->setEnabled(true);
+	ui->actionStep_Into->setEnabled(true);
+	ui->actionStep_Out->setEnabled(true);
+	ui->actionStep_Over->setEnabled(true);
 }

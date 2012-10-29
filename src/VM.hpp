@@ -16,6 +16,7 @@
 
 #include "Processor.hpp"
 #include "IPeripheral.hpp"
+#include "Breakpoint.hpp"
 
 class Instruction;
 
@@ -32,12 +33,15 @@ class VM {
 
 		inline bool isLoaded() { return mLoaded; }
 		void Disassemble();
-		std::string GetInstructionStr(unsigned int index);
+		std::string GetInstructionStr(unsigned int index) const;
+		const unsigned int GetInstructionAddr(unsigned int index) const;
 		const unsigned int GetNumInstructions() { return mInstructions.size(); }
 		const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
 		const Processor & GetProc() { return mProc; }
 		const unsigned char GetMemory(unsigned int addr) const;
 		const unsigned char* GetMemPtr() const { return mMem; }
+
+		inline void AddBreakpoint(Breakpoint* bp) { mBreakpoints.push_back(bp); }
 
 		const static int MEM_SIZE = 0x10000;
 
@@ -46,6 +50,8 @@ class VM {
 		const static int VM_ERR_FREAD	= 0x02;
 		const static int VM_ERR_BIG_FILE = 0x03;
 		const static int VM_ERR_CORRUPT = 0x04;
+
+		const static int VM_BREAKPOINT = 0x03;
 
 	private:
 
@@ -56,4 +62,6 @@ class VM {
 		Processor	mProc;
 		unsigned char	mMem[MEM_SIZE];
 		std::vector<Instruction*> mInstructions;
+		std::vector<Breakpoint*> mBreakpoints;
+		
 };

@@ -175,7 +175,10 @@ int VM::LoadVirgoFile(const char* filename) {
 		if(dis.size() == 0)
 			continue;
 
-		mInstructions.push_back(new VirgoInstruction(pre, dis, s, (int)*opLoc));
+		Instruction* inst = new VirgoInstruction(pre, dis, s, (int)*opLoc);
+		inst->SetAddress(addr);
+
+		mInstructions.push_back(inst);
 
 		memcpy(mMem + (addr % MEM_SIZE), text, hexSize);
 
@@ -202,13 +205,19 @@ void VM::Disassemble() {
 	}
 }
 
-std::string VM::GetInstructionStr(unsigned int index) {
+std::string VM::GetInstructionStr(unsigned int index) const {
 	if(mLoaded && index < mInstructions.size()) {
 		return mInstructions[index]->GetDisasm();
 	}
 	return "";
 }
 
+const unsigned int VM::GetInstructionAddr(unsigned int index) const {
+    if(mLoaded && index < mInstructions.size()) {
+        return mInstructions[index]->GetAddress();
+    }
+    return -1;
+}
 
 
 int VM::Run() {
@@ -232,6 +241,11 @@ int VM::Step() {
 	int err = 0;
 	if((err = mProc.Step()) < 0) {
 		std::cout << "Encountered an error (#" << err << "), quitting" << std::endl;
+	} else {
+		for(int i = 0; i < mBreakpoints.size(); i++) {
+			if(mBreakpoints[i]->Evaluate(&mProc))
+				return VM_BREAKPOINT;
+		}
 	}
 	return err;
 }

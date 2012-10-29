@@ -7,26 +7,30 @@ VMWorker::VMWorker(VM* vm) : mVM(vm)
 }
 
 void VMWorker::run() {
-    int err;
-    if(mVM && mVM->isLoaded()) {
-        for(EVER) {
-            if((err = mVM->Step()) < 0) {
-                break;
-            } else if(err > 0) {
-                emit procReturn(err);
-            }
-        }
-        emit error(err);
-    } else {
-        emit quit();
-    }
+	int err;
+	if(mVM && mVM->isLoaded()) {
+		for(EVER) {
+			if((err = mVM->Step()) < 0) {
+				break;
+			} else if (err == VM::VM_BREAKPOINT) {
+				emit procReturn(err);
+				emit breakpoint();
+				return;
+			} else if(err > 0) {
+				emit procReturn(err);
+			}
+		}
+		emit error(err);
+	} else {
+		emit quit();
+	}
 }
 
 void VMWorker::step() {
-    if(mVM && mVM->isLoaded()) {
-        //mVM->Step();
-        emit stepDone();
-    } else {
-        emit quit();
-    }
+	if(mVM && mVM->isLoaded()) {
+		//mVM->Step();
+		emit stepDone();
+	} else {
+		emit quit();
+	}
 }

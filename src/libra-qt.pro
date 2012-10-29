@@ -23,6 +23,7 @@ SOURCES +=\
     Instruction.cpp \
     AddressOperand.cpp \
     VMWorker.cpp \
+    Breakpoint.cpp \
     opcodes/Xor.cpp \
     opcodes/Test.cpp \
     opcodes/Sxx.cpp \
@@ -76,6 +77,7 @@ HEADERS  += MemWnd.hpp \
     Instruction.hpp \
     ImmediateOperand.hpp \
     AddressOperand.hpp \
+    Breakpoint.hpp \
     VMWorker.hpp \
     opcodes/Xor.hpp \
     opcodes/Test.hpp \
