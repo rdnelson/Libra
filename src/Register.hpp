@@ -13,6 +13,7 @@
 #pragma once
 
 #include <cstring>
+#include <cstdio>
 
 class Register {
 

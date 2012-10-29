@@ -1,6 +1,6 @@
 #include "MemWnd.hpp"
 #include "ui_MemWnd.h"
-#include "QFileDialog.h"
+#include "QFileDialog"
 #include "QScrollBar"
 #include "QFontMetrics"
 #include "QStringList"
