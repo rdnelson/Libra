@@ -65,6 +65,9 @@ class Instruction {
 
 		void SetOperand(const unsigned int operand, Operand* newOp);
 
+		void SetAddress(const unsigned int addr) { mAddress = addr; }
+		const unsigned int GetAddress() const { return mAddress; }
+
 		virtual ~Instruction();
 		
 		static bool Parity(unsigned int val);
@@ -104,6 +107,7 @@ class Instruction {
 		static std::vector<PCreateInst> AllInstructions;
 
 		Operand* mOperands[4];
+		unsigned int mAddress;
 
 		static unsigned int NumOpcodes;
 

@@ -13,6 +13,7 @@
 #include "Instruction.hpp"
 
 #include "opcodes/AllOpcodes.hpp"
+#include "Processor.hpp"
 
 #ifdef UNIT_TEST
 #define OPCODE(op)
@@ -32,6 +33,8 @@ std::vector<Instruction::PCreateInst> Instruction::AllInstructions;
 Instruction::Instruction() : mValid(false), mOpcode(-1), mInst(""), mText(""), modrm(0), mPrefix(0) {
 	mOperands[0] = 0;
 	mOperands[1] = 0;
+	mOperands[2] = 0;
+	mOperands[3] = 0;
 
 }
 
@@ -40,6 +43,8 @@ Instruction::Instruction(Prefix* pre, std::string text, std::string inst, int op
 {
 	mOperands[0] = 0;
 	mOperands[1] = 0;
+	mOperands[2] = 0;
+	mOperands[3] = 0;
 }
 
 Instruction::~Instruction() {
@@ -47,6 +52,8 @@ Instruction::~Instruction() {
 		delete mOperands[0];
 	if(mOperands[1])
 		delete mOperands[1];
+	delete mOperands[2];
+	delete mOperands[3];
 }
 
 //Try to build each mnemonic until one succeeds
@@ -56,6 +63,7 @@ Instruction* Instruction::ReadInstruction(unsigned char* memLoc, Processor* proc
 
 	for(unsigned int i = 0; i < NumOpcodes; i++) {
 		if((instr = AllInstructions[i](memLoc, proc)) != NULL) {
+            instr->SetAddress(proc->GetRegister(REG_IP));
 			break;
 		}
 	}
@@ -84,7 +92,7 @@ bool Instruction::OverflowSub(unsigned int dst, unsigned int src, unsigned int s
 bool Instruction::OverflowAdd(unsigned int dst, unsigned int src, unsigned int size) {
 
 	unsigned int msb = 1 << (8 * size - 1);
-	return (((src ^ dst) ^ msb) & ((src + dst) ^ src) & msb);
+	return (((src ^ dst) ^ msb) & ((src + dst) ^ src) & msb) != 0;
 }
 
 bool Instruction::AdjustAdd(unsigned int op1, unsigned int op2) {

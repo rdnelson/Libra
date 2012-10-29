@@ -114,7 +114,8 @@ HEADERS  += MemWnd.hpp \
     opcodes/Aad.hpp \
     opcodes/Aaa.hpp \
     peripherals/Screen.hpp \
-    peripherals/AllPeripherals.hpp
+    peripherals/AllPeripherals.hpp \
+    VirgoInstruction.hpp
 
 FORMS    += MemWnd.ui
 

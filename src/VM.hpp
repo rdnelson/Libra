@@ -22,36 +22,38 @@ class Instruction;
 class VM {
 
 	public:
-        VM();
+		VM();
 		
 		int Run();
-        int Step();
+		int Step();
 
-        int LoadObjectFile(const char* filename);
-        int LoadVirgoFile(const char* filename);
+		int LoadFlatFile(const char* filename);
+		int LoadVirgoFile(const char* filename);
 
-        inline bool isLoaded() { return mLoaded; }
-        void Disassemble();
-        std::string GetInstructionStr(unsigned int index);
-        const unsigned int GetNumInstructions() { return mInstructions.size(); }
-        const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
-        const Processor & GetProc() { return mProc; }
-        const unsigned char GetMemory(unsigned int addr) const;
+		inline bool isLoaded() { return mLoaded; }
+		void Disassemble();
+		std::string GetInstructionStr(unsigned int index);
+		const unsigned int GetNumInstructions() { return mInstructions.size(); }
+		const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
+		const Processor & GetProc() { return mProc; }
+		const unsigned char GetMemory(unsigned int addr) const;
 
 		const static int MEM_SIZE = 0x10000;
 
 		const static int VM_SUCCESS	= 0x00;
 		const static int VM_ERR_FOPEN	= 0x01;
 		const static int VM_ERR_FREAD	= 0x02;
+		const static int VM_ERR_BIG_FILE = 0x03;
+		const static int VM_ERR_CORRUPT = 0x04;
 
 	private:
 
-        bool mLoaded;
-        bool mRunning;
-        bool mVirgo;
+		bool mLoaded;
+		bool mRunning;
+		bool mVirgo;
 
 		Processor	mProc;
 		unsigned char	mMem[MEM_SIZE];
-        std::vector<Instruction*> mInstructions;
+		std::vector<Instruction*> mInstructions;
 		
 };

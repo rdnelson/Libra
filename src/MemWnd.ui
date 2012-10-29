@@ -9,12 +9,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>825</width>
-    <height>667</height>
+    <width>1004</width>
+    <height>801</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -23,675 +23,699 @@
    <string>MemWnd</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>696</width>
-      <height>560</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="hrzAll">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QLabel" name="label_12">
-         <property name="text">
-          <string>Instructions</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QListView" name="listView">
-         <property name="minimumSize">
-          <size>
-           <width>250</width>
-           <height>400</height>
-          </size>
-         </property>
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="autoScroll">
-          <bool>false</bool>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="showDropIndicator" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::NoSelection</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="sizeConstraint">
-        <enum>QLayout::SetMinimumSize</enum>
-       </property>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="sizeConstraint">
-          <enum>QLayout::SetMinimumSize</enum>
-         </property>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <property name="sizeConstraint">
-            <enum>QLayout::SetMinimumSize</enum>
-           </property>
-           <item>
-            <widget class="QLabel" name="label">
-             <property name="text">
-              <string>Screen</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPlainTextEdit" name="textBrowser">
-             <property name="font">
-              <font>
-               <family>Courier New</family>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
-             </property>
-             <property name="acceptDrops">
-              <bool>false</bool>
-             </property>
-             <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOff</enum>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOff</enum>
-             </property>
-             <property name="undoRedoEnabled">
-              <bool>false</bool>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::NoTextInteraction</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QGroupBox" name="grpRegisters">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>170</height>
-              </size>
-             </property>
-             <property name="title">
-              <string>Registers</string>
-             </property>
-             <widget class="QLabel" name="label_2">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>20</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
-              </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QHBoxLayout" name="hrzAll">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinimumSize</enum>
+      </property>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QLabel" name="lblInstr">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Instructions</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QListWidget" name="lstInstructions">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>400</width>
+            <height>400</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="autoScroll">
+           <bool>false</bool>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="showDropIndicator" stdset="0">
+           <bool>false</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMinimumSize</enum>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetMinimumSize</enum>
+            </property>
+            <item>
+             <widget class="QLabel" name="label">
               <property name="text">
-               <string>AX:</string>
+               <string>Screen</string>
               </property>
              </widget>
-             <widget class="QLineEdit" name="txtAX">
-              <property name="geometry">
-               <rect>
-                <x>30</x>
-                <y>20</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
-              </property>
+            </item>
+            <item>
+             <widget class="QPlainTextEdit" name="textBrowser">
               <property name="font">
                <font>
                 <family>Courier New</family>
+                <pointsize>11</pointsize>
                </font>
               </property>
               <property name="focusPolicy">
                <enum>Qt::NoFocus</enum>
               </property>
-              <property name="text">
-               <string>0000</string>
+              <property name="acceptDrops">
+               <bool>false</bool>
+              </property>
+              <property name="verticalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="horizontalScrollBarPolicy">
+               <enum>Qt::ScrollBarAlwaysOff</enum>
+              </property>
+              <property name="undoRedoEnabled">
+               <bool>false</bool>
               </property>
               <property name="readOnly">
                <bool>true</bool>
               </property>
-             </widget>
-             <widget class="QLabel" name="label_3">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>50</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>BX:</string>
+              <property name="textInteractionFlags">
+               <set>Qt::NoTextInteraction</set>
               </property>
              </widget>
-             <widget class="QLineEdit" name="txtBX">
-              <property name="geometry">
-               <rect>
-                <x>30</x>
-                <y>50</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QGroupBox" name="grpRegisters">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="font">
-               <font>
-                <family>Courier New</family>
-               </font>
+              <property name="minimumSize">
+               <size>
+                <width>160</width>
+                <height>170</height>
+               </size>
               </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
+              <property name="title">
+               <string>Registers</string>
               </property>
-              <property name="text">
-               <string>0000</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
+              <widget class="QLabel" name="label_2">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>20</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>AX:</string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtAX">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>20</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_3">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>50</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>BX:</string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtBX">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>50</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_4">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>80</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>CX:</string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtCX">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>80</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_5">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>110</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>DX:</string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtDX">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>110</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_6">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>140</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>SI:</string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtSI">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>140</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_7">
+               <property name="geometry">
+                <rect>
+                 <x>90</x>
+                 <y>20</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>SP:</string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtSP">
+               <property name="geometry">
+                <rect>
+                 <x>110</x>
+                 <y>20</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_8">
+               <property name="geometry">
+                <rect>
+                 <x>90</x>
+                 <y>50</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>BP:</string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtBP">
+               <property name="geometry">
+                <rect>
+                 <x>110</x>
+                 <y>50</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_9">
+               <property name="geometry">
+                <rect>
+                 <x>90</x>
+                 <y>80</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>IP:</string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtIP">
+               <property name="geometry">
+                <rect>
+                 <x>110</x>
+                 <y>80</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtFLAGS">
+               <property name="geometry">
+                <rect>
+                 <x>110</x>
+                 <y>110</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_10">
+               <property name="geometry">
+                <rect>
+                 <x>90</x>
+                 <y>110</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>FG:</string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="txtDI">
+               <property name="geometry">
+                <rect>
+                 <x>110</x>
+                 <y>140</y>
+                 <width>41</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                </font>
+               </property>
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
+               <property name="text">
+                <string>0000</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_11">
+               <property name="geometry">
+                <rect>
+                 <x>90</x>
+                 <y>140</y>
+                 <width>21</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>DI:</string>
+               </property>
+              </widget>
              </widget>
-             <widget class="QLabel" name="label_4">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>80</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
+            </item>
+            <item>
+             <widget class="QGroupBox" name="grpFlags">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
-              <property name="text">
-               <string>CX:</string>
+              <property name="minimumSize">
+               <size>
+                <width>160</width>
+                <height>120</height>
+               </size>
               </property>
+              <property name="title">
+               <string>Flags</string>
+              </property>
+              <widget class="QCheckBox" name="chkCarry">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>20</y>
+                 <width>71</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Carry</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="chkOverflow">
+               <property name="geometry">
+                <rect>
+                 <x>70</x>
+                 <y>20</y>
+                 <width>71</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Overflow</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="chkZero">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>40</y>
+                 <width>71</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Zero</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="chkSign">
+               <property name="geometry">
+                <rect>
+                 <x>70</x>
+                 <y>40</y>
+                 <width>71</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Sign</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="chkParity">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>60</y>
+                 <width>71</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Parity</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="chkAdjust">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>80</y>
+                 <width>71</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Adjust</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="chkTrap">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>100</y>
+                 <width>71</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Trap</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="chkInterrupt">
+               <property name="geometry">
+                <rect>
+                 <x>70</x>
+                 <y>80</y>
+                 <width>81</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Interrupt En.</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="chkDirection">
+               <property name="geometry">
+                <rect>
+                 <x>70</x>
+                 <y>60</y>
+                 <width>71</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Direction</string>
+               </property>
+              </widget>
              </widget>
-             <widget class="QLineEdit" name="txtCX">
-              <property name="geometry">
-               <rect>
-                <x>30</x>
-                <y>80</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Courier New</family>
-               </font>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
-              </property>
-              <property name="text">
-               <string>0000</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_5">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>110</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>DX:</string>
-              </property>
-             </widget>
-             <widget class="QLineEdit" name="txtDX">
-              <property name="geometry">
-               <rect>
-                <x>30</x>
-                <y>110</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Courier New</family>
-               </font>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
-              </property>
-              <property name="text">
-               <string>0000</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_6">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>140</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>SI:</string>
-              </property>
-             </widget>
-             <widget class="QLineEdit" name="txtSI">
-              <property name="geometry">
-               <rect>
-                <x>30</x>
-                <y>140</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Courier New</family>
-               </font>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
-              </property>
-              <property name="text">
-               <string>0000</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_7">
-              <property name="geometry">
-               <rect>
-                <x>90</x>
-                <y>20</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>SP:</string>
-              </property>
-             </widget>
-             <widget class="QLineEdit" name="txtSP">
-              <property name="geometry">
-               <rect>
-                <x>110</x>
-                <y>20</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Courier New</family>
-               </font>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
-              </property>
-              <property name="text">
-               <string>0000</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_8">
-              <property name="geometry">
-               <rect>
-                <x>90</x>
-                <y>50</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>BP:</string>
-              </property>
-             </widget>
-             <widget class="QLineEdit" name="txtBP">
-              <property name="geometry">
-               <rect>
-                <x>110</x>
-                <y>50</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Courier New</family>
-               </font>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
-              </property>
-              <property name="text">
-               <string>0000</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_9">
-              <property name="geometry">
-               <rect>
-                <x>90</x>
-                <y>80</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>IP:</string>
-              </property>
-             </widget>
-             <widget class="QLineEdit" name="txtIP">
-              <property name="geometry">
-               <rect>
-                <x>110</x>
-                <y>80</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Courier New</family>
-               </font>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
-              </property>
-              <property name="text">
-               <string>0000</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-             <widget class="QLineEdit" name="txtFLAGS">
-              <property name="geometry">
-               <rect>
-                <x>110</x>
-                <y>110</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Courier New</family>
-               </font>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
-              </property>
-              <property name="text">
-               <string>0000</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_10">
-              <property name="geometry">
-               <rect>
-                <x>90</x>
-                <y>110</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>FG:</string>
-              </property>
-             </widget>
-             <widget class="QLineEdit" name="txtDI">
-              <property name="geometry">
-               <rect>
-                <x>110</x>
-                <y>140</y>
-                <width>41</width>
-                <height>20</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <family>Courier New</family>
-               </font>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::NoFocus</enum>
-              </property>
-              <property name="text">
-               <string>0000</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label_11">
-              <property name="geometry">
-               <rect>
-                <x>90</x>
-                <y>140</y>
-                <width>21</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>DI:</string>
-              </property>
-             </widget>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="grpFlags">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>160</width>
-               <height>120</height>
-              </size>
-             </property>
-             <property name="title">
-              <string>Flags</string>
-             </property>
-             <widget class="QCheckBox" name="chkCarry">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>20</y>
-                <width>71</width>
-                <height>17</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Carry</string>
-              </property>
-             </widget>
-             <widget class="QCheckBox" name="chkOverflow">
-              <property name="geometry">
-               <rect>
-                <x>70</x>
-                <y>20</y>
-                <width>71</width>
-                <height>17</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Overflow</string>
-              </property>
-             </widget>
-             <widget class="QCheckBox" name="chkZero">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>40</y>
-                <width>71</width>
-                <height>17</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Zero</string>
-              </property>
-             </widget>
-             <widget class="QCheckBox" name="chkSign">
-              <property name="geometry">
-               <rect>
-                <x>70</x>
-                <y>40</y>
-                <width>71</width>
-                <height>17</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Sign</string>
-              </property>
-             </widget>
-             <widget class="QCheckBox" name="chkParity">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>60</y>
-                <width>71</width>
-                <height>17</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Parity</string>
-              </property>
-             </widget>
-             <widget class="QCheckBox" name="chkAdjust">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>80</y>
-                <width>71</width>
-                <height>17</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Adjust</string>
-              </property>
-             </widget>
-             <widget class="QCheckBox" name="chkTrap">
-              <property name="geometry">
-               <rect>
-                <x>10</x>
-                <y>100</y>
-                <width>71</width>
-                <height>17</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Trap</string>
-              </property>
-             </widget>
-             <widget class="QCheckBox" name="chkInterrupt">
-              <property name="geometry">
-               <rect>
-                <x>70</x>
-                <y>80</y>
-                <width>81</width>
-                <height>17</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Interrupt En.</string>
-              </property>
-             </widget>
-             <widget class="QCheckBox" name="chkDirection">
-              <property name="geometry">
-               <rect>
-                <x>70</x>
-                <y>60</y>
-                <width>71</width>
-                <height>17</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Direction</string>
-              </property>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QTableView" name="tableView">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>250</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Courier New</family>
-          </font>
-         </property>
-         <attribute name="horizontalHeaderHighlightSections">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="verticalHeaderCascadingSectionResizes">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="verticalHeaderHighlightSections">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-          <bool>false</bool>
-         </attribute>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableView" name="tableView">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>250</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Courier New</family>
+           </font>
+          </property>
+          <attribute name="horizontalHeaderHighlightSections">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderCascadingSectionResizes">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+           <bool>false</bool>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="enabled">
@@ -719,7 +743,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>825</width>
+     <width>1004</width>
      <height>21</height>
     </rect>
    </property>
