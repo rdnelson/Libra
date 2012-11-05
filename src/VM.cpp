@@ -25,7 +25,25 @@ VM::VM(int argc, char* argv[]) : mProc(mMem) {
 	memset(mMem, 0xFF, MEM_SIZE);
 	Instruction::InitializeOpcodes();
 
-	LoadVirgoFile(argv[1]);
+	//Check the launch options
+	if (argv[1][0] == '-')
+	{
+		switch (argv[1][1]) {
+		case 'v':
+		case 'V':
+			LoadVirgoFile(argv[2]);
+			break;
+
+		case 'b':
+		case 'B':
+			LoadFlatFile(argv[2]);
+			break;
+		}
+	}
+	//Default to loading a Virgo file if no options
+	else {
+		LoadVirgoFile(argv[1]);
+	}
 }
 
 
