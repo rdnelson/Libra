@@ -21,9 +21,9 @@
 
 Push::Push(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Push::CreateInstruction(unsigned char* memLoc, Processor* proc) {
+Instruction* Push::CreateInstruction(Memory& memLoc, Processor* proc) {
 
-	unsigned char* opLoc = memLoc;
+	Memory opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 	Prefix* pre = Prefix::GetPrefix(memLoc);

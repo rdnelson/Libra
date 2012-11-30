@@ -12,10 +12,13 @@
 
 #pragma once
 
+#include <Memory.hpp>
+
 class Prefix {
 
 	public:
-		static Prefix* GetPrefix(unsigned char* memLoc);
+		static Prefix* GetPrefix(Memory& memLoc);
+		static Prefix* GetPrefix(unsigned char* memLoc, size_t size);
 		unsigned char GetGroup1() { return mG1; }
 		unsigned char GetGroup2() { return mG2; }
 		unsigned char GetGroup3() { return mG3; }

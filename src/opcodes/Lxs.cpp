@@ -19,8 +19,8 @@
 
 Lxs::Lxs(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Lxs::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Lxs::CreateInstruction(Memory& memLoc, Processor* proc) {
+	Memory opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

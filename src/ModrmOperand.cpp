@@ -17,7 +17,7 @@
 #include <cstring>
 #include <sstream>
 
-ModrmOperand::ModrmOperand(Processor* proc, unsigned int addr, unsigned int size, unsigned int bytelen )
+ModrmOperand::ModrmOperand(Processor* proc, Memory& addr, unsigned int size, unsigned int bytelen )
 	: mAddr(addr), mSize(size), mProc(proc), mByteLen(bytelen) {}
 
 unsigned int ModrmOperand::GetValue(unsigned int size) {
@@ -115,14 +115,15 @@ Operand* ModrmOperand::GetSegRegister(Processor* proc, unsigned int sreg) {
 
 }
 
-Operand* ModrmOperand::GetModrmOperand(Processor* proc, unsigned char* inst, eModRm position, unsigned int size) {
+Operand* ModrmOperand::GetModrmOperand(Processor* proc, Memory& inst, eModRm position, unsigned int size) {
 
 	std::stringstream ss;
 	ModrmOperand* newMod = 0;
 	unsigned int addr = 0;
 	unsigned int disp = 0;
 
-	unsigned char* modrm = inst + 1;
+	//TODO:doesn't take memory wrap into account
+	unsigned char* modrm = (inst + 1).getHead();
 	unsigned int byteCodeLen = 0;
 
 	if(position == ModrmOperand::REG) {
@@ -141,7 +142,8 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, unsigned char* inst, eMo
 				disp = *(modrm + 1) + ((*(modrm + 2)) << 8);
 				ss << "[0x" << std::uppercase << std::hex
 					<< disp << std::nouppercase << std::dec << "]";
-				newMod = new ModrmOperand(proc, disp % 0x10000, size, 2);
+				Memory tmpMem(inst.getSize(), inst.getPtr(), disp);
+				newMod = new ModrmOperand(proc, tmpMem, size, 2);
 				newMod->mText = ss.str();
 				return newMod;
 			}
@@ -197,7 +199,8 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, unsigned char* inst, eMo
 			break;
 	}
 
-	newMod = new ModrmOperand(proc, (addr + disp) % 0x10000, size, byteCodeLen);
+	Memory tmpMem(inst.getSize(), inst.getPtr(), addr + disp);
+	newMod = new ModrmOperand(proc, tmpMem, size, byteCodeLen);
 	if(disp != 0) {
 		ss << " + 0x" << std::hex << std::uppercase << disp << std::nouppercase << std::dec;
 	}

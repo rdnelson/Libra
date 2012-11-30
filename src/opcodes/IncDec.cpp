@@ -21,9 +21,9 @@
 IncDec::IncDec(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op)
 {}
 
-Instruction* IncDec::CreateInstruction(unsigned char* memLoc, Processor* proc) {
+Instruction* IncDec::CreateInstruction(Memory& memLoc, Processor* proc) {
 
-	unsigned char* opLoc = memLoc;
+	Memory opLoc = memLoc;
 	int preLen = 0;
 	char buf[65];
 	std::string inst;

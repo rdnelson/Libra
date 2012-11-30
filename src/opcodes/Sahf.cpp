@@ -18,8 +18,8 @@
 
 Sahf::Sahf(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Sahf::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Sahf::CreateInstruction(Memory& memLoc, Processor* proc) {
+	Memory opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

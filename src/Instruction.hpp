@@ -16,10 +16,12 @@
 #include <vector>
 #include <sstream>
 
+#include "Memory.hpp"
 #include "Prefix.hpp"
 #include "Operand.hpp"
 
-#define GETINST(len) inst.insert(0, (char*)memLoc, len)
+//TODO: doesn't deal with memory wrap
+#define GETINST(len) inst.insert(0, (char*)memLoc.getHead(), len)
 
 #ifdef WIN32
 #define snprintf sprintf_s
@@ -31,7 +33,7 @@ class Instruction {
 
 	public:
 		//Create an instruction from a memory location
-		static Instruction* ReadInstruction(unsigned char* memLoc, Processor* proc);
+		static Instruction* ReadInstruction(Memory& memLoc, Processor* proc);
 
 		//Register the mnemonics with the ReadInstruction function
 		static void InitializeOpcodes();
@@ -61,7 +63,7 @@ class Instruction {
 		inline unsigned char GetMod() { return (modrm & 0xC0) >> 6; }
 
 		//Typedef for AllInstructions
-		typedef Instruction* (*PCreateInst)(unsigned char*, Processor*);
+		typedef Instruction* (*PCreateInst)(Memory&, Processor*);
 
 		void SetOperand(const unsigned int operand, Operand* newOp);
 

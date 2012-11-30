@@ -29,9 +29,9 @@ Cmp::Cmp(Prefix* pre, std::string text, std::string inst, int op)
        	mValid = true;
 }
 
-Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
+Instruction* Cmp::CreateInstruction(Memory& memLoc, Processor* proc) {
 
-	unsigned char* opLoc = memLoc;
+	Memory opLoc = memLoc;
 	int prefixLen = 0;
 	char buf[65];
 	int tInt1 = 0;
@@ -58,7 +58,7 @@ Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			
 			sprintf(buf, "CMP AL, 0x%02X", (int)*(opLoc + 1));
 
-			inst.insert(0, (char*)memLoc, prefixLen + 2);	
+			GETINST(prefixLen + 2);	
 
 			newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
 			newCmp->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
@@ -73,7 +73,7 @@ Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			printf(buf);
 
-			inst.insert(0, (char*)memLoc, prefixLen + 3);
+			GETINST(prefixLen + 3);
 
 			newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
 			newCmp->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
@@ -105,7 +105,7 @@ Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				else
 					sprintf(buf, "CMP %s, 0x%04X", "", tInt1);
 
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_CMP_MOD16_IMM8 ? 1 : 0));
+				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_CMP_MOD16_IMM8 ? 1 : 0));
 				newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
 				newCmp->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
 				newCmp->SetOperand(Operand::DST, dst);
@@ -122,7 +122,7 @@ Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
 				sprintf(buf, "CMP %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
+				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
 				newCmp->SetOperand(Operand::SRC, src);
 				newCmp->SetOperand(Operand::DST, dst);
@@ -141,7 +141,7 @@ Instruction* Cmp::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::MOD, size);
 				sprintf(buf, "CMP %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
+				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
 				newCmp->SetOperand(Operand::SRC, src);
 				newCmp->SetOperand(Operand::DST, dst);

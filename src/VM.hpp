@@ -14,6 +14,7 @@
 
 #include <vector>
 
+#include "Memory.hpp"
 #include "Processor.hpp"
 #include "IPeripheral.hpp"
 #include "Breakpoint.hpp"
@@ -60,7 +61,7 @@ class VM {
 		bool mVirgo;
 
 		Processor	mProc;
-		unsigned char	mMem[MEM_SIZE];
+		Memory	mMem;
 		std::vector<Instruction*> mInstructions;
 		std::vector<Breakpoint*> mBreakpoints;
 		

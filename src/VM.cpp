@@ -21,10 +21,8 @@
 
 #define EVER ;;
 
-VM::VM() : mProc(mMem), mVirgo(false) {
+VM::VM() : mProc(mMem), mVirgo(false), mMem(MEM_SIZE) {
 
-	//initialize main memory
-	memset(mMem, 0xFF, MEM_SIZE);
 	Instruction::InitializeOpcodes();
 }
 
@@ -56,7 +54,7 @@ int VM::LoadFlatFile(const char* filename) {
 		if(((i + 1) * 1024) >= MEM_SIZE)
 			return VM_ERR_BIG_FILE;
 
-		fin.read((char*)(mMem + (i++) * 1024), 1024);
+		fin.read((char*)(mMem.getPtr() + (i++) * 1024), 1024);
 		if(fin.bad()) { //an error occurred
 			fin.close();
 			return VM_ERR_FREAD;
@@ -163,7 +161,7 @@ int VM::LoadVirgoFile(const char* filename) {
 
 		delete hex;
 
-		Prefix* pre = Prefix::GetPrefix((unsigned char*)text);
+		Prefix* pre = Prefix::GetPrefix((unsigned char*)text, 20);
 		char* opLoc = text;
 		if(pre) {
 			opLoc += pre->GetLength();
@@ -184,7 +182,7 @@ int VM::LoadVirgoFile(const char* filename) {
 
 		mInstructions.push_back(inst);
 
-		memcpy(mMem + (addr % MEM_SIZE), text, hexSize);
+		memcpy(mMem.getPtr() + (addr % MEM_SIZE), text, hexSize);
 
 		if(++i >= numLines)
 			break;
@@ -201,9 +199,11 @@ void VM::Disassemble() {
 		if(!mVirgo) {
 			unsigned int tmpIP = 0;
 			Instruction* tmpInst = 0;
-			while((tmpInst = Instruction::ReadInstruction(mMem + tmpIP, &mProc )) != 0) {
+			Memory curMem = mMem + tmpIP;
+			while(tmpInst = Instruction::ReadInstruction(curMem, &mProc )) {
 				mInstructions.push_back(tmpInst);
 				tmpIP += tmpInst->GetLength() % MEM_SIZE;
+				curMem = mMem + tmpIP;
 			}
 		}
 	}

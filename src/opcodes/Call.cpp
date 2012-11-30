@@ -27,8 +27,8 @@ Call::Call(Prefix* pre, std::string text, std::string inst, int op) : mType(0) {
 	mValid = true;
 }
 
-Instruction* Call::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Call::CreateInstruction(Memory& memLoc, Processor* proc) {
+	Memory opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

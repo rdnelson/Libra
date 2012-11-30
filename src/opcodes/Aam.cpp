@@ -18,8 +18,8 @@
 
 Aam::Aam(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Aam::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Aam::CreateInstruction(Memory& memLoc, Processor* proc) {
+	Memory opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

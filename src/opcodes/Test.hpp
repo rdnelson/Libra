@@ -17,7 +17,7 @@
 class Test : public Instruction {
 
 	public:
-		static Instruction* CreateInstruction(unsigned char* memLoc, Processor* proc);
+		static Instruction* CreateInstruction(Memory& memLoc, Processor* proc);
 		int Execute(Processor* proc);
 
 		enum eValidOpcodes {

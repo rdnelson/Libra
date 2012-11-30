@@ -21,8 +21,6 @@
 #include <cstdio>
 #include <string>
 
-#define GETINST(len) inst.insert(0, (char*)memLoc, len)
-
 Mov::Mov(Prefix* pre, std::string text, std::string inst, int op)
 {
         mPrefix = pre;
@@ -32,8 +30,8 @@ Mov::Mov(Prefix* pre, std::string text, std::string inst, int op)
         mValid = true;
 }
 
-Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Mov::CreateInstruction(Memory& memLoc, Processor* proc) {
+	Memory opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 
@@ -115,7 +113,8 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			unsigned int val = (int)*(opLoc + 1);
 			val += ((int)*(opLoc + 2)) << 8;
 
-			Operand* src = AddressOperand::GetAddressOperand(proc, val, size);
+			Memory tmpMem(opLoc.getSize(), opLoc.getPtr(), val);
+			Operand* src = AddressOperand::GetAddressOperand(proc, tmpMem, size);
 
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 3);
@@ -135,7 +134,8 @@ Instruction* Mov::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			unsigned int val = (int)*(opLoc + 1);
 			val += ((int)*(opLoc + 2)) << 8;
 
-			Operand* dst = AddressOperand::GetAddressOperand(proc, val, size);
+			Memory tmpMem(opLoc.getSize(), opLoc.getPtr(), val);
+			Operand* dst = AddressOperand::GetAddressOperand(proc, tmpMem, size);
 
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 3);

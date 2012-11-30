@@ -12,6 +12,7 @@
 
 #pragma once
 
+#include "Memory.hpp"
 #include "Operand.hpp"
 
 class Processor;
@@ -29,23 +30,23 @@ class ModrmOperand : public Operand {
 		unsigned int GetValue() { return GetValue(0); }
 		unsigned int GetValue(unsigned int size);
 
-		static Operand* GetModrmOperand(Processor* proc, unsigned char* inst, eModRm modrm, unsigned int size);
+		static Operand* GetModrmOperand(Processor* proc, Memory& inst, eModRm modrm, unsigned int size);
 
 		unsigned int GetBitmask();
 		unsigned int GetBytecodeLen();
 
 		const std::string GetDisasm();
 
-		unsigned int GetAddress() { return mAddr; }
+		Memory& GetAddress() { return mAddr; }
 
 
 	protected:
 		//Pass it the location of the opcode
-		ModrmOperand(Processor* proc, unsigned int addr, unsigned int size, unsigned int bytelen);
+		ModrmOperand(Processor* proc, Memory& addr, unsigned int size, unsigned int bytelen);
 
 		static Operand* GetRegister(Processor* proc, unsigned int val, unsigned int size);
 		static Operand* GetSegRegister(Processor* proc, unsigned int val);
-		unsigned int mAddr;
+		Memory mAddr;
 		unsigned int mSize;
 		Processor* mProc;
 		unsigned int mByteLen;

@@ -19,8 +19,8 @@
 
 Lea::Lea(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Lea::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Lea::CreateInstruction(Memory& memLoc, Processor* proc) {
+	Memory opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 
@@ -57,7 +57,7 @@ int Lea::Execute(Processor* proc) {
 		return INVALID_ARGS;
 	}
 
-	dst->SetValue(src->GetAddress());
+	dst->SetValue(src->GetAddress().getOffset());
 
 	return 0;
 }
