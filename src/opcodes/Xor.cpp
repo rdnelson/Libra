@@ -22,8 +22,8 @@
 
 Xor::Xor(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Xor::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Xor::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Memory::MemoryOffset opLoc = memLoc;
 	unsigned int preSize = 0;
 	char buf[65];
 	std::string inst;

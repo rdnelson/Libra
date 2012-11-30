@@ -14,6 +14,7 @@
 
 #include <vector>
 
+#include "Memory.hpp"
 #include "Processor.hpp"
 #include "IPeripheral.hpp"
 #include "Breakpoint.hpp"
@@ -24,7 +25,7 @@ class VM {
 
 	public:
 		VM();
-		
+
 		int Run();
 		int Step();
 
@@ -34,16 +35,16 @@ class VM {
 		inline bool isLoaded() { return mLoaded; }
 		void Disassemble();
 		std::string GetInstructionStr(unsigned int index) const;
-		const unsigned int GetInstructionAddr(unsigned int index) const;
-		const unsigned int GetNumInstructions() { return mInstructions.size(); }
+		unsigned int GetInstructionAddr(unsigned int index) const;
+		unsigned int GetNumInstructions() { return mInstructions.size(); }
 		const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
 		const Processor & GetProc() { return mProc; }
-		const unsigned char GetMemory(unsigned int addr) const;
-		const unsigned char* GetMemPtr() const { return mMem; }
+		unsigned char GetMemory(unsigned int addr);
+		const unsigned char* GetMemPtr() const { return mMem.getPtr(); }
 
 		inline void AddBreakpoint(Breakpoint* bp) { mBreakpoints.push_back(bp); }
 
-		const static int MEM_SIZE = 0x10000;
+		const static unsigned int MEM_SIZE = 0x10000;
 
 		const static int VM_SUCCESS	= 0x00;
 		const static int VM_ERR_FOPEN	= 0x01;
@@ -59,9 +60,10 @@ class VM {
 		bool mRunning;
 		bool mVirgo;
 
+		Memory	mMem;
 		Processor	mProc;
-		unsigned char	mMem[MEM_SIZE];
+
 		std::vector<Instruction*> mInstructions;
 		std::vector<Breakpoint*> mBreakpoints;
-		
+
 };

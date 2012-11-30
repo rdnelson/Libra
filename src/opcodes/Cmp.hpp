@@ -19,7 +19,7 @@ class Processor;
 class Cmp: public Instruction {
 
 	public:
-		static Instruction* CreateInstruction(unsigned char* memLoc, Processor* proc);
+		static Instruction* CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
 		static unsigned int compare(Processor* proc, Operand* dst, Operand* src);
 		int Execute(Processor* proc);
 

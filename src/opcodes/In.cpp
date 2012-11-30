@@ -19,8 +19,8 @@
 
 In::In(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* In::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* In::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

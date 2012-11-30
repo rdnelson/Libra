@@ -15,7 +15,12 @@
 
 //Try to create a prefix from the current memory location
 //If not valid prefix, return 0
-Prefix* Prefix::GetPrefix(unsigned char* memLoc) {
+Prefix* Prefix::GetPrefix(unsigned char* memLoc, size_t size) {
+	Memory tmpMem(size, memLoc);
+	Memory::MemoryOffset tmpOff = tmpMem.getOffset(0);
+	return Prefix::GetPrefix(tmpOff);
+}
+Prefix* Prefix::GetPrefix(Memory::MemoryOffset& memLoc) {
 
 	char g1 = 0, g2 = 0, g3 = 0, g4 = 0;
 	int offset = 0;

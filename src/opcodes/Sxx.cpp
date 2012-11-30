@@ -21,8 +21,8 @@
 
 Sxx::Sxx(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Sxx::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Memory::MemoryOffset opLoc = memLoc;
 	int preLen = 0;	
 	char buf[65];
 	unsigned char subCode;

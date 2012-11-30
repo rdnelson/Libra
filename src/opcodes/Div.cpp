@@ -19,8 +19,8 @@
 
 Div::Div(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Div::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Div::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Memory::MemoryOffset opLoc = memLoc;
 	int preLen = 0;
 	char buf[65];
 	std::string inst;

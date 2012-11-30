@@ -17,7 +17,7 @@
 #include <cstring>
 #include <cstdio>
 
-Processor::Processor(unsigned char* mem): mMem(mem), mLastPort(0xFFFFFFFF), mLastDevice(0) {
+Processor::Processor(Memory& mem): mMem(mem), mLastPort(0xFFFFFFFF), mLastDevice(0) {
 
 }
 
@@ -48,7 +48,7 @@ int Processor::Initialize(unsigned int startAddr) {
 
 void Processor::_InitializeDevices() {
 
-		for(int i = 0; i < mDevices.size(); i++) {
+		for(size_t i = 0; i < mDevices.size(); i++) {
 		delete mDevices[i];
 	}
 	mDevices.clear();
@@ -61,7 +61,8 @@ int Processor::Step() {
     int retVal = PROC_SUCCESS;
 
 	//Fetch
-	Instruction* inst = Instruction::ReadInstruction(mMem + GetRegister(REG_IP), this);
+	Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
+	Instruction* inst = Instruction::ReadInstruction(curMem, this);
 
 	//Ensure it exists and is valid 
 	if(inst && inst->IsValid()) {
@@ -171,29 +172,42 @@ void Processor::SetRegisterHigh(eRegisters reg, unsigned int val) {
 	mRegisters[reg].SetValue((mRegisters[reg].GetValue() & 0xFF) | ((val & 0xFF) << 8));
 }
 
-unsigned int Processor::GetMemory(unsigned int addr, unsigned int size) {
+unsigned int Processor::GetMemory(Memory::MemoryOffset& addr, unsigned int size) {
 	unsigned int temp = 0;
-	memcpy(&temp, mMem + (addr % 0x10000), size);
+	addr.read(&temp, size);
 	return temp;
 }
 
-void Processor::SetMemory(unsigned int addr, unsigned int size, unsigned int val) {
+unsigned int Processor::GetMemory(size_t addr, unsigned int size) {
+	Memory::MemoryOffset tmpMem = mMem.getOffset(addr);
+	return GetMemory(tmpMem, size);
+}
 
-	memcpy(mMem + (addr % 0x10000), &val, size);
+
+void Processor::SetMemory(Memory::MemoryOffset& addr, unsigned int size, unsigned int val) {
+	addr.write(&val, size);
+}
+
+void Processor::SetMemory(size_t addr, unsigned int size, unsigned int val) {
+	Memory::MemoryOffset tmpMem = mMem.getOffset(addr);
+	SetMemory(tmpMem, size, val);
 }
 
 void Processor::PushRegister(eRegisters reg) {
 	SetRegister(REG_SP, (GetRegister(REG_SP) - 2) & 0xFFFF);
-	SetMemory(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4), 2, GetRegister(reg));
+	Memory::MemoryOffset tmpMem = mMem.getOffset(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4));
+	SetMemory(tmpMem, 2, GetRegister(reg));
 }
 
 void Processor::PushValue(unsigned int val) {
 	SetRegister(REG_SP, (GetRegister(REG_SP) - 2) & 0xFFFF);
-	SetMemory(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4), 2, val & 0xFFFF);
+	Memory::MemoryOffset tmpMem = mMem.getOffset(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4));
+	SetMemory(tmpMem, 2, val & 0xFFFF);
 }
 
 void Processor::PopRegister(eRegisters reg) {
-	SetRegister(reg, GetMemory(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4), 2));
+	Memory::MemoryOffset tmpMem = mMem.getOffset(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4));
+	SetRegister(reg, GetMemory(tmpMem, 2));
 	SetRegister(REG_SP, (GetRegister(REG_SP) + 2) & 0xFFFF);
 }
 
@@ -202,7 +216,8 @@ void Processor::PopSize(unsigned int size) {
 }
 
 unsigned int Processor::PopValue() {
-	unsigned int val = GetMemory(GetRegister(REG_SP), 2) & 0xFFFF;
+	Memory::MemoryOffset tmpMem = mMem.getOffset(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4));
+	unsigned int val = GetMemory(tmpMem, 2) & 0xFFFF;
 	SetRegister(REG_SP, (GetRegister(REG_SP) + 2) & 0xFFFF);
 	return val;
 }
@@ -311,7 +326,7 @@ void Processor::MemDump() {
 	int lastSame = 0;
 	for(unsigned int i = 0; i < (0x10000 / 0x10); i++) {
 		bool same = true;
-		if(i != (0x10000 / 0x10) - 1) {
+		if(i != (mMem.getSize() / 0x10) - 1) {
 			for(int j = 0; j < 0x10; j++) {
 				if (mMem[i * 0x10 + j] != mMem[(i + 1) * 0x10 + j]) {
 					same = false;
@@ -320,7 +335,7 @@ void Processor::MemDump() {
 			}
 		}
 		//skip if same, not first, not last
-		if(same && (i != 0) && (i != (0x10000 / 0x10) - 1)) {
+		if(same && (i != 0) && (i != (mMem.getSize() / 0x10) - 1)) {
 			if(lastSame == 0) {
 				printf("0x%04X: ", i * 0x10);
 				for(int j = 0; j < 0x10; j++) {

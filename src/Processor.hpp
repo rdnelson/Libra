@@ -15,6 +15,7 @@
 #include <vector>
 
 #include "Instruction.hpp"
+#include "Memory.hpp"
 #include "Register.hpp"
 #include "IPeripheral.hpp"
 
@@ -64,28 +65,31 @@ class Processor {
 
 	public:
 		int Initialize(unsigned int startAddr = 0x0000);
-		Processor(unsigned char* mem);
+		Processor(Memory& mem);
 		int Step();
 
-        static const int PROC_SUCCESS		=  0;
-        static const int PROC_ERR_INV_ADDR 	= -1;
-        static const int PROC_ERR_INV_INST 	= -2;
-        static const int PROC_ERR_INST		= -3;
+		static const int PROC_SUCCESS		=  0;
+		static const int PROC_ERR_INV_ADDR 	= -1;
+		static const int PROC_ERR_INV_INST 	= -2;
+		static const int PROC_ERR_INST		= -3;
 
-        bool GetFlag(eFlags flag) const;
+		bool GetFlag(eFlags flag) const;
 		void SetFlag(eFlags flag, bool val);
 
-        virtual unsigned int GetRegister(eRegisters reg) const;
+		virtual unsigned int GetRegister(eRegisters reg) const;
 		virtual void SetRegister(eRegisters reg, unsigned int val);
 
-        unsigned int GetRegisterLow(eRegisters reg) const;
+		unsigned int GetRegisterLow(eRegisters reg) const;
 		void SetRegisterLow(eRegisters reg, unsigned int val);
 
-        unsigned int GetRegisterHigh(eRegisters reg) const;
+		unsigned int GetRegisterHigh(eRegisters reg) const;
 		void SetRegisterHigh(eRegisters reg, unsigned int val);
 
-		virtual unsigned int GetMemory(unsigned int addr, unsigned int size);
-		virtual void SetMemory(unsigned int addr, unsigned int size, unsigned int val);
+		virtual unsigned int GetMemory(Memory::MemoryOffset& addr, unsigned int size);
+		virtual unsigned int GetMemory(size_t offset, unsigned int size);
+
+		virtual void SetMemory(Memory::MemoryOffset& addr, unsigned int size, unsigned int val);
+		virtual void SetMemory(size_t offset, unsigned int size, unsigned int val);
 
 		void PushRegister(eRegisters reg);
 		void PushValue(unsigned int val);
@@ -100,8 +104,8 @@ class Processor {
 		unsigned char Inb(unsigned int port);
 		unsigned short Inw(unsigned int port);
 
-        const std::vector<IPeripheral*> & GetDevices() { return mDevices; }
-        const char* GetRegisterHex(eRegisters reg) const;
+		const std::vector<IPeripheral*> & GetDevices() { return mDevices; }
+		const char* GetRegisterHex(eRegisters reg) const;
 
 		void ProcDump();
 		void MemDump();
@@ -116,7 +120,7 @@ class Processor {
 		void _InitializeDevices();
 		
 		Register	mRegisters[NumRegisters];
-		unsigned char*	mMem;
+		Memory&	mMem;
 
 		std::vector<IPeripheral*> mDevices;
 

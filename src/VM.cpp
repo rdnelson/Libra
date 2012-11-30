@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <cstring>
 #include <cstdio>
 #include <cctype>
@@ -21,13 +22,17 @@
 
 #define EVER ;;
 
-VM::VM() : mProc(mMem), mVirgo(false) {
-
-	//initialize main memory
-	memset(mMem, 0xFF, MEM_SIZE);
-	Instruction::InitializeOpcodes();
+void mem_log(size_t offset, size_t size) {
+	std::ofstream fout("mem.log", std::ios::app);
+	fout << size << " byte(s) of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " accessed" << std::endl;
+	fout.close();
 }
 
+VM::VM() : mLoaded(false), mRunning(false), mVirgo(false), mMem(MEM_SIZE), mProc(mMem) {
+
+	Instruction::InitializeOpcodes();
+	mMem.RegisterReadCallback(mem_log);
+}
 
 // This function will load a pure object file. No PE style header, just straight machine code
 // The object file will be copied into memory at address 0x0000
@@ -39,7 +44,7 @@ int VM::LoadFlatFile(const char* filename) {
 	mLoaded = false;
 	mProc.Initialize();
 	mInstructions.clear();
-	memset(mMem, 0, MEM_SIZE);
+	memset(mMem.getPtr(), 0, MEM_SIZE);
 
 	//reset everything
 	mLoaded = false;
@@ -56,7 +61,7 @@ int VM::LoadFlatFile(const char* filename) {
 		if(((i + 1) * 1024) >= MEM_SIZE)
 			return VM_ERR_BIG_FILE;
 
-		fin.read((char*)(mMem + (i++) * 1024), 1024);
+		fin.read((char*)(mMem.getPtr() + (i++) * 1024), 1024);
 		if(fin.bad()) { //an error occurred
 			fin.close();
 			return VM_ERR_FREAD;
@@ -75,10 +80,6 @@ int VM::LoadVirgoFile(const char* filename) {
 	mLoaded = false;
 	mProc.Initialize();
 	mInstructions.clear();
-	memset(mMem, 0, MEM_SIZE);
-
-	mInstructions.clear();
-	memset(mMem, 0xFF, MEM_SIZE);
 
 	std::ifstream fin;
 	fin.open(filename, std::ios_base::in);
@@ -94,12 +95,12 @@ int VM::LoadVirgoFile(const char* filename) {
 	fin >> bytesTotal;
 
 	int i = 0;
-	int hexSize;
+	unsigned int hexSize;
 	char* hex;
 	char label[128];
 	char disasm[256];
-	int addr;
-	int delay;
+	unsigned int addr;
+	unsigned int delay;
 	char line[512];
 	char text[20];
 	memset(line, 0, 512);
@@ -153,7 +154,7 @@ int VM::LoadVirgoFile(const char* filename) {
 		}
 
 		memset(text, 0, 20);
-		for(int j = 0; j < strlen(hex); j++) {
+		for(size_t j = 0; j < strlen(hex); j++) {
 			if(hex[j] >= '0' && hex[j] <= '9') {
 				text[j/2] |= (hex[j] - '0') << (j % 2 == 0 ? 4 : 0);
 			}else if(toupper(hex[j])  >= 'A' && toupper(hex[j]) <= 'F') {
@@ -163,7 +164,7 @@ int VM::LoadVirgoFile(const char* filename) {
 
 		delete hex;
 
-		Prefix* pre = Prefix::GetPrefix((unsigned char*)text);
+		Prefix* pre = Prefix::GetPrefix((unsigned char*)text, 20);
 		char* opLoc = text;
 		if(pre) {
 			opLoc += pre->GetLength();
@@ -184,7 +185,7 @@ int VM::LoadVirgoFile(const char* filename) {
 
 		mInstructions.push_back(inst);
 
-		memcpy(mMem + (addr % MEM_SIZE), text, hexSize);
+		memcpy(mMem.getPtr() + (addr % MEM_SIZE), text, hexSize);
 
 		if(++i >= numLines)
 			break;
@@ -201,9 +202,11 @@ void VM::Disassemble() {
 		if(!mVirgo) {
 			unsigned int tmpIP = 0;
 			Instruction* tmpInst = 0;
-			while((tmpInst = Instruction::ReadInstruction(mMem + tmpIP, &mProc )) != 0) {
+			Memory::MemoryOffset curMem = mMem.getOffset(tmpIP);
+			while((tmpInst = Instruction::ReadInstruction(curMem, &mProc )) != 0) {
 				mInstructions.push_back(tmpInst);
 				tmpIP += tmpInst->GetLength() % MEM_SIZE;
+				curMem = curMem.getNewOffset(tmpIP);
 			}
 		}
 	}
@@ -216,7 +219,7 @@ std::string VM::GetInstructionStr(unsigned int index) const {
 	return "";
 }
 
-const unsigned int VM::GetInstructionAddr(unsigned int index) const {
+unsigned int VM::GetInstructionAddr(unsigned int index) const {
     if(mLoaded && index < mInstructions.size()) {
         return mInstructions[index]->GetAddress();
     }
@@ -232,12 +235,13 @@ int VM::Run() {
 			break;
 
 		//This is where to change the base execution address.
-		if(err = mProc.Step() < 0) {
+		if((err = mProc.Step()) < 0) {
 			//Hit an error, quit
 			break;
 		}
 
 	}
+	mMem.DumpReadMemAccess();
 	return err;
 }
 
@@ -246,7 +250,8 @@ int VM::Step() {
 	if((err = mProc.Step()) < 0) {
 		std::cout << "Encountered an error (#" << err << "), quitting" << std::endl;
 	} else {
-		for(int i = 0; i < mBreakpoints.size(); i++) {
+		mMem.DumpReadMemAccess();
+		for(size_t i = 0; i < mBreakpoints.size(); i++) {
 			if(mBreakpoints[i]->Evaluate(&mProc))
 				return VM_BREAKPOINT;
 		}
@@ -254,7 +259,7 @@ int VM::Step() {
 	return err;
 }
 
-const unsigned char VM::GetMemory(unsigned int addr) const {
+unsigned char VM::GetMemory(unsigned int addr) {
 	if(addr < MEM_SIZE) {
 		return mMem[addr];
 	}

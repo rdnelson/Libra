@@ -29,9 +29,9 @@ Or::Or(Prefix* pre, std::string text, std::string inst, int op)
        	mValid = true;
 }
 
-Instruction* Or::CreateInstruction(unsigned char* memLoc, Processor* proc) {
+Instruction* Or::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 
-	unsigned char* opLoc = memLoc;
+	Memory::MemoryOffset opLoc = memLoc;
 	int prefixLen = 0;
 	char buf[65];
 	int tInt1 = 0;
@@ -58,7 +58,7 @@ Instruction* Or::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 			
 			sprintf(buf, "OR AL, 0x%02X", (int)*(opLoc + 1));
 
-			inst.insert(0, (char*)memLoc, prefixLen + 2);	
+			GETINST(prefixLen + 2);	
 
 			newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
 			newOr->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
@@ -71,9 +71,7 @@ Instruction* Or::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			sprintf(buf, "OR AX, 0x%04X", tInt1);
 
-			printf(buf);
-
-			inst.insert(0, (char*)memLoc, prefixLen + 3);
+			GETINST(prefixLen + 3);
 
 			newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
 			newOr->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
@@ -105,7 +103,7 @@ Instruction* Or::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				else
 					sprintf(buf, "OR %s, 0x%04X", "", tInt1);
 
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_OR_MOD16_IMM8 ? 1 : 0));
+				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_OR_MOD16_IMM8 ? 1 : 0));
 				newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
 				newOr->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
 				newOr->SetOperand(Operand::DST, dst);
@@ -122,7 +120,7 @@ Instruction* Or::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
 				sprintf(buf, "OR %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
+				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
 				newOr->SetOperand(Operand::SRC, src);
 				newOr->SetOperand(Operand::DST, dst);
@@ -140,7 +138,7 @@ Instruction* Or::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::MOD, size);
 				sprintf(buf, "OR %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
+				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
 				newOr->SetOperand(Operand::SRC, src);
 				newOr->SetOperand(Operand::DST, dst);

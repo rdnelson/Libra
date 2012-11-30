@@ -21,9 +21,9 @@
 
 Pop::Pop(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Pop::CreateInstruction(unsigned char* memLoc, Processor* proc) {
+Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 
-	unsigned char* opLoc = memLoc;
+	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 	Prefix* pre = Prefix::GetPrefix(memLoc);

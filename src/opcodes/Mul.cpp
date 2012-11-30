@@ -21,9 +21,9 @@
 Mul::Mul(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op)
 {}
 
-Instruction* Mul::CreateInstruction(unsigned char* memLoc, Processor* proc) {
+Instruction* Mul::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 
-	unsigned char* opLoc = memLoc;
+	Memory::MemoryOffset opLoc = memLoc;
 	int preLen = 0;
 	char buf[65];
 	std::string inst;

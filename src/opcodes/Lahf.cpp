@@ -18,8 +18,9 @@
 
 Lahf::Lahf(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Lahf::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Lahf::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	proc += 0;
+	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

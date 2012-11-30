@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+CONFIG   += debug
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,6 +25,7 @@ SOURCES +=\
     AddressOperand.cpp \
     VMWorker.cpp \
     Breakpoint.cpp \
+    Memory.cpp \
     opcodes/Xor.cpp \
     opcodes/Test.cpp \
     opcodes/Sxx.cpp \
@@ -79,6 +81,7 @@ HEADERS  += MemWnd.hpp \
     AddressOperand.hpp \
     Breakpoint.hpp \
     VMWorker.hpp \
+    Memory.hpp \
     opcodes/Xor.hpp \
     opcodes/Test.hpp \
     opcodes/Sxx.hpp \

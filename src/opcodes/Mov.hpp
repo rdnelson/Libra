@@ -21,7 +21,7 @@ class Mov : public Instruction {
 
 	public:
 		Mov(Prefix* proc, std::string, std::string, int);
-		static Instruction* CreateInstruction(unsigned char* memLoc, Processor* proc);
+		static Instruction* CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
 		int Execute(Processor* proc);
 
 		enum eValidOpcodes {

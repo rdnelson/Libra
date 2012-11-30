@@ -29,9 +29,9 @@ Adc::Adc(Prefix* pre, std::string text, std::string inst, int op)
        	mValid = true;
 }
 
-Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
+Instruction* Adc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 
-	unsigned char* opLoc = memLoc;
+	Memory::MemoryOffset opLoc = memLoc;
 	int prefixLen = 0;
 	char buf[65];
 	int tInt1 = 0;
@@ -57,7 +57,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 		case ADC_AL_BYTE:
 			snprintf(buf, 65, "ADC AL, 0x%02X", (int)*(opLoc + 1));
 
-			inst.insert(0, (char*)memLoc, prefixLen + 2);	
+			GETINST(prefixLen + 2);	
 
 			newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 			newAdc->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
@@ -70,7 +70,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 
 			snprintf(buf, 65, "ADC AX, 0x%04X", tInt1);
 
-			inst.insert(0, (char*)memLoc, prefixLen + 3);
+			GETINST(prefixLen + 3);
 
 			newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 			newAdc->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
@@ -104,7 +104,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				else
 					snprintf(buf, 65, "ADC %s, 0x%04X", dst->GetDisasm().c_str(), tInt1);
 
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADC_MOD_SIMM8 ? 1 : 0));
+				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADC_MOD_SIMM8 ? 1 : 0));
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdc->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
 				newAdc->SetOperand(Operand::DST, dst);
@@ -121,7 +121,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::REG, size);
 				snprintf(buf, 65, "ADC %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
+				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdc->SetOperand(Operand::SRC, src);
 				newAdc->SetOperand(Operand::DST, dst);
@@ -140,7 +140,7 @@ Instruction* Adc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
 				Operand* src = ModrmOperand::GetModrmOperand(
 						proc, opLoc, ModrmOperand::MOD, size);
 				snprintf(buf, 65, "ADC %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
-				inst.insert(0, (char*)memLoc, prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
+				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdc->SetOperand(Operand::SRC, src);
 				newAdc->SetOperand(Operand::DST, dst);

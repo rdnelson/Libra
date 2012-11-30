@@ -101,7 +101,7 @@ bool Breakpoint::Evaluate(Processor* proc) {
 	if(mConditions.size() == 0)
 		return true;
 
-	for(int i = 0; i < mConditions.size(); i++) {
+	for(size_t i = 0; i < mConditions.size(); i++) {
 		if(mConditions[i].ready == false) {
 			switch(mConditions[i].type) {
 				case REGISTER_CHANGE:
@@ -112,6 +112,10 @@ bool Breakpoint::Evaluate(Processor* proc) {
 					break;
 				case MEM_CHANGE:
 					mConditions[i].value.iVal = proc->GetMemory(mConditions[i].source.addr, mConditions[i].size);
+					break;
+				case REGISTER_WATCH:
+				case FLAGS_WATCH:
+				case MEM_WATCH:
 					break;
 			}
 			mConditions[i].ready = true;

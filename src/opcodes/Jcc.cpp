@@ -18,8 +18,6 @@
 
 #include <cstdio>
 
-#define GETINST(len) inst.insert(0, (char*)memLoc, len)
-
 const char Jcc::JA_STR[] = "JA";
 const char Jcc::JB_STR[] = "JB";
 const char Jcc::JE_STR[] = "JE";
@@ -47,8 +45,8 @@ Jcc::Jcc(Prefix* pre, std::string text, std::string inst, int op) {
 	mValid = true;
 }
 
-Instruction* Jcc::CreateInstruction(unsigned char* memLoc, Processor* proc) {
-	unsigned char* opLoc = memLoc;
+Instruction* Jcc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
+	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

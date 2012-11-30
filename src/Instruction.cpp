@@ -58,15 +58,18 @@ Instruction::~Instruction() {
 
 //Try to build each mnemonic until one succeeds
 //If No mnemonic succeeds, opcode is not implemented
-Instruction* Instruction::ReadInstruction(unsigned char* memLoc, Processor* proc) {
+Instruction* Instruction::ReadInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Instruction* instr = NULL;
 
+	memLoc.DisableCallbacks();
 	for(unsigned int i = 0; i < NumOpcodes; i++) {
 		if((instr = AllInstructions[i](memLoc, proc)) != NULL) {
-            instr->SetAddress(proc->GetRegister(REG_IP));
+			instr->SetAddress(proc->GetRegister(REG_IP));
 			break;
 		}
 	}
+	memLoc.EnableCallbacks();
+
 	return instr;
 }
 

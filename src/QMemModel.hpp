@@ -9,7 +9,7 @@ class QMemModel : public QAbstractTableModel
 public:
     QMemModel(QObject *parent = 0);
     int rowCount(const QModelIndex &/*parent*/) const { return 4096; }
-    int columnCount(const QModelIndex &parent) const { return 16; }
+    int columnCount(const QModelIndex &/*parent*/) const { return 16; }
     QVariant data(const QModelIndex &index, int role) const;
     void setItem(int row, int col, char data, bool bUpdate = false);
     void update();

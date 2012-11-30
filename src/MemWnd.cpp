@@ -93,7 +93,7 @@ void MemWnd::loadObjFile() {
 
 		ui->lstInstructions->clear();
 		mVM.Disassemble();
-		for(int i = 0; i < mVM.GetNumInstructions(); i++) {
+		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 			ui->lstInstructions->addItem(mVM.GetInstructionStr(i).c_str());
 			ui->lstInstructions->item(i)->setFlags(ui->lstInstructions->item(i)->flags() | Qt::ItemIsUserCheckable);
 			ui->lstInstructions->item(i)->setCheckState(Qt::Unchecked);
@@ -113,7 +113,7 @@ void MemWnd::reloadObjFile() {
 
 			ui->lstInstructions->clear();
 			mVM.Disassemble();
-			for(int i = 0; i < mVM.GetNumInstructions(); i++) {
+			for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 				ui->lstInstructions->addItem(mVM.GetInstructionStr(i).c_str());
 			}
 		}
@@ -187,9 +187,10 @@ void MemWnd::UpdateGui() {
 	ui->chkParity->setChecked(mVM.GetProc().GetFlag(FLAGS_PF));
 	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
 	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
+	UpdateMemView();
 
 	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
-	for(int i = 0; i < mVM.GetNumInstructions(); i++) {
+	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 		if(mVM.GetInstructionAddr(i) == ip) {
 			ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
 			ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i));
