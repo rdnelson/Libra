@@ -18,8 +18,8 @@
 
 CmpsX::CmpsX(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* CmpsX::CreateInstruction(Memory& memLoc, Processor* proc) {
-	Memory opLoc = memLoc;
+Instruction* CmpsX::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 
@@ -53,7 +53,7 @@ int CmpsX::Execute(Processor* proc) {
 	proc->SetRegister(REG_DI, di + size);
 
 	unsigned int dst = proc->GetMemory(ds * 0x10 + si, size);
-	unsigned int src = proc->GetMemory(ds* 0x10 + di, size);
+	unsigned int src = proc->GetMemory(ds * 0x10 + di, size);
 	unsigned int val = dst - src;
 
 	proc->SetFlag(FLAGS_CF, val > 0xFFFF);

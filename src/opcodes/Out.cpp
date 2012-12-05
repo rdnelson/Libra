@@ -19,8 +19,8 @@
 
 Out::Out(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Out::CreateInstruction(Memory& memLoc, Processor* proc) {
-	Memory opLoc = memLoc;
+Instruction* Out::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

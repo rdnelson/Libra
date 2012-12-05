@@ -26,8 +26,8 @@ Test::Test(Prefix* pre, std::string text, std::string inst, int op) {
 	mValid = true;
 }
 
-Instruction* Test::CreateInstruction(Memory& memLoc, Processor* proc) {
-	Memory opLoc = memLoc;
+Instruction* Test::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

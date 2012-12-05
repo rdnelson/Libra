@@ -29,9 +29,9 @@ Or::Or(Prefix* pre, std::string text, std::string inst, int op)
        	mValid = true;
 }
 
-Instruction* Or::CreateInstruction(Memory& memLoc, Processor* proc) {
+Instruction* Or::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 
-	Memory opLoc = memLoc;
+	Memory::MemoryOffset opLoc = memLoc;
 	int prefixLen = 0;
 	char buf[65];
 	int tInt1 = 0;

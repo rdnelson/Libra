@@ -19,8 +19,8 @@
 
 IDiv::IDiv(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* IDiv::CreateInstruction(Memory& memLoc, Processor* proc) {
-	Memory opLoc = memLoc;
+Instruction* IDiv::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Memory::MemoryOffset opLoc = memLoc;
 	int preLen = 0;
 	char buf[65];
 	std::string inst;

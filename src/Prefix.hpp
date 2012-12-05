@@ -17,7 +17,7 @@
 class Prefix {
 
 	public:
-		static Prefix* GetPrefix(Memory& memLoc);
+		static Prefix* GetPrefix(Memory::MemoryOffset& memLoc);
 		static Prefix* GetPrefix(unsigned char* memLoc, size_t size);
 		unsigned char GetGroup1() { return mG1; }
 		unsigned char GetGroup2() { return mG2; }

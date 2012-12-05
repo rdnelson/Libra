@@ -45,8 +45,8 @@ Jcc::Jcc(Prefix* pre, std::string text, std::string inst, int op) {
 	mValid = true;
 }
 
-Instruction* Jcc::CreateInstruction(Memory& memLoc, Processor* proc) {
-	Memory opLoc = memLoc;
+Instruction* Jcc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 

@@ -199,11 +199,11 @@ void VM::Disassemble() {
 		if(!mVirgo) {
 			unsigned int tmpIP = 0;
 			Instruction* tmpInst = 0;
-			Memory curMem = mMem + tmpIP;
+			Memory::MemoryOffset curMem = mMem.getOffset(tmpIP);
 			while(tmpInst = Instruction::ReadInstruction(curMem, &mProc )) {
 				mInstructions.push_back(tmpInst);
 				tmpIP += tmpInst->GetLength() % MEM_SIZE;
-				curMem = mMem + tmpIP;
+				curMem = curMem.getNewOffset(tmpIP);
 			}
 		}
 	}

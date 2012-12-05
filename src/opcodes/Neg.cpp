@@ -20,9 +20,9 @@
 Neg::Neg(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op)
 {}
 
-Instruction* Neg::CreateInstruction(Memory& memLoc, Processor* proc) {
+Instruction* Neg::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 
-	Memory opLoc = memLoc;
+	Memory::MemoryOffset opLoc = memLoc;
 	int preLen = 0;
 	char buf[65];
 	std::string inst;

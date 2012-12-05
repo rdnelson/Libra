@@ -21,7 +21,7 @@
 #include "Operand.hpp"
 
 //TODO: doesn't deal with memory wrap
-#define GETINST(len) inst.insert(0, (char*)memLoc.getHead(), len)
+#define GETINST(len) inst.insert(0, (char*)memLoc(), len)
 
 #ifdef WIN32
 #define snprintf sprintf_s
@@ -33,7 +33,7 @@ class Instruction {
 
 	public:
 		//Create an instruction from a memory location
-		static Instruction* ReadInstruction(Memory& memLoc, Processor* proc);
+		static Instruction* ReadInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
 
 		//Register the mnemonics with the ReadInstruction function
 		static void InitializeOpcodes();
@@ -63,7 +63,7 @@ class Instruction {
 		inline unsigned char GetMod() { return (modrm & 0xC0) >> 6; }
 
 		//Typedef for AllInstructions
-		typedef Instruction* (*PCreateInst)(Memory&, Processor*);
+		typedef Instruction* (*PCreateInst)(Memory::MemoryOffset&, Processor*);
 
 		void SetOperand(const unsigned int operand, Operand* newOp);
 

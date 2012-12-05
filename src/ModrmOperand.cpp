@@ -17,7 +17,7 @@
 #include <cstring>
 #include <sstream>
 
-ModrmOperand::ModrmOperand(Processor* proc, Memory& addr, unsigned int size, unsigned int bytelen )
+ModrmOperand::ModrmOperand(Processor* proc, const Memory::MemoryOffset& addr, unsigned int size, unsigned int bytelen )
 	: mAddr(addr), mSize(size), mProc(proc), mByteLen(bytelen) {}
 
 unsigned int ModrmOperand::GetValue(unsigned int size) {
@@ -115,7 +115,7 @@ Operand* ModrmOperand::GetSegRegister(Processor* proc, unsigned int sreg) {
 
 }
 
-Operand* ModrmOperand::GetModrmOperand(Processor* proc, Memory& inst, eModRm position, unsigned int size) {
+Operand* ModrmOperand::GetModrmOperand(Processor* proc, Memory::MemoryOffset& inst, eModRm position, unsigned int size) {
 
 	std::stringstream ss;
 	ModrmOperand* newMod = 0;
@@ -123,7 +123,7 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, Memory& inst, eModRm pos
 	unsigned int disp = 0;
 
 	//TODO:doesn't take memory wrap into account
-	unsigned char* modrm = (inst + 1).getHead();
+	Memory::MemoryOffset modrm = inst + 1;
 	unsigned int byteCodeLen = 0;
 
 	if(position == ModrmOperand::REG) {
@@ -142,8 +142,8 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, Memory& inst, eModRm pos
 				disp = *(modrm + 1) + ((*(modrm + 2)) << 8);
 				ss << "[0x" << std::uppercase << std::hex
 					<< disp << std::nouppercase << std::dec << "]";
-				Memory tmpMem(inst.getSize(), inst.getPtr(), disp);
-				newMod = new ModrmOperand(proc, tmpMem, size, 2);
+				Memory::MemoryOffset tmpMem = inst.getNewOffset(disp);
+				newMod = new ModrmOperand(proc, inst.getNewOffset(disp), size, 2);
 				newMod->mText = ss.str();
 				return newMod;
 			}
@@ -199,8 +199,7 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, Memory& inst, eModRm pos
 			break;
 	}
 
-	Memory tmpMem(inst.getSize(), inst.getPtr(), addr + disp);
-	newMod = new ModrmOperand(proc, tmpMem, size, byteCodeLen);
+	newMod = new ModrmOperand(proc, inst.getNewOffset(addr + disp), size, byteCodeLen);
 	if(disp != 0) {
 		ss << " + 0x" << std::hex << std::uppercase << disp << std::nouppercase << std::dec;
 	}

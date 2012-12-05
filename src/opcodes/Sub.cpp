@@ -31,9 +31,9 @@ Sub::Sub(Prefix* pre, std::string text, std::string inst, int op)
        	mValid = true;
 }
 
-Instruction* Sub::CreateInstruction(Memory& memLoc, Processor* proc) {
+Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 
-	Memory opLoc = memLoc;
+	Memory::MemoryOffset opLoc = memLoc;
 	int prefixLen = 0;
 	char buf[65];
 	int tInt1 = 0;

@@ -85,8 +85,11 @@ class Processor {
 		unsigned int GetRegisterHigh(eRegisters reg) const;
 		void SetRegisterHigh(eRegisters reg, unsigned int val);
 
-		virtual unsigned int GetMemory(Memory& addr, unsigned int size);
-		virtual void SetMemory(Memory& addr, unsigned int size, unsigned int val);
+		virtual unsigned int GetMemory(Memory::MemoryOffset& addr, unsigned int size);
+		virtual unsigned int GetMemory(size_t offset, unsigned int size);
+
+		virtual void SetMemory(Memory::MemoryOffset& addr, unsigned int size, unsigned int val);
+		virtual void SetMemory(size_t offset, unsigned int size, unsigned int val);
 
 		void PushRegister(eRegisters reg);
 		void PushValue(unsigned int val);

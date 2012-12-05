@@ -13,11 +13,11 @@
 
 #include "AddressOperand.hpp"
 
-Operand* AddressOperand::GetAddressOperand(Processor* proc, Memory& addr, unsigned int size) {
+Operand* AddressOperand::GetAddressOperand(Processor* proc, Memory::MemoryOffset& addr, unsigned int size) {
 	return new AddressOperand(proc, addr, size, size);
 }
 
-AddressOperand::AddressOperand(Processor* proc, Memory& addr, unsigned int size, unsigned int bytelen)
+AddressOperand::AddressOperand(Processor* proc, Memory::MemoryOffset& addr, unsigned int size, unsigned int bytelen)
 	: ModrmOperand(proc, addr, size, bytelen)
 {
 

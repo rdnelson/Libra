@@ -17,7 +17,7 @@
 class IncDec : public Instruction {
 
 	public:
-		static Instruction* CreateInstruction(Memory& memLoc, Processor* proc);
+		static Instruction* CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
 		int Execute(Processor* proc);
 
 		enum eValidOpcodes {
