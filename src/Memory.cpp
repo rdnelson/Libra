@@ -11,14 +11,22 @@
 \*-------------------------------------*/
 
 #include "Memory.hpp"
+#include <cstring>
 
-Memory::Memory(size_t size) : mMem(0) {
+Memory::Memory(size_t size) : mMem(0), mOwnMem(true) {
 	mMem = new unsigned char[size];
+	memset(mMem, 0xFF, size * sizeof(unsigned char));
 	mSize = size;
 }
 
+Memory::Memory(size_t size, unsigned char* mem) : mMem(mem), mSize(size), mOwnMem(false) {
+
+}
+
 Memory::~Memory() {
-	delete mMem;
+	if(mOwnMem) {
+		delete mMem;
+	}
 }
 
 Memory::MemoryOffset& Memory::MemoryOffset::operator=(const Memory::MemoryOffset& obj) {
@@ -35,9 +43,9 @@ const unsigned char& Memory::operator[](size_t idx) const {
 	//update index to be within bounds and offset properly
 	idx = idx % mSize;
 
-	//update all callbacks about access
+	//update all callbacks about access (always 1 byte)
 	for(size_t i = 0; i < mReadCallbacks.size(); i++)
-		mReadCallbacks[i](idx);
+		mReadCallbacks[i](idx, 1);
 
 	return mMem[idx];
 }
@@ -77,6 +85,8 @@ void Memory::MemoryOffset::read(void* dst, size_t size) {
 	} else {
 		memcpy(dst, mParent.mMem + mOffset, size);
 	}
+	for(size_t i = 0; i < mParent.mReadCallbacks.size(); i++)
+		mParent.mReadCallbacks[i](mOffset, size);
 }
 
 void Memory::MemoryOffset::write(void* src, size_t size) {

@@ -15,7 +15,7 @@
 #include <vector>
 #include <cstring>
 
-typedef void (*AccessCallback)(size_t);
+typedef void (*AccessCallback)(size_t offset, size_t size);
 
 class Memory {
 
@@ -27,7 +27,7 @@ class Memory {
 		const unsigned char& operator[](size_t idx) const;
 
 		int RegisterReadCallback(AccessCallback callback);
-		unsigned char* getPtr() { return mMem; }
+		unsigned char* getPtr() const { return mMem; }
 		size_t getSize() const { return mSize; }
 
 		class MemoryOffset {
@@ -65,5 +65,6 @@ class Memory {
 	private:
 		unsigned char*	mMem;
 		size_t	mSize;
+		bool	mOwnMem;
 		std::vector<AccessCallback> mReadCallbacks;
 };

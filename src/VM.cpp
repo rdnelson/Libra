@@ -21,11 +21,17 @@
 
 #define EVER ;;
 
+void mem_log(size_t offset, size_t size) {
+	std::ofstream fout("mem.log", std::ios::app);
+	fout << size << " byte of memory at 0x" << std::hex << std::uppercase << offset << " accessed" << std::endl;
+	fout.close();
+}
+
 VM::VM() : mProc(mMem), mVirgo(false), mMem(MEM_SIZE) {
 
 	Instruction::InitializeOpcodes();
+	mMem.RegisterReadCallback(mem_log);
 }
-
 
 // This function will load a pure object file. No PE style header, just straight machine code
 // The object file will be copied into memory at address 0x0000
@@ -37,7 +43,7 @@ int VM::LoadFlatFile(const char* filename) {
 	mLoaded = false;
 	mProc.Initialize();
 	mInstructions.clear();
-	memset(mMem, 0, MEM_SIZE);
+	memset(mMem.getPtr(), 0, MEM_SIZE);
 
 	//reset everything
 	mLoaded = false;
@@ -73,10 +79,6 @@ int VM::LoadVirgoFile(const char* filename) {
 	mLoaded = false;
 	mProc.Initialize();
 	mInstructions.clear();
-	memset(mMem, 0, MEM_SIZE);
-
-	mInstructions.clear();
-	memset(mMem, 0xFF, MEM_SIZE);
 
 	std::ifstream fin;
 	fin.open(filename, std::ios_base::in);

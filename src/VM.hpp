@@ -40,7 +40,7 @@ class VM {
 		const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
 		const Processor & GetProc() { return mProc; }
 		const unsigned char GetMemory(unsigned int addr) const;
-		const unsigned char* GetMemPtr() const { return mMem; }
+		const unsigned char* GetMemPtr() const { return mMem.getPtr(); }
 
 		inline void AddBreakpoint(Breakpoint* bp) { mBreakpoints.push_back(bp); }
 
