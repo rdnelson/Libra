@@ -217,6 +217,7 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 }
 
 int Mov::Execute(Processor* proc) {
+	proc += 0;
 	if(mOperands[Operand::SRC] && mOperands[Operand::DST]) {
 		mOperands[Operand::DST]->SetValue(mOperands[Operand::SRC]->GetValue());
 		return 0;

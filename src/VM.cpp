@@ -27,7 +27,7 @@ void mem_log(size_t offset, size_t size) {
 	fout.close();
 }
 
-VM::VM() : mProc(mMem), mVirgo(false), mMem(MEM_SIZE) {
+VM::VM() : mLoaded(false), mRunning(false), mVirgo(false), mMem(MEM_SIZE), mProc(mMem) {
 
 	Instruction::InitializeOpcodes();
 	mMem.RegisterReadCallback(mem_log);
@@ -94,12 +94,12 @@ int VM::LoadVirgoFile(const char* filename) {
 	fin >> bytesTotal;
 
 	int i = 0;
-	int hexSize;
+	unsigned int hexSize;
 	char* hex;
 	char label[128];
 	char disasm[256];
-	int addr;
-	int delay;
+	unsigned int addr;
+	unsigned int delay;
 	char line[512];
 	char text[20];
 	memset(line, 0, 512);
@@ -153,7 +153,7 @@ int VM::LoadVirgoFile(const char* filename) {
 		}
 
 		memset(text, 0, 20);
-		for(int j = 0; j < strlen(hex); j++) {
+		for(size_t j = 0; j < strlen(hex); j++) {
 			if(hex[j] >= '0' && hex[j] <= '9') {
 				text[j/2] |= (hex[j] - '0') << (j % 2 == 0 ? 4 : 0);
 			}else if(toupper(hex[j])  >= 'A' && toupper(hex[j]) <= 'F') {
@@ -202,7 +202,7 @@ void VM::Disassemble() {
 			unsigned int tmpIP = 0;
 			Instruction* tmpInst = 0;
 			Memory::MemoryOffset curMem = mMem.getOffset(tmpIP);
-			while(tmpInst = Instruction::ReadInstruction(curMem, &mProc )) {
+			while((tmpInst = Instruction::ReadInstruction(curMem, &mProc )) != 0) {
 				mInstructions.push_back(tmpInst);
 				tmpIP += tmpInst->GetLength() % MEM_SIZE;
 				curMem = curMem.getNewOffset(tmpIP);
@@ -218,7 +218,7 @@ std::string VM::GetInstructionStr(unsigned int index) const {
 	return "";
 }
 
-const unsigned int VM::GetInstructionAddr(unsigned int index) const {
+unsigned int VM::GetInstructionAddr(unsigned int index) const {
     if(mLoaded && index < mInstructions.size()) {
         return mInstructions[index]->GetAddress();
     }
@@ -234,7 +234,7 @@ int VM::Run() {
 			break;
 
 		//This is where to change the base execution address.
-		if(err = mProc.Step() < 0) {
+		if((err = mProc.Step()) < 0) {
 			//Hit an error, quit
 			break;
 		}
@@ -248,7 +248,7 @@ int VM::Step() {
 	if((err = mProc.Step()) < 0) {
 		std::cout << "Encountered an error (#" << err << "), quitting" << std::endl;
 	} else {
-		for(int i = 0; i < mBreakpoints.size(); i++) {
+		for(size_t i = 0; i < mBreakpoints.size(); i++) {
 			if(mBreakpoints[i]->Evaluate(&mProc))
 				return VM_BREAKPOINT;
 		}
@@ -256,7 +256,7 @@ int VM::Step() {
 	return err;
 }
 
-const unsigned char VM::GetMemory(unsigned int addr) const {
+unsigned char VM::GetMemory(unsigned int addr) const {
 	if(addr < MEM_SIZE) {
 		return mMem[addr];
 	}

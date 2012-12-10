@@ -20,6 +20,7 @@ class VirgoInstruction : public Instruction {
 			Instruction(pre,text,inst,op) {}
 
 		int Execute(Processor* proc) {
+			proc+=0;
 			return 0;
 		}
 };

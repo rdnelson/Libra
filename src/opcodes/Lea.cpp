@@ -49,7 +49,7 @@ Instruction* Lea::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Lea::Execute(Processor* proc) {
+int Lea::Execute(Processor*) {
 	Operand* dst = mOperands[Operand::DST];
 	ModrmOperand* src = (ModrmOperand*)mOperands[Operand::SRC];
 

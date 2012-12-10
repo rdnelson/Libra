@@ -32,7 +32,6 @@ Rot::Rot(Prefix* pre, std::string text, std::string inst, int op, int modrm) : I
 Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 
 	Memory::MemoryOffset& opLoc = memLoc;
-	int preLen = 0;
 	char buf[65];
 	std::string inst;
 	Instruction* newRot = 0;
@@ -45,7 +44,7 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	}
 
 	unsigned char modrm = (*(opLoc + 1) & 0x38) >> 3;
-	if (modrm >= 0 && modrm <= 4){
+	if (modrm <= 4){
 		switch(*opLoc) {
 		case(ROT_MOD8_1):
 		case(ROT_MOD16_1):
@@ -120,7 +119,6 @@ int Rot::Execute(Processor* proc) {
 
 	unsigned int dstVal = mOperands[Operand::DST]->GetValue();
 	unsigned int srcVal = mOperands[Operand::SRC]->GetValue();
-	unsigned int newVal = 0;
 	unsigned int bitMask = mOperands[Operand::DST]->GetBitmask();
 	unsigned int sign =  bitMask == 0xFF ? 0x80 : 0x8000;
 	unsigned int size = mOperands[Operand::DST]->GetBitmask() == 0xFF ? 8 : 16;

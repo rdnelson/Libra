@@ -55,7 +55,7 @@ Instruction* Not::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Not::Execute(Processor* proc) {
+int Not::Execute(Processor*) {
 	Operand* dst = mOperands[Operand::DST];
 
 	if(!dst) {

@@ -73,8 +73,6 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 			sprintf(buf, "SUB AX, 0x%04X", tInt1);
 
-			printf(buf);
-
 			GETINST(prefixLen + 3);
 
 			newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);

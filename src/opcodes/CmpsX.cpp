@@ -18,7 +18,7 @@
 
 CmpsX::CmpsX(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* CmpsX::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+Instruction* CmpsX::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;

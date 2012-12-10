@@ -71,8 +71,6 @@ Instruction* Or::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc
 
 			sprintf(buf, "OR AX, 0x%04X", tInt1);
 
-			printf(buf);
-
 			GETINST(prefixLen + 3);
 
 			newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);

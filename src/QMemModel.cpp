@@ -3,6 +3,7 @@
 QMemModel::QMemModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
+	parent+=0;
 }
 
 QVariant QMemModel::data(const QModelIndex &index, int role) const {

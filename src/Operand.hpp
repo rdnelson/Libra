@@ -18,7 +18,7 @@ class Operand {
 
 	public:
 		virtual void SetValue(unsigned int val) = 0;
-		virtual unsigned int GetValue(unsigned int size) { return GetValue(); }
+		virtual unsigned int GetValue(unsigned int size) { size += 0; return GetValue(); }
 		virtual unsigned int GetValue() = 0;
 		virtual unsigned int GetBitmask() = 0;
 		virtual unsigned int GetBytecodeLen() = 0;

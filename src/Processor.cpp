@@ -48,7 +48,7 @@ int Processor::Initialize(unsigned int startAddr) {
 
 void Processor::_InitializeDevices() {
 
-		for(int i = 0; i < mDevices.size(); i++) {
+		for(size_t i = 0; i < mDevices.size(); i++) {
 		delete mDevices[i];
 	}
 	mDevices.clear();

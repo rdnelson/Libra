@@ -142,7 +142,6 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, Memory::MemoryOffset& in
 				disp = *(modrm + 1) + ((*(modrm + 2)) << 8);
 				ss << "[0x" << std::uppercase << std::hex
 					<< disp << std::nouppercase << std::dec << "]";
-				Memory::MemoryOffset tmpMem = inst.getNewOffset(disp);
 				newMod = new ModrmOperand(proc, inst.getNewOffset(disp), size, 2);
 				newMod->mText = ss.str();
 				return newMod;

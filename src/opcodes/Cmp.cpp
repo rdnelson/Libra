@@ -71,8 +71,6 @@ Instruction* Cmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 			sprintf(buf, "CMP AX, 0x%04X", tInt1);
 
-			printf(buf);
-
 			GETINST(prefixLen + 3);
 
 			newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);

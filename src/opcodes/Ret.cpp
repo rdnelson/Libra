@@ -18,7 +18,7 @@
 
 Ret::Ret(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Ret::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+Instruction* Ret::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;

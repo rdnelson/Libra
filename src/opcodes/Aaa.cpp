@@ -18,7 +18,7 @@
 
 Aaa::Aaa(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
 
-Instruction* Aaa::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+Instruction* Aaa::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;

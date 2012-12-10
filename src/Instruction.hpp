@@ -68,7 +68,7 @@ class Instruction {
 		void SetOperand(const unsigned int operand, Operand* newOp);
 
 		void SetAddress(const unsigned int addr) { mAddress = addr; }
-		const unsigned int GetAddress() const { return mAddress; }
+		unsigned int GetAddress() const { return mAddress; }
 
 		virtual ~Instruction();
 		
