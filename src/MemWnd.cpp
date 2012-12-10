@@ -10,7 +10,6 @@
 #include "VMWorker.hpp"
 #include "QThread"
 #include "Instruction.hpp"
-#include "Breakpoint.hpp"
 #include "QMemModel.hpp"
 
 #include <iostream>

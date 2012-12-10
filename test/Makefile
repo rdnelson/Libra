@@ -80,4 +80,4 @@ TestInstruction.o : $(TEST_DIR)/TestInstruction.cpp \
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/TestInstruction.cpp
 
 TestInstruction : Instruction.o TestInstruction.o gtest_main.a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -pthread -lpthread $^ -o $@

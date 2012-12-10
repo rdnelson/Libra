@@ -153,6 +153,11 @@ int Sxx::Execute(Processor* proc) {
 	}
 
 	dst->SetValue(dstVal);
+	if((src->GetValue() & 0x1F) != 0) {
+		proc->SetFlag(FLAGS_ZF, dstVal == 0);
+		proc->SetFlag(FLAGS_SF, (dstVal & dstSign) != 0);
+		proc->SetFlag(FLAGS_PF, Parity(dstVal));
+	}
 
 	return 0;
 }

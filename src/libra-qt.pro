@@ -60,6 +60,7 @@ SOURCES +=\
     opcodes/Aam.cpp \
     opcodes/Aad.cpp \
     opcodes/Aaa.cpp \
+    opcodes/Rot.cpp \
     peripherals/Screen.cpp \
     QMemModel.cpp
 
@@ -114,6 +115,7 @@ HEADERS  += MemWnd.hpp \
     opcodes/Aam.hpp \
     opcodes/Aad.hpp \
     opcodes/Aaa.hpp \
+    opcodes/Rot.hpp \
     peripherals/Screen.hpp \
     peripherals/AllPeripherals.hpp \
     VirgoInstruction.hpp \
