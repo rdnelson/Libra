@@ -44,6 +44,7 @@ MemWnd::MemWnd(QWidget *parent) :
 	this->connect(this->ui->actionRun, SIGNAL(triggered()), this, SLOT(runVM()));
 	this->connect(this->ui->actionStep_Into, SIGNAL(triggered()), this, SLOT(stepInVM()));
 	this->connect(this->ui->actionStep_Over, SIGNAL(triggered()), this, SLOT(stepOverVM()));
+	this->connect(this->ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 
 	//setup memory view

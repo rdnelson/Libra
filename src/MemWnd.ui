@@ -754,7 +754,7 @@
     <addaction name="action_Open"/>
     <addaction name="actionReload_File"/>
     <addaction name="separator"/>
-    <addaction name="action"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menu_Debug">
     <property name="title">
@@ -803,7 +803,7 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="action">
+  <action name="actionExit">
    <property name="text">
     <string>E&amp;xit</string>
    </property>
