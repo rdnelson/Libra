@@ -10,6 +10,8 @@
 #include "VMWorker.hpp"
 #include "QThread"
 #include "Instruction.hpp"
+#include "Breakpoint.hpp"
+#include "QMemModel.hpp"
 
 #include <iostream>
 
@@ -45,18 +47,21 @@ MemWnd::MemWnd(QWidget *parent) :
 
 
 	//setup memory view
-	QStandardItemModel *model = new QStandardItemModel(0x1000, 0x10, this);
+	/*QStandardItemModel *model = new QStandardItemModel(0x1000, 0x10, this);
 	for(int i = 0; i < 0x10; i++) {
 		model->setHorizontalHeaderItem(i, new QStandardItem(QString("%1").arg(i, 0, 16).toUpper()));
-	}
+	}*/
 
-	for(int i = 0; i < 0x1000; i++) {
+	/*for(int i = 0; i < 0x1000; i++) {
 
 		model->setVerticalHeaderItem(i,new QStandardItem("0x" + QString("%1").arg(i * 0x10, 4, 16, QChar('0')).toUpper()));
 		for(int j = 0; j < 0x10; j++) {
 			model->setItem(i,j,new QStandardItem("FF"));
 		}
-	}
+	}*/
+    
+    QMemModel* model = new QMemModel(this);
+    model->copyData(mVM.GetMemPtr());
 
 	int width = ui->tableView->fontMetrics().width('F') * 4;
 	ui->tableView->setModel(model);
@@ -179,8 +184,8 @@ void MemWnd::UpdateGui() {
 }
 
 void MemWnd::UpdateMemView() {
-	QAbstractItemModel* oldModel = ui->tableView->model();
-	QStandardItemModel* qMemModel = (QStandardItemModel*)oldModel;
+	QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
+    /*ui->tableView->setUpdatesEnabled(false);
 
 	for(int i = 0; i < 0x1000; i++) {
 		for(int j = 0; j < 0x10; j++) {
@@ -189,6 +194,10 @@ void MemWnd::UpdateMemView() {
 	}
 	ui->tableView->setModel(qMemModel);
 
+    
+    ui->tableView->setUpdatesEnabled(true);*/
+    qMemModel->copyData(mVM.GetMemPtr());
+    qMemModel->update();
 }
 
 void MemWnd::stepInVM() {

@@ -60,7 +60,8 @@ SOURCES +=\
     opcodes/Aam.cpp \
     opcodes/Aad.cpp \
     opcodes/Aaa.cpp \
-    peripherals/Screen.cpp
+    peripherals/Screen.cpp \
+    QMemModel.cpp
 
 HEADERS  += MemWnd.hpp \
     VM.hpp \
@@ -115,7 +116,8 @@ HEADERS  += MemWnd.hpp \
     opcodes/Aaa.hpp \
     peripherals/Screen.hpp \
     peripherals/AllPeripherals.hpp \
-    VirgoInstruction.hpp
+    VirgoInstruction.hpp \
+    QMemModel.hpp
 
 FORMS    += MemWnd.ui
 

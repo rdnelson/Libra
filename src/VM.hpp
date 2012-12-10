@@ -37,6 +37,7 @@ class VM {
 		const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
 		const Processor & GetProc() { return mProc; }
 		const unsigned char GetMemory(unsigned int addr) const;
+        const unsigned char* GetMemPtr() const { return mMem; }
 
 		const static int MEM_SIZE = 0x10000;
 

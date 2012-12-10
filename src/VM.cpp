@@ -70,8 +70,11 @@ int VM::LoadFlatFile(const char* filename) {
 
 int VM::LoadVirgoFile(const char* filename) {
 
-	mLoaded - false;
+	mLoaded = false;
 	mProc.Initialize();
+
+	mInstructions.clear();
+	memset(mMem, 0xFF, MEM_SIZE);
 
 	std::ifstream fin;
 	fin.open(filename, std::ios_base::in);
