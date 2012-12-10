@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include <cstring>
 #include <cstdio>
 #include <cctype>
@@ -23,7 +24,7 @@
 
 void mem_log(size_t offset, size_t size) {
 	std::ofstream fout("mem.log", std::ios::app);
-	fout << size << " byte of memory at 0x" << std::hex << std::uppercase << offset << " accessed" << std::endl;
+	fout << size << " byte of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " accessed" << std::endl;
 	fout.close();
 }
 
