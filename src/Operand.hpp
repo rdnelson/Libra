@@ -17,6 +17,7 @@
 class Operand {
 
 	public:
+		virtual ~Operand() {}
 		virtual void SetValue(unsigned int val) = 0;
 		virtual unsigned int GetValue(unsigned int size) { size += 0; return GetValue(); }
 		virtual unsigned int GetValue() = 0;
@@ -29,9 +30,6 @@ class Operand {
 		static const unsigned int SRC	= 1;
 		static const unsigned int OP3	= 2;
 		static const unsigned int OP4	= 3;
-
-		
-
 
 	protected:
 		unsigned int mType;
