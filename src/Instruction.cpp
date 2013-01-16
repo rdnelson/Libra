@@ -61,17 +61,21 @@ Instruction::~Instruction() {
 Instruction* Instruction::ReadInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Instruction* instr = NULL;
 
+	bool memLog = memLoc.IsMemReadLogEnabled();
+	memLoc.DisableMemReadLog();
 	for(unsigned int i = 0; i < NumOpcodes; i++) {
 		if((instr = AllInstructions[i](memLoc, proc)) != NULL) {
-            instr->SetAddress(proc->GetRegister(REG_IP));
+			instr->SetAddress(proc->GetRegister(REG_IP));
 			break;
 		}
 	}
+	if(memLog)
+		memLoc.EnableMemReadLog();
 	return instr;
 }
 
 void Instruction::SetOperand(const unsigned int opcode, Operand* newOp) {
-	if(opcode >= 4) 
+	if(opcode >= 4)
 		return;
 	mOperands[opcode] = newOp;
 }
@@ -105,7 +109,6 @@ bool Instruction::AdjustSub(unsigned int op1, unsigned int op2) {
 
 //New mnemonics need to be added here to be registered
 void Instruction::InitializeOpcodes() {
-	
 	OPCODE(Add);
 	OPCODE(Mov);
 	OPCODE(Jcc);
@@ -146,4 +149,4 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Rot);
 
 	NumOpcodes = AllInstructions.size();
-}	
+}

@@ -12,14 +12,15 @@
 
 #include "Memory.hpp"
 #include <cstring>
+#include <iostream>
 
-Memory::Memory(size_t size) : mMem(0), mOwnMem(true) {
+Memory::Memory(size_t size) : mMem(0), mOwnMem(true), mReadLogEnabled(true), mWriteLogEnabled(true) {
 	mMem = new unsigned char[size];
 	memset(mMem, 0xFF, size * sizeof(unsigned char));
 	mSize = size;
 }
 
-Memory::Memory(size_t size, unsigned char* mem) : mMem(mem), mSize(size), mOwnMem(false) {
+Memory::Memory(size_t size, unsigned char* mem) : mMem(mem), mSize(size), mOwnMem(false), mReadLogEnabled(true), mWriteLogEnabled(true) {
 
 }
 
@@ -27,6 +28,44 @@ Memory::~Memory() {
 	if(mOwnMem) {
 		delete mMem;
 	}
+}
+
+void Memory::notifyReadCallbacks() {
+
+	if(mReadBuffer.size() == 0) {
+		return;
+	}
+
+	/*size_t contIndex = mReadBuffer[0].first + mReadBuffer[0].second;
+
+	for(int i = 1; i < mReadBuffer.size(); i++) {
+		if(mReadBuffer[i].first == contIndex) {
+			mReadBuffer[i-1].second += mReadBuffer[i].second;
+			mReadBuffer.erase(mReadBuffer.begin() + i);
+			contIndex = mReadBuffer[i-1].first + mReadBuffer[i-1].second;
+		}
+	}*/
+
+	for(int i = 0; i < mReadCallbacks.size(); i++) {
+		for(int j = 0; j < mReadBuffer.size(); j++) {
+			mReadCallbacks[i](mReadBuffer[j].first, mReadBuffer[j].second);
+		}
+	}
+	mReadBuffer.clear();
+}
+
+void Memory::notifyWriteCallbacks() {
+
+	if(mWriteBuffer.size() == 0) {
+		return;
+	}
+
+	for(int i = 0; i < mWriteCallbacks.size(); i++) {
+		for(int j = 0; j < mWriteBuffer.size(); j++) {
+			mWriteCallbacks[i](mWriteBuffer[j].first, mWriteBuffer[j].second);
+		}
+	}
+	mWriteBuffer.clear();
 }
 
 Memory::MemoryOffset& Memory::MemoryOffset::operator=(const Memory::MemoryOffset& obj) {
@@ -38,14 +77,15 @@ Memory::MemoryOffset& Memory::MemoryOffset::operator=(const Memory::MemoryOffset
 	return *this;
 }
 
-const unsigned char& Memory::operator[](size_t idx) const {
+const unsigned char& Memory::operator[](size_t idx) {
 
 	//update index to be within bounds and offset properly
 	idx = idx % mSize;
 
-	//update all callbacks about access (always 1 byte)
-	for(size_t i = 0; i < mReadCallbacks.size(); i++)
-		mReadCallbacks[i](idx, 1);
+	if(mReadLogEnabled) {
+		//update all callbacks about access (always 1 byte)
+		mReadBuffer.push_back(MemPair(idx, 1));
+	}
 
 	return mMem[idx];
 }
@@ -78,6 +118,14 @@ int Memory::RegisterReadCallback(AccessCallback callback) {
 	return -1;
 }
 
+int Memory::RegisterWriteCallback(AccessCallback callback) {
+	if(callback) {
+		mWriteCallbacks.push_back(callback);
+		return mWriteCallbacks.size() - 1;
+	}
+	return -1;
+}
+
 void Memory::MemoryOffset::read(void* dst, size_t size) {
 	if(mOffset + size > mParent.mSize) { //need to wrap memory access
 		memcpy(dst, mParent.mMem + mOffset, mParent.mSize - mOffset);
@@ -85,8 +133,8 @@ void Memory::MemoryOffset::read(void* dst, size_t size) {
 	} else {
 		memcpy(dst, mParent.mMem + mOffset, size);
 	}
-	for(size_t i = 0; i < mParent.mReadCallbacks.size(); i++)
-		mParent.mReadCallbacks[i](mOffset, size);
+	if(mParent.mReadLogEnabled)
+		mParent.mReadBuffer.push_back(MemPair(mOffset, size));
 }
 
 void Memory::MemoryOffset::write(void* src, size_t size) {
@@ -95,8 +143,9 @@ void Memory::MemoryOffset::write(void* src, size_t size) {
 		memcpy(mParent.mMem, src, size -  (mParent.mSize - mOffset));
 	} else {
 		memcpy(mParent.mMem + mOffset, src, size);
-
 	}
+	if(mParent.mWriteLogEnabled)
+		mParent.mWriteBuffer.push_back(MemPair(mOffset, size));
 }
 
 Memory::MemoryOffset Memory::MemoryOffset::getNewOffset(size_t offset) {

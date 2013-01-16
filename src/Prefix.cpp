@@ -25,6 +25,9 @@ Prefix* Prefix::GetPrefix(Memory::MemoryOffset& memLoc) {
 	char g1 = 0, g2 = 0, g3 = 0, g4 = 0;
 	int offset = 0;
 
+	bool memLog = memLoc.IsMemReadLogEnabled();
+	memLoc.DisableMemReadLog();
+
 	//Maximum number of prefixes
 	for(int i = 0; i < 4; i++) {
 		switch(*(memLoc + offset)) {
@@ -33,6 +36,7 @@ Prefix* Prefix::GetPrefix(Memory::MemoryOffset& memLoc) {
 			case PRE_REPNE:
 			case PRE_REP:
 				if(g1 != 0) {
+					memLoc.EnableMemReadLog();
 					return 0;
 				}
 				g1 = *(memLoc + offset++);
@@ -48,6 +52,8 @@ Prefix* Prefix::GetPrefix(Memory::MemoryOffset& memLoc) {
 			case PRE_FS_OVERRIDE:
 			case PRE_GS_OVERRIDE:
 				if(g2 != 0) {
+					if(memLog)
+						memLoc.EnableMemReadLog();
 					return 0;
 				}
 				g2 = *(memLoc + offset++);
@@ -56,6 +62,8 @@ Prefix* Prefix::GetPrefix(Memory::MemoryOffset& memLoc) {
 			//Group 3 Prefixes
 			case PRE_OP_SIZE:
 				if(g3 != 0) {
+					if(memLog)
+						memLoc.EnableMemReadLog();
 					return 0;
 				}
 				g3 = *(memLoc + offset++);
@@ -64,6 +72,8 @@ Prefix* Prefix::GetPrefix(Memory::MemoryOffset& memLoc) {
 			//Group 4 Prefixes
 			case PRE_ADDR_SIZE:
 				if(g4 != 0) {
+					if(memLog)
+						memLoc.EnableMemReadLog();
 					return 0;
 				}
 				g4 = *(memLoc + offset++);
@@ -72,14 +82,19 @@ Prefix* Prefix::GetPrefix(Memory::MemoryOffset& memLoc) {
 			//Things that aren't prefixes
 			default:
 				//First Byte isn't a valid prefix
-				if(offset == 0)
+				if(offset == 0) {
+					if(memLog)
+						memLoc.EnableMemReadLog();
 					return 0;
+				}
 				//There's at least one byte of prefix
 				else
 					i = 4; //quits the for loop
 		}
 	}
 
+	if(memLog)
+		memLoc.EnableMemReadLog();
 	return new Prefix(g1, g2, g3, g4);
 
 }

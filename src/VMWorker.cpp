@@ -19,6 +19,8 @@ void VMWorker::run() {
 			} else if(err > 0) {
 				emit procReturn(err);
 			}
+			mVM->notifyReadCallbacks();
+			mVM->notifyWriteCallbacks();
 		}
 		emit error(err);
 	} else {

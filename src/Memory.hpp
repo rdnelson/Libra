@@ -14,8 +14,10 @@
 
 #include <vector>
 #include <cstring>
+#include <iostream>
 
 typedef void (*AccessCallback)(size_t offset, size_t size);
+typedef std::pair<size_t, size_t> MemPair;
 
 class Memory {
 
@@ -24,17 +26,27 @@ class Memory {
 		Memory(size_t size, unsigned char* mem);
 		~Memory();
 
-		const unsigned char& operator[](size_t idx) const;
+		const unsigned char& operator[](size_t idx);
 
 		int RegisterReadCallback(AccessCallback callback);
+		int RegisterWriteCallback(AccessCallback callback);
 		unsigned char* getPtr() const { return mMem; }
 		size_t getSize() const { return mSize; }
+		void notifyReadCallbacks();
+		void notifyWriteCallbacks();
+		void clear() { memset(mMem, 0xFF, mSize); }
 
 		class MemoryOffset {
 			public:
-				MemoryOffset(const MemoryOffset& obj) : mParent(obj.mParent), mOffset(obj.mOffset) {}
+				MemoryOffset(const MemoryOffset& obj) : mParent(obj.mParent), mOffset(obj.mOffset), mEnabled(true)  {}
 				Memory::MemoryOffset& operator=(const Memory::MemoryOffset& obj);
-				unsigned char operator[](size_t idx) const { return mParent.mMem[(mOffset+idx) % mParent.mSize]; }
+				unsigned char operator[](size_t idx) {
+					if(mParent.mReadLogEnabled) {
+						mParent.mReadBuffer.push_back(MemPair(idx, 1));
+						std::cout << "Array operator used" << std::endl;
+					}
+					return mParent.mMem[(mOffset+idx) % mParent.mSize];
+				}
 				friend class Memory;
 
 				void read(void* dst, size_t size);
@@ -42,29 +54,53 @@ class Memory {
 
 				MemoryOffset operator+(size_t) const;
 				MemoryOffset& operator+=(size_t);
-				unsigned char operator*() const { return *(mParent.mMem + mOffset); }
+				unsigned char operator*() {
+					if(mParent.mReadLogEnabled) {
+						mParent.mReadBuffer.push_back(MemPair(mOffset, 1));
+						std::cout << "Indirection operator used" << std::endl;
+					}
+					return *(mParent.mMem + mOffset);
+				}
 				MemoryOffset& operator++();
 				MemoryOffset operator++(int);
 				unsigned char* operator()() { return mParent.mMem + mOffset; }
+
+				//void DisableCallbacks() { mEnabled = false; }
+				//void EnableCallbacks() { mEnabled = true; }
+
+				void DisableMemReadLog() { mParent.mReadLogEnabled = false; }
+				void EnableMemReadLog() { mParent.mReadLogEnabled = true; }
+				bool IsMemReadLogEnabled() { return mParent.mReadLogEnabled; }
+
+				void DisableMemWriteLog() { mParent.mWriteLogEnabled = false; }
+				void EnableMemWriteLog() { mParent.mWriteLogEnabled = true; }
+				bool IsMemWriteLogEnabled() { return mParent.mWriteLogEnabled; }
 
 				MemoryOffset getNewOffset(size_t offset);
 
 				size_t getOffset() const { return mOffset; }
 
 			protected:
-				MemoryOffset(const Memory& parent, size_t offset)
+				MemoryOffset(Memory& parent, size_t offset)
 					: mParent(parent), mOffset(offset) {}
 
 
-				const Memory& mParent;
+				Memory& mParent;
 				size_t mOffset;
+				bool mEnabled;
 		};
-
-		MemoryOffset getOffset(size_t offset) const { return MemoryOffset(*this, offset); }
+		MemoryOffset getOffset(size_t offset) { return MemoryOffset(*this, offset); }
 
 	private:
 		unsigned char*	mMem;
 		size_t	mSize;
 		bool	mOwnMem;
+		bool	mReadLogEnabled;
+		bool	mWriteLogEnabled;
+
+		//First item is address, second is access size
+		std::vector<MemPair> mReadBuffer;
 		std::vector<AccessCallback> mReadCallbacks;
+		std::vector<MemPair> mWriteBuffer;
+		std::vector<AccessCallback> mWriteCallbacks;
 };

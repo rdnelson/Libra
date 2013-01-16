@@ -22,16 +22,23 @@
 
 #define EVER ;;
 
-void mem_log(size_t offset, size_t size) {
+void mem_rlog(size_t offset, size_t size) {
 	std::ofstream fout("mem.log", std::ios::app);
-	fout << size << " byte of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " accessed" << std::endl;
+	fout << size << " byte(s) of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " read" << std::endl;
+	fout.close();
+}
+
+void mem_wlog(size_t offset, size_t size) {
+	std::ofstream fout("mem.log", std::ios::app);
+	fout << size << " byte(s) of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " written" << std::endl;
 	fout.close();
 }
 
 VM::VM() : mLoaded(false), mRunning(false), mVirgo(false), mMem(MEM_SIZE), mProc(mMem) {
 
 	Instruction::InitializeOpcodes();
-	mMem.RegisterReadCallback(mem_log);
+	mMem.RegisterReadCallback(mem_rlog);
+	mMem.RegisterWriteCallback(mem_wlog);
 }
 
 // This function will load a pure object file. No PE style header, just straight machine code
@@ -241,6 +248,8 @@ int VM::Run() {
 		}
 
 	}
+	mMem.notifyReadCallbacks();
+	mMem.notifyWriteCallbacks();
 	return err;
 }
 
@@ -257,7 +266,7 @@ int VM::Step() {
 	return err;
 }
 
-unsigned char VM::GetMemory(unsigned int addr) const {
+unsigned char VM::GetMemory(unsigned int addr) {
 	if(addr < MEM_SIZE) {
 		return mMem[addr];
 	}

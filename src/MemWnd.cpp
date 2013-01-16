@@ -60,9 +60,8 @@ MemWnd::MemWnd(QWidget *parent) :
 			model->setItem(i,j,new QStandardItem("FF"));
 		}
 	}*/
-    
-    QMemModel* model = new QMemModel(this);
-    model->copyData(mVM.GetMemPtr());
+	QMemModel* model = new QMemModel(this);
+	model->copyData(mVM.GetMemPtr());
 
 	int width = ui->tableView->fontMetrics().width('F') * 4;
 	ui->tableView->setModel(model);
@@ -213,6 +212,8 @@ void MemWnd::stepInVM() {
 			DisableRun(err);
 		}
 		UpdateGui();
+		mVM.notifyReadCallbacks();
+		mVM.notifyWriteCallbacks();
 	}
 }
 

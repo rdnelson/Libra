@@ -25,7 +25,7 @@ class VM {
 
 	public:
 		VM();
-		
+
 		int Run();
 		int Step();
 
@@ -39,10 +39,12 @@ class VM {
 		unsigned int GetNumInstructions() { return mInstructions.size(); }
 		const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
 		const Processor & GetProc() { return mProc; }
-		unsigned char GetMemory(unsigned int addr) const;
+		unsigned char GetMemory(unsigned int addr);
 		const unsigned char* GetMemPtr() const { return mMem.getPtr(); }
 
 		inline void AddBreakpoint(Breakpoint* bp) { mBreakpoints.push_back(bp); }
+		inline void notifyReadCallbacks() { mMem.notifyReadCallbacks(); }
+		inline void notifyWriteCallbacks() { mMem.notifyWriteCallbacks(); }
 
 		const static unsigned int MEM_SIZE = 0x10000;
 
