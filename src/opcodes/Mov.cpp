@@ -191,7 +191,7 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			newMov->SetOperand(Operand::DST, dst);
 			break;
 		}
-		
+
 		case MOV_MOD8_IMM8:
 		case MOV_MOD16_IMM16:
 		{

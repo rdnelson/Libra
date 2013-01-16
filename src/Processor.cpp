@@ -48,7 +48,7 @@ int Processor::Initialize(unsigned int startAddr) {
 
 void Processor::_InitializeDevices() {
 
-		for(size_t i = 0; i < mDevices.size(); i++) {
+	for(size_t i = 0; i < mDevices.size(); i++) {
 		delete mDevices[i];
 	}
 	mDevices.clear();
@@ -64,7 +64,7 @@ int Processor::Step() {
 	Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
 	Instruction* inst = Instruction::ReadInstruction(curMem, this);
 
-	//Ensure it exists and is valid 
+	//Ensure it exists and is valid
 	if(inst && inst->IsValid()) {
 		//Increment IP
 		SetRegister(REG_IP, GetRegister(REG_IP) + inst->GetLength());
