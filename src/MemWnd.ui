@@ -761,8 +761,9 @@
      <string>&amp;Debug</string>
     </property>
     <addaction name="actionRun"/>
-    <addaction name="actionStep_Out"/>
+    <addaction name="actionPause"/>
     <addaction name="separator"/>
+    <addaction name="actionStep_Out"/>
     <addaction name="actionStep_Into"/>
     <addaction name="actionStep_Over"/>
    </widget>

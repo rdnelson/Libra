@@ -44,6 +44,7 @@ MemWnd::MemWnd(QWidget *parent) :
 	this->connect(this->ui->actionRun, SIGNAL(triggered()), this, SLOT(runVM()));
 	this->connect(this->ui->actionStep_Into, SIGNAL(triggered()), this, SLOT(stepInVM()));
 	this->connect(this->ui->actionStep_Over, SIGNAL(triggered()), this, SLOT(stepOverVM()));
+	this->connect(this->ui->actionStep_Out, SIGNAL(triggered()), this, SLOT(stepOutVM()));
 	this->connect(this->ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
 
 
@@ -225,6 +226,17 @@ void MemWnd::stepInVM() {
 
 void MemWnd::stepOutVM() {
 
+	if(mVM.isLoaded()) {
+		int err = mVM.Step();
+		while(err != Instruction::RET_CALLED) {
+			if(err < 0) {
+				DisableRun(err);
+				break;
+			}
+			err = mVM.Step();
+		}
+		UpdateGui();
+	}
 
 }
 
