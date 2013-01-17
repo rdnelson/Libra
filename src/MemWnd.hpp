@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 #include <QAbstractTextDocumentLayout>
 #include "VM.hpp"
+#include "VMWorker.hpp"
 
 namespace Ui {
 class MemWnd;
@@ -13,7 +14,7 @@ class MemWnd;
 class MemWnd : public QMainWindow
 {
 	Q_OBJECT
-    
+
 public:
 	explicit MemWnd(QWidget *parent = 0);
 	~MemWnd();
@@ -26,6 +27,9 @@ public slots:
 	void stepOutVM();
 	void stepOverVM();
 	void runVM();
+	void appQuit();
+	//trigger on pause
+	void pauseVM_Clicked();
 
 	//VMWorker Slots
 	//trigger on breakpoint
@@ -36,13 +40,17 @@ public slots:
 	void stepDone();
 	//trigger on run error
 	void vmRunError(int err);
+	//trigger on run paused
+	void vmPaused();
 
 signals:
 	void vmResume();
 	void vmStep();
+	void vmPause();
 
 private:
 	Ui::MemWnd *ui;
+	VMWorker* mVMWorker;
 
 	void UpdateGui();
 	void UpdateMemView();

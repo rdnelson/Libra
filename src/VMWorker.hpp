@@ -2,9 +2,10 @@
 #define VMWORKER_H
 
 #include "QObject"
+#include "QThread"
 #include "VM.hpp"
 
-class VMWorker : public QObject
+class VMWorker : public QThread
 {
     Q_OBJECT
 public:
@@ -15,6 +16,7 @@ public:
 public slots:
     void step();
     void run();
+    void pause();
 
 signals:
     void quit();
@@ -23,9 +25,11 @@ signals:
     void breakpoint();
     void stepDone();
     void runDone();
+    void paused();
 
 private:
     VM* mVM;
+    bool mPaused;
 };
 
 #endif // VMTHREAD_H

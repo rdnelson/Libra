@@ -42,25 +42,12 @@ MemWnd::MemWnd(QWidget *parent) :
 	//connect menubar actions
 	this->connect(this->ui->action_Open, SIGNAL(triggered()),this, SLOT(loadObjFile()));
 	this->connect(this->ui->actionRun, SIGNAL(triggered()), this, SLOT(runVM()));
+	this->connect(this->ui->actionPause, SIGNAL(triggered()), this, SLOT(pauseVM_Clicked()));
 	this->connect(this->ui->actionStep_Into, SIGNAL(triggered()), this, SLOT(stepInVM()));
 	this->connect(this->ui->actionStep_Over, SIGNAL(triggered()), this, SLOT(stepOverVM()));
 	this->connect(this->ui->actionStep_Out, SIGNAL(triggered()), this, SLOT(stepOutVM()));
-	this->connect(this->ui->actionExit, SIGNAL(triggered()), qApp, SLOT(quit()));
+	this->connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(appQuit()));
 
-
-	//setup memory view
-	/*QStandardItemModel *model = new QStandardItemModel(0x1000, 0x10, this);
-	for(int i = 0; i < 0x10; i++) {
-		model->setHorizontalHeaderItem(i, new QStandardItem(QString("%1").arg(i, 0, 16).toUpper()));
-	}*/
-
-	/*for(int i = 0; i < 0x1000; i++) {
-
-		model->setVerticalHeaderItem(i,new QStandardItem("0x" + QString("%1").arg(i * 0x10, 4, 16, QChar('0')).toUpper()));
-		for(int j = 0; j < 0x10; j++) {
-			model->setItem(i,j,new QStandardItem("FF"));
-		}
-	}*/
 	QMemModel* model = new QMemModel(this);
 	model->copyData(mVM.GetMemPtr());
 
@@ -70,6 +57,8 @@ MemWnd::MemWnd(QWidget *parent) :
 		ui->tableView->setColumnWidth(i, width);
 	}
 	ui->tableView->setMaximumWidth(width * 0x13);
+
+	mVMWorker = new VMWorker(&mVM);
 
 }
 
@@ -123,21 +112,17 @@ void MemWnd::reloadObjFile() {
 void MemWnd::runVM() {
 	if(mVM.isLoaded()){
 		DisableRun(0);
-		QThread* thread = new QThread();
-		VMWorker* worker = new VMWorker(&mVM);
-		worker->moveToThread(thread);
-		connect(worker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
-		connect(thread, SIGNAL(started()), worker, SLOT(run()));
-		connect(worker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
-		connect(worker, SIGNAL(runDone()), this, SLOT(vmDone()));
-		connect(this, SIGNAL(vmResume()), worker, SLOT(run()));
-		connect(this, SIGNAL(vmStep()), worker, SLOT(step()));
-		connect(worker, SIGNAL(stepDone()), this, SLOT(stepDone()));
-		connect(worker, SIGNAL(quit()), thread, SLOT(quit()));
-		connect(worker, SIGNAL(quit()), worker, SLOT(deleteLater()));
-		connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-		connect(worker, SIGNAL(error(int)), this, SLOT(vmRunError(int)));
-		thread->start();
+		connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
+		connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
+		connect(mVMWorker, SIGNAL(runDone()), this, SLOT(vmDone()));
+		connect(mVMWorker, SIGNAL(paused()), this, SLOT(vmPaused()));
+		connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
+		connect(this, SIGNAL(vmStep()), mVMWorker, SLOT(step()));
+		connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
+		connect(mVMWorker, SIGNAL(stepDone()), this, SLOT(stepDone()));
+		connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
+		connect(mVMWorker, SIGNAL(error(int)), this, SLOT(vmRunError(int)));
+		mVMWorker->start();
 	}
 }
 
@@ -157,6 +142,11 @@ void MemWnd::vmDone() {
 void MemWnd::vmRunError(int err) {
 	UpdateGui();
 	DisableRun(err);
+}
+
+void MemWnd::vmPaused() {
+	UpdateGui();
+	EnableRun();
 }
 
 void MemWnd::stepDone() {
@@ -192,7 +182,7 @@ void MemWnd::UpdateGui() {
 	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
 	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 		if(mVM.GetInstructionAddr(i) == ip) {
-			ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
+			ui->lstInstructions->item(i)->setBackgroundColor(Qt::yellow);
 			ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i));
 		} else {
 			ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
@@ -263,6 +253,13 @@ void MemWnd::stepOverVM() {
 	}
 }
 
+void MemWnd::pauseVM_Clicked() {
+	if(mVM.isLoaded()) {
+		emit vmPause();
+	}
+}
+
+
 void MemWnd::DisableRun(int err) {
 	switch(err) {
 	case Processor::PROC_ERR_INV_INST:
@@ -274,6 +271,7 @@ void MemWnd::DisableRun(int err) {
 	}
 
 	ui->actionRun->setEnabled(false);
+	ui->actionPause->setEnabled(true);
 	ui->actionStep_Into->setEnabled(false);
 	ui->actionStep_Out->setEnabled(false);
 	ui->actionStep_Over->setEnabled(false);
@@ -281,7 +279,16 @@ void MemWnd::DisableRun(int err) {
 
 void MemWnd::EnableRun() {
 	ui->actionRun->setEnabled(true);
+	ui->actionPause->setEnabled(false);
 	ui->actionStep_Into->setEnabled(true);
 	ui->actionStep_Out->setEnabled(true);
 	ui->actionStep_Over->setEnabled(true);
+}
+
+void MemWnd::appQuit() {
+
+	emit vmPause();
+	//Give the VM 1 second to shut down, if it fails, quit anyways.
+	mVMWorker->wait(1000);
+	qApp->exit();
 }
