@@ -114,6 +114,7 @@ int VM::LoadVirgoFile(const char* filename) {
 		fin.getline(line, 512);
 		if(fin.eof())
 			break;
+		//swap all "quotation marks" with nulls
 		for(char* c = line; *c != '\0'; c++)
 			*c = *c == '\x001f' ? '\0' : *c;
 		hex = 0;
@@ -122,41 +123,58 @@ int VM::LoadVirgoFile(const char* filename) {
 		delay = 0;
 		char* cl = line;
 		cl++;
+
+		//Parse Address
 		if(strlen(cl) != 0)
 			sscanf(cl, "%x", &addr);
+
+		//Skip to next field
 		cl += strlen(cl) + 2;
 
+		//Number of bytes in hex representation
 		if(strlen(cl) != 0)
 			sscanf(cl, "%d", &hexSize);
+		//Next Field
 		cl += strlen(cl) + 2;
 
+		//Create a buffer for the hex
 		unsigned int hexArrSize = (hexSize > 1024 ? 1024 : (hexSize == 0 ? 1 : (hexSize * 2 + 1)) * sizeof(char));
 		hex = new char[hexArrSize];
 
+		//copy hex into buffer
 		if(strlen(cl) != 0) {
 			strncpy(hex, cl, hexArrSize);
 		} else {
 			hex[0] = '\0';
 		}
+		//Next Field
 		cl += strlen(cl) + 2;
 
+		//Copy label if it exists
 		if(strlen(cl) != 0)
 			strncpy(label, cl, 128);
+		//next Field
 		cl += strlen(cl) + 2;
 
+		//copy disassembled version
 		if(strlen(cl) != 0)
 			strncpy(disasm, cl, 256);
+
+		//next Field
 		cl += strlen(cl) + 2;
 
+		//copy delay (20)
 		if(strlen(cl) != 0)
 			sscanf(cl, "%d", &delay);
 
+		//Check for invalid hex string
 		if(strlen(hex) % 2 != 0 || strlen(hex) / 2 != hexSize) { //odd number of hex digits, not bytes
 			delete hex;
 			mLoaded = false;
 			return VM_ERR_CORRUPT;
 		}
 
+		//convert ascii hex into real hex
 		memset(text, 0, 20);
 		for(size_t j = 0; j < strlen(hex); j++) {
 			if(hex[j] >= '0' && hex[j] <= '9') {
@@ -166,8 +184,10 @@ int VM::LoadVirgoFile(const char* filename) {
 			}
 		}
 
+		//clear up buffer from above
 		delete hex;
 
+		//Try to build a prefix
 		Prefix* pre = Prefix::GetPrefix((unsigned char*)text, 20);
 		char* opLoc = text;
 		if(pre) {
@@ -177,11 +197,15 @@ int VM::LoadVirgoFile(const char* filename) {
 		std::string s;
 		std::string dis(disasm);
 
+		//trim whitespace from disassemblu
 		dis.erase(dis.find_last_not_of(" \f\n\r\t\v") + 1);
 		dis.erase(0, dis.find_first_not_of(" \f\n\r\t\v"));
 
+		//Prefix with label
+		dis = label + dis;
+
 		s.insert(0, text, hexSize);
-		if(dis.size() == 0)
+		if(dis.size() == 0 || (hexSize == 0 && label[0] == '\0'))
 			continue;
 
 		Instruction* inst = new VirgoInstruction(pre, dis, s, (int)*opLoc);
