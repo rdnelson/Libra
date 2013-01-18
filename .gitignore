@@ -7,6 +7,7 @@ src/libra-qt
 moc_*.cpp
 qrc_*.cpp
 ui_*.h
+*.LST
 test/TestInstruction
 test/gtest_main.a
 
