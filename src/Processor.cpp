@@ -29,6 +29,8 @@ int Processor::Initialize(unsigned int startAddr) {
 		return PROC_ERR_INV_ADDR;
 	}
 
+	mStartAddr = startAddr;
+
 	SetRegister(REG_AX, 0x0000);
 	SetRegister(REG_BX, 0x0000);
 	SetRegister(REG_CX, 0x0000);
@@ -44,6 +46,10 @@ int Processor::Initialize(unsigned int startAddr) {
 
 	return PROC_SUCCESS;
 
+}
+
+void Processor::Stop() {
+	Initialize(mStartAddr);
 }
 
 void Processor::_InitializeDevices() {

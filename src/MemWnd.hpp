@@ -31,6 +31,9 @@ public slots:
 	//trigger on pause
 	void pauseVM_Clicked();
 
+	//trigger on stop
+	void stopVM_Clicked();
+
 	//VMWorker Slots
 	//trigger on breakpoint
 	void vmBreakpoint();

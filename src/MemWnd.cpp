@@ -43,6 +43,7 @@ MemWnd::MemWnd(QWidget *parent) :
 	this->connect(this->ui->action_Open, SIGNAL(triggered()),this, SLOT(loadObjFile()));
 	this->connect(this->ui->actionRun, SIGNAL(triggered()), this, SLOT(runVM()));
 	this->connect(this->ui->actionPause, SIGNAL(triggered()), this, SLOT(pauseVM_Clicked()));
+	this->connect(this->ui->actionStop, SIGNAL(triggered()), this, SLOT(stopVM_Clicked()));
 	this->connect(this->ui->actionStep_Into, SIGNAL(triggered()), this, SLOT(stepInVM()));
 	this->connect(this->ui->actionStep_Over, SIGNAL(triggered()), this, SLOT(stepOverVM()));
 	this->connect(this->ui->actionStep_Out, SIGNAL(triggered()), this, SLOT(stepOutVM()));
@@ -125,6 +126,7 @@ void MemWnd::runVM() {
 		DisableRun(0);
 		mVMWorker->start();
 	}
+	ui->actionStop->setEnabled(true);
 }
 
 void MemWnd::vmBreakpoint() {
@@ -212,6 +214,7 @@ void MemWnd::stepInVM() {
 		if(err < 0) {
 			DisableRun(err);
 		}
+		ui->actionStop->setEnabled(true);
 		UpdateGui();
 		mVM.notifyReadCallbacks();
 		mVM.notifyWriteCallbacks();
@@ -229,6 +232,7 @@ void MemWnd::stepOutVM() {
 			}
 			err = mVM.Step();
 		}
+		ui->actionStop->setEnabled(true);
 		UpdateGui();
 	}
 
@@ -253,6 +257,7 @@ void MemWnd::stepOverVM() {
 		} else if(err < 0) {
 			DisableRun(err);
 		}
+		ui->actionStop->setEnabled(true);
 		UpdateGui();
 	}
 }
@@ -260,6 +265,15 @@ void MemWnd::stepOverVM() {
 void MemWnd::pauseVM_Clicked() {
 	if(mVM.isLoaded()) {
 		emit vmPause();
+	}
+}
+
+void MemWnd::stopVM_Clicked() {
+	if(mVM.isLoaded()) {
+		emit vmPause();
+		mVMWorker->wait(200);
+		mVM.Stop();
+		UpdateGui();
 	}
 }
 
