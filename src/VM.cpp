@@ -248,10 +248,31 @@ std::string VM::GetInstructionStr(unsigned int index) const {
 }
 
 unsigned int VM::GetInstructionAddr(unsigned int index) const {
-    if(mLoaded && index < mInstructions.size()) {
-        return mInstructions[index]->GetAddress();
-    }
-    return -1;
+	if(mLoaded && index < mInstructions.size()) {
+		return mInstructions[index]->GetAddress();
+	}
+	return -1;
+}
+
+unsigned int VM::GetInstructionLen(unsigned int index) const {
+	if(mLoaded && index < mInstructions.size()) {
+		return mInstructions[index]->GetLength();
+	}
+	return 0;
+}
+
+unsigned int VM::CalcInstructionLen() {
+	if(mLoaded) {
+		std::cout << "Calculating length of instruction at IP=0x" << std::hex << mProc.GetRegister(REG_IP) << std::dec << std::endl;
+		Memory::MemoryOffset curMem = mMem.getOffset(mProc.GetRegister(REG_IP));
+		Instruction* inst = Instruction::ReadInstruction(curMem, &mProc);
+		unsigned int len = inst->GetLength();
+		std::cout << "Disassembly: " << inst->GetDisasm() << std::endl;
+		std::cout << "Byte length: " << len << std::endl;
+		delete inst;
+		return len;
+	}
+	return 0;
 }
 
 

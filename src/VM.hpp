@@ -36,6 +36,8 @@ class VM {
 		void Disassemble();
 		std::string GetInstructionStr(unsigned int index) const;
 		unsigned int GetInstructionAddr(unsigned int index) const;
+		unsigned int GetInstructionLen(unsigned int index) const;
+		unsigned int CalcInstructionLen();
 		unsigned int GetNumInstructions() { return mInstructions.size(); }
 		const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
 		const Processor & GetProc() { return mProc; }

@@ -197,11 +197,17 @@ void MemWnd::UpdateGui() {
 			ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
 		}
 	}
+	QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
+	qMemModel->ClearHighlights();
+	qMemModel->Highlight(ip,mVM.CalcInstructionLen(),Qt::yellow);
+	qMemModel->update();
+
 }
 
 void MemWnd::UpdateMemView() {
 	QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
 	qMemModel->copyData(mVM.GetMemPtr());
+	qMemModel->ClearHighlights();
 	qMemModel->update();
 }
 
