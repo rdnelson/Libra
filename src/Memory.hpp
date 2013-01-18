@@ -43,7 +43,6 @@ class Memory {
 				unsigned char operator[](size_t idx) {
 					if(mParent.mReadLogEnabled) {
 						mParent.mReadBuffer.push_back(MemPair(idx, 1));
-						std::cout << "Array operator used" << std::endl;
 					}
 					return mParent.mMem[(mOffset+idx) % mParent.mSize];
 				}
@@ -57,7 +56,6 @@ class Memory {
 				unsigned char operator*() {
 					if(mParent.mReadLogEnabled) {
 						mParent.mReadBuffer.push_back(MemPair(mOffset, 1));
-						std::cout << "Indirection operator used" << std::endl;
 					}
 					return *(mParent.mMem + mOffset);
 				}

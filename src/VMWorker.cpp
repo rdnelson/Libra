@@ -8,6 +8,7 @@ VMWorker::VMWorker(VM* vm) : mVM(vm), mPaused(false)
 
 void VMWorker::run() {
 	int err;
+	int updateCtr = 0;
 	mPaused = false;
 	if(mVM && mVM->isLoaded()) {
 		for(EVER) {
@@ -28,6 +29,10 @@ void VMWorker::run() {
 			}
 			mVM->notifyReadCallbacks();
 			mVM->notifyWriteCallbacks();
+			//Only update the GUI every 300 instructions (~0.005 seconds)
+			updateCtr = (updateCtr + 1) % 300;
+			if(updateCtr == 0)
+				emit stepDone();
 		}
 		emit error(err);
 	} else {

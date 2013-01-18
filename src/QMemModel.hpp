@@ -25,7 +25,7 @@ signals:
 public slots:
 
 private:
-	char mData[0x10000];
+	unsigned char* mData;
 	std::map<int,QColor> mHighlight;
 	static const int mRows = 4096;
 	static const int mColumns = 16;

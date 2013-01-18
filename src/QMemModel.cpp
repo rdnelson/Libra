@@ -64,7 +64,7 @@ void QMemModel::setItem(int row, int col, char data, bool bUpdate) {
 }
 
 void QMemModel::copyData(const unsigned char *data) {
-	memcpy(mData, data, sizeof(mData));
+	mData = (unsigned char*)data;
 }
 
 void QMemModel::Highlight(const int addr, const int len, const QColor color) {

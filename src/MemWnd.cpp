@@ -59,6 +59,17 @@ MemWnd::MemWnd(QWidget *parent) :
 	ui->tableView->setMaximumWidth(width * 0x13);
 
 	mVMWorker = new VMWorker(&mVM);
+	connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
+	connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
+	connect(mVMWorker, SIGNAL(runDone()), this, SLOT(vmDone()));
+	connect(mVMWorker, SIGNAL(paused()), this, SLOT(vmPaused()));
+	connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
+	connect(this, SIGNAL(vmStep()), mVMWorker, SLOT(step()));
+	connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
+	connect(mVMWorker, SIGNAL(stepDone()), this, SLOT(stepDone()));
+	connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
+	connect(mVMWorker, SIGNAL(error(int)), this, SLOT(vmRunError(int)));
+
 
 }
 
@@ -112,16 +123,6 @@ void MemWnd::reloadObjFile() {
 void MemWnd::runVM() {
 	if(mVM.isLoaded()){
 		DisableRun(0);
-		connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
-		connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
-		connect(mVMWorker, SIGNAL(runDone()), this, SLOT(vmDone()));
-		connect(mVMWorker, SIGNAL(paused()), this, SLOT(vmPaused()));
-		connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
-		connect(this, SIGNAL(vmStep()), mVMWorker, SLOT(step()));
-		connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
-		connect(mVMWorker, SIGNAL(stepDone()), this, SLOT(stepDone()));
-		connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
-		connect(mVMWorker, SIGNAL(error(int)), this, SLOT(vmRunError(int)));
 		mVMWorker->start();
 	}
 }
@@ -189,16 +190,19 @@ void MemWnd::UpdateGui() {
 		}
 	}
 	QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
-	qMemModel->ClearHighlights();
-	qMemModel->Highlight(ip,mVM.CalcInstructionLen(),Qt::yellow);
-	qMemModel->update();
+	if(qMemModel) {
+		qMemModel->ClearHighlights();
+		qMemModel->Highlight(ip,mVM.CalcInstructionLen(),Qt::yellow);
+		qMemModel->update();
+	}
 
 }
 
 void MemWnd::UpdateMemView() {
 	QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
-	qMemModel->copyData(mVM.GetMemPtr());
+	//Remove execution highlighting
 	qMemModel->ClearHighlights();
+	//Let the GUI know that there are memory changes
 	qMemModel->update();
 }
 
