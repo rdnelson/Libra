@@ -51,7 +51,7 @@ int VM::LoadFlatFile(const char* filename) {
 	mLoaded = false;
 	mProc.Initialize();
 	mInstructions.clear();
-	memset(mMem.getPtr(), 0, MEM_SIZE);
+	mMem.Clear();
 
 	std::ifstream fin;
 	fin.open(filename, std::ios_base::in | std::ios_base::binary);
@@ -82,6 +82,7 @@ int VM::LoadVirgoFile(const char* filename) {
 
 	mLoaded = false;
 	mInstructions.clear();
+	mMem.Clear();
 
 	std::ifstream fin;
 	fin.open(filename, std::ios_base::in);

@@ -30,6 +30,12 @@ Memory::~Memory() {
 	}
 }
 
+void Memory::Clear() {
+	if(mMem) {
+		memset(mMem, 0xFF, mSize * sizeof(unsigned char));
+	}
+}
+
 void Memory::notifyReadCallbacks() {
 
 	if(mReadBuffer.size() == 0) {

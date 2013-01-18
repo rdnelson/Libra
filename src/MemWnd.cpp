@@ -48,6 +48,7 @@ MemWnd::MemWnd(QWidget *parent) :
 	this->connect(this->ui->actionStep_Over, SIGNAL(triggered()), this, SLOT(stepOverVM()));
 	this->connect(this->ui->actionStep_Out, SIGNAL(triggered()), this, SLOT(stepOutVM()));
 	this->connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(appQuit()));
+	this->connect(this->ui->actionReload_File, SIGNAL(triggered()), this, SLOT(reloadObjFile()));
 
 	QMemModel* model = new QMemModel(this);
 	model->copyData(mVM.GetMemPtr());
@@ -85,7 +86,9 @@ void MemWnd::loadObjFile() {
 	mFile = file;
 	mVM.LoadVirgoFile(file.toStdString().c_str());
 	if(mVM.isLoaded()) {
+		ui->actionReload_File->setEnabled(true);
 		ui->actionRun->setEnabled(true);
+		ui->actionStop->setEnabled(false);
 		ui->actionStep_Into->setEnabled(true);
 		ui->actionStep_Over->setEnabled(true);
 		ui->actionStep_Out->setEnabled(true);
@@ -104,19 +107,27 @@ void MemWnd::loadObjFile() {
 }
 
 void MemWnd::reloadObjFile() {
+	stopVM_Clicked();
 	if(mFile != "") {
-		mVM.LoadFlatFile(mFile.toStdString().c_str());
+		mVM.LoadVirgoFile(mFile.toStdString().c_str());
 		if(mVM.isLoaded()) {
+			ui->actionReload_File->setEnabled(true);
 			ui->actionRun->setEnabled(true);
+			ui->actionStop->setEnabled(false);
 			ui->actionStep_Into->setEnabled(true);
 			ui->actionStep_Over->setEnabled(true);
 			ui->actionStep_Out->setEnabled(true);
+
+			UpdateMemView();
 
 			ui->lstInstructions->clear();
 			mVM.Disassemble();
 			for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 				ui->lstInstructions->addItem(mVM.GetInstructionStr(i).c_str());
+				ui->lstInstructions->item(i)->setFlags(ui->lstInstructions->item(i)->flags() | Qt::ItemIsUserCheckable);
+				ui->lstInstructions->item(i)->setCheckState(Qt::Unchecked);
 			}
+			UpdateGui();
 		}
 	}
 }

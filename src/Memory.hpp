@@ -34,7 +34,7 @@ class Memory {
 		size_t getSize() const { return mSize; }
 		void notifyReadCallbacks();
 		void notifyWriteCallbacks();
-		void clear() { memset(mMem, 0xFF, mSize); }
+		void Clear();
 
 		class MemoryOffset {
 			public:
