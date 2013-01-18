@@ -17,6 +17,7 @@
 class IPeripheral {
 
 	public:
+		~IPeripheral() {}
 		virtual bool Put8(unsigned int port, unsigned int data) = 0;
 		virtual bool Put16(unsigned int port, unsigned int data) = 0;
 
@@ -25,12 +26,12 @@ class IPeripheral {
 
 		virtual void Dump() = 0;
 
-        virtual unsigned int GetType() = 0;
-        virtual std::string GetStr() = 0;
+		virtual unsigned int GetType() = 0;
+		virtual std::string GetStr() = 0;
 
-        enum ePeriphTypes {
-            PERIPH_SCREEN
-        };
+		enum ePeriphTypes {
+			PERIPH_SCREEN
+		};
 
 };
 
