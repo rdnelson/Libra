@@ -59,7 +59,7 @@ enum eFlags {
 	FLAGS_DF = 10,
     FLAGS_OF = 11
 };
-	
+
 
 class Processor {
 
@@ -67,6 +67,7 @@ class Processor {
 		int Initialize(unsigned int startAddr = 0x0000);
 		Processor(Memory& mem);
 		int Step();
+		void Stop();
 
 		static const int PROC_SUCCESS		=  0;
 		static const int PROC_ERR_INV_ADDR 	= -1;
@@ -112,13 +113,13 @@ class Processor {
 		void DeviceDump();
 
 
-		
+
 	private:
-		
+
 		int Execute(Instruction* inst);
 
 		void _InitializeDevices();
-		
+
 		Register	mRegisters[NumRegisters];
 		Memory&	mMem;
 
@@ -127,5 +128,7 @@ class Processor {
 		//Last Accessed port# and it's associated device
 		unsigned int mLastPort;
 		IPeripheral* mLastDevice;
+
+		unsigned int mStartAddr;
 
 };

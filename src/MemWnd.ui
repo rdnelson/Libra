@@ -730,7 +730,7 @@
    <addaction name="action_Open"/>
    <addaction name="actionReload_File"/>
    <addaction name="separator"/>
-   <addaction name="actionRestart"/>
+   <addaction name="actionStop"/>
    <addaction name="actionRun"/>
    <addaction name="actionPause"/>
    <addaction name="actionStep_Into"/>
@@ -893,7 +893,7 @@
     <string>Ctrl+Shift+R</string>
    </property>
   </action>
-  <action name="actionRestart">
+  <action name="actionStop">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -902,7 +902,7 @@
      <normaloff>:/res/kill24.ico</normaloff>:/res/kill24.ico</iconset>
    </property>
    <property name="text">
-    <string>Restart</string>
+    <string>Stop</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>

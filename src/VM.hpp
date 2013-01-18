@@ -28,6 +28,7 @@ class VM {
 
 		int Run();
 		int Step();
+		void Stop() { mProc.Stop(); }
 
 		int LoadFlatFile(const char* filename);
 		int LoadVirgoFile(const char* filename);
