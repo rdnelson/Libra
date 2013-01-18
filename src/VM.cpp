@@ -263,14 +263,14 @@ unsigned int VM::GetInstructionLen(unsigned int index) const {
 
 unsigned int VM::CalcInstructionLen() {
 	if(mLoaded) {
-		std::cout << "Calculating length of instruction at IP=0x" << std::hex << mProc.GetRegister(REG_IP) << std::dec << std::endl;
 		Memory::MemoryOffset curMem = mMem.getOffset(mProc.GetRegister(REG_IP));
 		Instruction* inst = Instruction::ReadInstruction(curMem, &mProc);
-		unsigned int len = inst->GetLength();
-		std::cout << "Disassembly: " << inst->GetDisasm() << std::endl;
-		std::cout << "Byte length: " << len << std::endl;
-		delete inst;
-		return len;
+		if(inst != NULL) {
+			unsigned int len = inst->GetLength();
+			delete inst;
+			return len;
+		}
+		return 0;
 	}
 	return 0;
 }
