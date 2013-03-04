@@ -27,9 +27,12 @@ class Screen : public IPeripheral {
 
 		virtual void Dump();
 
-        unsigned int GetType() { return PERIPH_SCREEN; }
+		unsigned int GetType() { return PERIPH_SCREEN; }
 
-        std::string GetStr();
+		std::string GetStr();
+
+		unsigned int GetWidth() { return NUM_COLS; }
+		unsigned int GetHeight() { return NUM_ROWS; }
 
 	protected:
 
