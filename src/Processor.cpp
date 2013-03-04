@@ -12,6 +12,7 @@
 
 #include "Processor.hpp"
 #include "peripherals/AllPeripherals.hpp"
+#include "IPeripheral.hpp"
 
 #include <iostream>
 #include <cstring>
@@ -19,6 +20,12 @@
 
 Processor::Processor(Memory& mem): mMem(mem), mLastPort(0xFFFFFFFF), mLastDevice(0) {
 
+}
+
+Processor::~Processor() {
+	for(size_t i = 0; i < mDevices.size(); i++) {
+		delete mDevices[i];
+	}
 }
 
 //Allows the starting address to be changed
@@ -60,11 +67,12 @@ void Processor::_InitializeDevices() {
 	mDevices.clear();
 
 	mDevices.push_back(new Screen());
+	mDevices.push_back(new Keyboard());
 }
 
 //Execute a single instruction
 int Processor::Step() {
-    int retVal = PROC_SUCCESS;
+	int retVal = PROC_SUCCESS;
 
 	//Fetch
 	Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
@@ -77,14 +85,17 @@ int Processor::Step() {
 
 #ifdef DEBUG
 		inst->AddLengthToDisasm();
-#endif
 
 		std::cout << inst->GetDisasm() << std::endl;
 
+#endif
 		//Execute
-        if((retVal = inst->Execute(this)) < 0) {
+		if((retVal = inst->Execute(this)) < 0) {
+			delete inst;
 			return PROC_ERR_INST;
 		}
+		delete inst;
+		inst = 0;
 
 	} else {
 		return PROC_ERR_INV_INST;

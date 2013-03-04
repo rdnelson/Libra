@@ -66,6 +66,7 @@ class Processor {
 	public:
 		int Initialize(unsigned int startAddr = 0x0000);
 		Processor(Memory& mem);
+		~Processor();
 		int Step();
 		void Stop();
 

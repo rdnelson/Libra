@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStandardItemModel>
 #include <QAbstractTextDocumentLayout>
+#include <QKeyEvent>
 #include "VM.hpp"
 #include "VMWorker.hpp"
 
@@ -46,6 +47,8 @@ public slots:
 	//trigger on run paused
 	void vmPaused();
 
+	void KeyEvent(QKeyEvent*);
+
 signals:
 	void vmResume();
 	void vmStep();
@@ -55,6 +58,7 @@ private:
 	Ui::MemWnd *ui;
 	VMWorker* mVMWorker;
 
+	void UpdateScreen();
 	void UpdateGui();
 	void UpdateMemView();
 	void DisableRun(int err);
