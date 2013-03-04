@@ -12,6 +12,9 @@
 #include "Instruction.hpp"
 #include "QMemModel.hpp"
 #include "Breakpoint.hpp"
+#include "peripherals/Screen.hpp"
+#include "peripherals/Keyboard.hpp"
+#include "QKbdFilter.hpp"
 
 #include <iostream>
 
@@ -21,10 +24,25 @@ MemWnd::MemWnd(QWidget *parent) :
 	mFile("")
 {
 	ui->setupUi(this);
+	QKbdFilter* kbdFilter = new QKbdFilter();
+	this->connect(kbdFilter, SIGNAL(KeyEvent(QKeyEvent*)), this, SLOT(KeyEvent(QKeyEvent*)));
+	this->installEventFilter(kbdFilter);
 	//setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint);
-	QString s = "                                        \n";
+
+	Screen* scr = 0;
+	unsigned int numDevices = mVM.GetDevices().size();
+	for(unsigned int i = 0; i < numDevices; i++) {
+		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_SCREEN) {
+			scr = (Screen*)mVM.GetDevices().at(i);
+		}
+	}
+
+	QString s = "";
+	for(unsigned int i = 0; i < scr->GetWidth(); i++)
+		s.append(" ");
+	s.append('\n');
 	QString str = "";
-	for(int i = 0; i < 20; i++) {
+	for(unsigned int i = 0; i < scr->GetHeight(); i++) {
 		str.append(s);
 	}
 
@@ -34,8 +52,7 @@ MemWnd::MemWnd(QWidget *parent) :
 	ui->textBrowser->setFont(fnt);
 	ui->textBrowser->setPlainText(str);
 
-	QSize sz = ui->textBrowser->document()->size().toSize();
-	ui->textBrowser->resize(sz.width() + 5, sz.height() * (ui->textBrowser->font().pixelSize() + 2.5));
+	ui->textBrowser->resize(ui->textBrowser->fontMetrics().width(s) + 10, ui->textBrowser->fontMetrics().height() * scr->GetHeight() + 10);
 	ui->textBrowser->setFixedSize(ui->textBrowser->size());
 
 
@@ -77,6 +94,7 @@ MemWnd::MemWnd(QWidget *parent) :
 
 MemWnd::~MemWnd()
 {
+	delete mVMWorker;
 	delete ui;
 }
 
@@ -134,6 +152,16 @@ void MemWnd::reloadObjFile() {
 
 void MemWnd::runVM() {
 	if(mVM.isLoaded()){
+		QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
+		if(qMemModel) {
+			qMemModel->ClearHighlights();
+			qMemModel->update();
+		}
+		ui->tableView->setFocusPolicy(Qt::NoFocus);
+		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
+			ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
+		}
+
 		DisableRun(0);
 		mVMWorker->start();
 	}
@@ -149,6 +177,7 @@ void MemWnd::vmBreakpoint() {
 
 void MemWnd::vmDone() {
 	this->setWindowTitle("VM Stopped");
+	ui->tableView->setFocusPolicy(Qt::WheelFocus);
 	UpdateGui();
 
 }
@@ -160,11 +189,12 @@ void MemWnd::vmRunError(int err) {
 
 void MemWnd::vmPaused() {
 	UpdateGui();
+	ui->tableView->setFocusPolicy(Qt::WheelFocus);
 	EnableRun();
 }
 
 void MemWnd::stepDone() {
-	UpdateGui();
+	UpdateScreen();
 }
 
 void MemWnd::UpdateGui() {
@@ -209,6 +239,15 @@ void MemWnd::UpdateGui() {
 		qMemModel->update();
 	}
 
+}
+
+void MemWnd::UpdateScreen() {
+	unsigned int numDevices = mVM.GetDevices().size();
+	for(unsigned int i = 0; i < numDevices; i++) {
+		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_SCREEN) {
+			ui->textBrowser->setPlainText(mVM.GetDevices().at(i)->GetStr().c_str());
+		}
+	}
 }
 
 void MemWnd::UpdateMemView() {
@@ -320,4 +359,16 @@ void MemWnd::appQuit() {
 	//Give the VM 1 second to shut down, if it fails, quit anyways.
 	mVMWorker->wait(1000);
 	qApp->exit();
+}
+
+void MemWnd::KeyEvent(QKeyEvent* evt) {
+
+	unsigned int numDevices = mVM.GetDevices().size();
+	for(unsigned int i = 0; i < numDevices; i++) {
+		//found a screen
+		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_KEYBOARD) {
+			qDebug("Keypress: %d", evt->key());
+			((Keyboard*)mVM.GetDevices().at(i))->Update(evt->key(), evt->type() == QEvent::KeyPress);
+		}
+	}
 }
