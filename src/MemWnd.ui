@@ -769,6 +769,8 @@
     <addaction name="actionStep_Out"/>
     <addaction name="actionStep_Into"/>
     <addaction name="actionStep_Over"/>
+    <addaction name="separator"/>
+    <addaction name="actionBreakpoint"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -909,6 +911,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionBreakpoint">
+   <property name="text">
+    <string>Toggle Breakpoint</string>
+   </property>
+   <property name="shortcut">
+    <string>F9</string>
    </property>
   </action>
  </widget>

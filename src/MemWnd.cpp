@@ -66,6 +66,7 @@ MemWnd::MemWnd(QWidget *parent) :
 	this->connect(this->ui->actionStep_Out, SIGNAL(triggered()), this, SLOT(stepOutVM()));
 	this->connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(appQuit()));
 	this->connect(this->ui->actionReload_File, SIGNAL(triggered()), this, SLOT(reloadObjFile()));
+	this->connect(this->ui->actionBreakpoint, SIGNAL(triggered()), this, SLOT(setBreakpoint()));
 
 	QMemModel* model = new QMemModel(this);
 	model->copyData(mVM.GetMemPtr());
@@ -75,7 +76,7 @@ MemWnd::MemWnd(QWidget *parent) :
 	for(int i = 0; i < 0x10; i++) {
 		ui->tableView->setColumnWidth(i, width);
 	}
-	ui->tableView->setMaximumWidth(width * 0x13);
+	ui->tableView->setMaximumWidth(width * 0x14);
 
 	mVMWorker = new VMWorker(&mVM);
 	connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
@@ -159,7 +160,10 @@ void MemWnd::runVM() {
 		}
 		ui->tableView->setFocusPolicy(Qt::NoFocus);
 		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
-			ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
+			if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i)))
+				ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
+			else
+				ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
 		}
 
 		DisableRun(0);
@@ -229,6 +233,8 @@ void MemWnd::UpdateGui() {
 		if(mVM.GetInstructionAddr(i) == ip) {
 			ui->lstInstructions->item(i)->setBackgroundColor(Qt::yellow);
 			ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i));
+		} else if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
+			ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
 		} else {
 			ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
 		}
@@ -368,8 +374,18 @@ void MemWnd::KeyEvent(QKeyEvent* evt) {
 	for(unsigned int i = 0; i < numDevices; i++) {
 		//found a screen
 		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_KEYBOARD) {
-			qDebug("Keypress: %d", evt->key());
 			((Keyboard*)mVM.GetDevices().at(i))->Update(evt->key(), evt->type() == QEvent::KeyPress);
 		}
 	}
+}
+
+void MemWnd::setBreakpoint() {
+	Breakpoint* bp = mVM.FindBreakpoint(mVM.GetInstructionAddr(ui->lstInstructions->currentRow()));
+	if(bp != 0) {
+		mVM.RemoveBreakpoint(bp->GetIP());
+		return;
+	}
+	bp = new Breakpoint(mVM.GetInstructionAddr(ui->lstInstructions->currentRow()));
+	mVM.AddBreakpoint(bp);
+	ui->lstInstructions->currentItem()->setBackgroundColor(Qt::red);
 }

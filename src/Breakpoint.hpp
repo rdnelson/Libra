@@ -31,6 +31,8 @@ class Breakpoint {
 
 		bool Evaluate(Processor* proc);
 
+		inline unsigned int GetIP() { return mIP; }
+
 	private:
 
 		enum eConditionType {
@@ -39,7 +41,7 @@ class Breakpoint {
 			FLAGS_WATCH,
 			FLAGS_CHANGE,
 			MEM_WATCH,
-			MEM_CHANGE			
+			MEM_CHANGE
 		};
 
 		struct Condition {
