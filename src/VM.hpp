@@ -45,7 +45,11 @@ class VM {
 		unsigned char GetMemory(unsigned int addr);
 		const unsigned char* GetMemPtr() const { return mMem.getPtr(); }
 
-		inline void AddBreakpoint(Breakpoint* bp) { mBreakpoints.push_back(bp); }
+		void AddBreakpoint(Breakpoint* bp);
+		void RemoveBreakpoint(unsigned int addr);
+		Breakpoint* FindBreakpoint(unsigned int addr);
+		const std::vector<Breakpoint*> & GetBreakpoints() { return mBreakpoints; }
+
 		inline void notifyReadCallbacks() { mMem.notifyReadCallbacks(); }
 		inline void notifyWriteCallbacks() { mMem.notifyWriteCallbacks(); }
 
@@ -70,5 +74,5 @@ class VM {
 
 		std::vector<Instruction*> mInstructions;
 		std::vector<Breakpoint*> mBreakpoints;
-		
+
 };

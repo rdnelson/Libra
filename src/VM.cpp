@@ -315,3 +315,35 @@ unsigned char VM::GetMemory(unsigned int addr) {
 	}
 	return 0xFF;
 }
+
+void VM::AddBreakpoint(Breakpoint* bp) {
+	if(bp == 0)
+		return;
+
+	for(size_t i = 0; i < mBreakpoints.size(); i++) {
+		if(mBreakpoints[i]->GetIP() == bp->GetIP()) {
+			delete mBreakpoints[i];
+			mBreakpoints[i] = bp;
+			return;
+		}
+	}
+	mBreakpoints.push_back(bp);
+}
+
+void VM::RemoveBreakpoint(unsigned int addr) {
+	for(size_t i = 0; i < mBreakpoints.size(); i++) {
+		if(mBreakpoints[i]->GetIP() == addr) {
+			mBreakpoints.erase(mBreakpoints.begin() + i);
+			break;
+		}
+	}
+}
+
+Breakpoint* VM::FindBreakpoint(unsigned int addr) {
+	for(size_t i = 0; i < mBreakpoints.size(); i++) {
+		if(mBreakpoints[i]->GetIP() == addr) {
+			return mBreakpoints[i];
+		}
+	}
+	return 0;
+}
