@@ -13,19 +13,21 @@
 #pragma once
 
 #include "../IPeripheral.hpp"
+#include "../Processor.hpp"
 
-#define KBD_CTRL_DATA_AVAIL	0x02
-#define KBD_CTRL_POLL		0x10
+#define KBD_CTRL_INTERRUPT	0x01
+#define KBD_CTRL_ENABLE		0x10
 
-#define KBD_STAT_DATA_AVAIL	0x02
-#define KBD_STAT_POLL		0x10
+#define KBD_STAT_DATA_AVAIL	0x01
 
 #define KBD_DATA_PORT		0x60
 #define KBD_STAT_PORT		0x64
 
+#define KBD_IRQ			0x09
+
 class Keyboard : public IPeripheral {
 	public:
-		Keyboard();
+		Keyboard(Processor* proc);
 
 		bool Put8(unsigned int port, unsigned int data);
 		bool Put16(unsigned int port, unsigned int data);
@@ -44,4 +46,6 @@ class Keyboard : public IPeripheral {
 		unsigned char dataBuffer;
 		unsigned char statBuffer;
 		unsigned char ctrlBuffer;
+
+		Processor* mProc;
 };
