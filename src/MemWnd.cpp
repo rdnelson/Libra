@@ -221,6 +221,7 @@ void MemWnd::UpdateGui() {
 	ui->chkParity->setChecked(mVM.GetProc().GetFlag(FLAGS_PF));
 	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
 	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
+	ui->chkInterrupt->setChecked(mVM.GetProc().GetFlag(FLAGS_IF));
 	UpdateMemView();
 
 	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);

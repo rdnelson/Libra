@@ -25,7 +25,7 @@ void VMWorker::run() {
 				emit breakpoint();
 				return;
 			} else if(err > 0) {
-				emit procReturn(err);
+			//	emit procReturn(err);
 			}
 			mVM->notifyReadCallbacks();
 			mVM->notifyWriteCallbacks();
@@ -33,6 +33,7 @@ void VMWorker::run() {
 			updateCtr = (updateCtr + 1) % 300;
 			if(updateCtr == 0)
 				emit stepDone();
+			usleep(50);
 		}
 		emit error(err);
 	} else {

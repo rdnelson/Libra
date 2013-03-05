@@ -12,7 +12,7 @@
 #include "Keyboard.hpp"
 
 //initialize keyboard to polling mode
-Keyboard::Keyboard() : dataBuffer('\0'), statBuffer('\0'), ctrlBuffer(KBD_CTRL_POLL) {
+Keyboard::Keyboard(Processor* proc) : dataBuffer('\0'), statBuffer('\0'), ctrlBuffer(KBD_CTRL_ENABLE), mProc(proc) {
 
 }
 
@@ -24,11 +24,6 @@ bool Keyboard::Put8(unsigned int port, unsigned int data) {
 	} else if (port == KBD_DATA_PORT) {
 		//Writing to the control port by default because no commands are implemented
 		ctrlBuffer = data & 0xFF;
-		//check if data flag is being cleared
-		if(!(ctrlBuffer & KBD_CTRL_DATA_AVAIL)) {
-			//clear the bit in the status register
-			statBuffer = statBuffer & ~(KBD_STAT_DATA_AVAIL);
-		}
 		return true;
 	}
 	return false;
@@ -77,6 +72,11 @@ void Keyboard::Dump() {
 #define LAST_PRINTABLE_CHAR	'~'
 
 void Keyboard::Update(char keyPress, bool) {
+	//Only update if the keyboard is enabled
+	if(!(ctrlBuffer & KBD_CTRL_ENABLE)) {
+		return;
+	}
+
 	//Only update if there's no data waiting
 	if(!(statBuffer & KBD_STAT_DATA_AVAIL)) {
 
@@ -86,5 +86,9 @@ void Keyboard::Update(char keyPress, bool) {
 			statBuffer |= KBD_STAT_DATA_AVAIL;
 		}
 
+	}
+	//Check whether to send an interrupt or not
+	if(ctrlBuffer & KBD_CTRL_INTERRUPT) {
+		mProc->SetInterrupt(KBD_IRQ);
 	}
 }
