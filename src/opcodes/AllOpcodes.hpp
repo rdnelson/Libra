@@ -51,3 +51,7 @@
 #include "Out.hpp"
 #include "In.hpp"
 #include "Rot.hpp"
+#include "Int.hpp"
+#include "Iret.hpp"
+#include "Hlt.hpp"
+#include "StiCli.hpp"

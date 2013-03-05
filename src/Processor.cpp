@@ -18,7 +18,7 @@
 #include <cstring>
 #include <cstdio>
 
-Processor::Processor(Memory& mem): mMem(mem), mLastPort(0xFFFFFFFF), mLastDevice(0) {
+Processor::Processor(Memory& mem): mMem(mem), mLastPort(0xFFFFFFFF), mLastDevice(0), mInterrupt(-1), mHalt(false) {
 
 }
 
@@ -73,6 +73,22 @@ void Processor::_InitializeDevices() {
 //Execute a single instruction
 int Processor::Step() {
 	int retVal = PROC_SUCCESS;
+
+	//Check for interrupts
+	if(GetFlag(FLAGS_IF) && mInterrupt != -1 && mInterrupt >= 0 && mInterrupt <= 255) {
+		PushRegister(REG_FLAGS);
+		SetFlag(FLAGS_IF, false);
+		SetFlag(FLAGS_TF, false);
+		PushRegister(REG_IP);
+		SetRegister(REG_IP, GetMemory(mInterrupt << 2, 2));
+		mInterrupt = -1;
+		mHalt = false;
+		return PROC_SUCCESS;
+	}
+
+	if(mHalt == true) {
+		return PROC_HALT;
+	}
 
 	//Fetch
 	Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
@@ -380,4 +396,9 @@ void Processor::DeviceDump() {
 	for(unsigned int i = 0; i < mDevices.size(); i++) {
 		mDevices[i]->Dump();
 	}
+}
+
+void Processor::SetInterrupt(unsigned char n) {
+
+	mInterrupt = n;
 }
