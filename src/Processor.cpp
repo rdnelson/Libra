@@ -67,7 +67,7 @@ void Processor::_InitializeDevices() {
 	mDevices.clear();
 
 	mDevices.push_back(new Screen());
-	mDevices.push_back(new Keyboard());
+	mDevices.push_back(new Keyboard(const_cast<Processor*>(this)));
 }
 
 //Execute a single instruction
