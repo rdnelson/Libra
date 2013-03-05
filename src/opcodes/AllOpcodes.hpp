@@ -56,3 +56,4 @@
 #include "Hlt.hpp"
 #include "StiCli.hpp"
 #include "Nop.hpp"
+#include "Xlat.hpp"
