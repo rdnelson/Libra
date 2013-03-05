@@ -68,6 +68,7 @@ SOURCES +=\
 	opcodes/Iret.cpp \
 	opcodes/Hlt.cpp \
 	opcodes/StiCli.cpp \
+	opcodes/Nop.cpp \
 	peripherals/Screen.cpp \
 	peripherals/Keyboard.cpp \
 	QMemModel.cpp \
@@ -131,6 +132,7 @@ HEADERS  += MemWnd.hpp \
 	opcodes/Iret.hpp \
 	opcodes/Hlt.hpp \
 	opcodes/StiCli.hpp \
+	opcodes/Nop.hpp \
 	peripherals/Screen.hpp \
 	peripherals/AllPeripherals.hpp \
 	peripherals/Keyboard.hpp \
