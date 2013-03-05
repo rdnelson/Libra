@@ -58,3 +58,4 @@
 #include "Nop.hpp"
 #include "Xlat.hpp"
 #include "Loop.hpp"
+#include "Stos.hpp"
