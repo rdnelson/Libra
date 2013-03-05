@@ -65,6 +65,8 @@ void Processor::_InitializeDevices() {
 		delete mDevices[i];
 	}
 	mDevices.clear();
+	mLastPort = 0xFFFFFFFF;
+	mLastDevice = 0;
 
 	mDevices.push_back(new Screen());
 	mDevices.push_back(new Keyboard(const_cast<Processor*>(this)));
