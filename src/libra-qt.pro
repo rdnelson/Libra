@@ -64,6 +64,10 @@ SOURCES +=\
 	opcodes/Aad.cpp \
 	opcodes/Aaa.cpp \
 	opcodes/Rot.cpp \
+	opcodes/Int.cpp \
+	opcodes/Iret.cpp \
+	opcodes/Hlt.cpp \
+	opcodes/StiCli.cpp \
 	peripherals/Screen.cpp \
 	peripherals/Keyboard.cpp \
 	QMemModel.cpp \
@@ -123,6 +127,10 @@ HEADERS  += MemWnd.hpp \
 	opcodes/Aad.hpp \
 	opcodes/Aaa.hpp \
 	opcodes/Rot.hpp \
+	opcodes/Int.hpp \
+	opcodes/Iret.hpp \
+	opcodes/Hlt.hpp \
+	opcodes/StiCli.hpp \
 	peripherals/Screen.hpp \
 	peripherals/AllPeripherals.hpp \
 	peripherals/Keyboard.hpp \
