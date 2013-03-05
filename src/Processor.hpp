@@ -57,7 +57,7 @@ enum eFlags {
 	FLAGS_TF = 8,
 	FLAGS_IF = 9,
 	FLAGS_DF = 10,
-    FLAGS_OF = 11
+	FLAGS_OF = 11
 };
 
 
@@ -71,6 +71,7 @@ class Processor {
 		void Stop();
 
 		static const int PROC_SUCCESS		=  0;
+		static const int PROC_HALT		=  1;
 		static const int PROC_ERR_INV_ADDR 	= -1;
 		static const int PROC_ERR_INV_INST 	= -2;
 		static const int PROC_ERR_INST		= -3;
@@ -92,6 +93,9 @@ class Processor {
 
 		virtual void SetMemory(Memory::MemoryOffset& addr, unsigned int size, unsigned int val);
 		virtual void SetMemory(size_t offset, unsigned int size, unsigned int val);
+
+		void SetInterrupt(unsigned char n);
+		void Halt() { mHalt = true; }
 
 		void PushRegister(eRegisters reg);
 		void PushValue(unsigned int val);
@@ -131,5 +135,8 @@ class Processor {
 		IPeripheral* mLastDevice;
 
 		unsigned int mStartAddr;
+
+		int mInterrupt;
+		bool mHalt;
 
 };
