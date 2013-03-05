@@ -11,6 +11,8 @@ bool QKbdFilter::eventFilter(QObject*, QEvent* event) {
 		if(kbdEvent->modifiers() & Qt::ControlModifier) {
 			return false;
 		}
+		if(kbdEvent->key() < ' ' || kbdEvent->key() > '~')
+			return false;
 		emit KeyEvent(kbdEvent);
 		return true;
 	}
