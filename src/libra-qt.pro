@@ -71,6 +71,7 @@ SOURCES +=\
 	opcodes/Nop.cpp \
 	opcodes/Xlat.cpp \
 	opcodes/Loop.cpp \
+	opcodes/Stos.cpp \
 	peripherals/Screen.cpp \
 	peripherals/Keyboard.cpp \
 	peripherals/Timer.cpp \
@@ -138,6 +139,7 @@ HEADERS  += MemWnd.hpp \
 	opcodes/Nop.hpp \
 	opcodes/Xlat.hpp \
 	opcodes/Loop.hpp \
+	opcodes/Stos.hpp \
 	peripherals/Screen.hpp \
 	peripherals/AllPeripherals.hpp \
 	peripherals/Keyboard.hpp \
