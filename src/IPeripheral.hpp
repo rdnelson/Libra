@@ -31,7 +31,8 @@ class IPeripheral {
 
 		enum ePeriphTypes {
 			PERIPH_SCREEN,
-			PERIPH_KEYBOARD
+			PERIPH_KEYBOARD,
+			PERIPH_TIMER
 		};
 
 };

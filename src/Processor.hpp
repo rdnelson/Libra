@@ -13,6 +13,7 @@
 #pragma once
 
 #include <vector>
+#include <QTimer>
 
 #include "Instruction.hpp"
 #include "Memory.hpp"
@@ -113,6 +114,8 @@ class Processor {
 		const std::vector<IPeripheral*> & GetDevices() { return mDevices; }
 		const char* GetRegisterHex(eRegisters reg) const;
 
+		void SetTimer(QTimer* timer) { mTimer = timer; }
+
 		void ProcDump();
 		void MemDump();
 		void DeviceDump();
@@ -138,5 +141,6 @@ class Processor {
 
 		int mInterrupt;
 		bool mHalt;
+		QTimer* mTimer;
 
 };

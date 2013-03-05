@@ -49,6 +49,7 @@ public slots:
 
 	void KeyEvent(QKeyEvent*);
 	void setBreakpoint();
+	void TimerEvent();
 
 signals:
 	void vmResume();

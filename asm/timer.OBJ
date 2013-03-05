@@ -1,0 +1,37 @@
+3 36 36 67
+000020000dw    0
+000220000dw    0
+000420000dw    0
+000620000dw    0
+000820000dw    0
+000A20000dw    0
+000C20000dw    0
+000E20000dw    0
+001020000dw    0
+001220000dw    0
+001420000dw    0
+001620000dw    0
+001820000dw    0
+001A20000dw    0
+001C20000dw    0
+001E20000dw    0
+002023A00dw    timer_irq
+002220000dw    0
+00220
+00241FBMAIN:    sti20
+00254C7C24000    mov dx, 40h20
+00294C7C00080    mov ax, 8000h20
+002D1EF    out [dx], ax ;Needs to be changed after the fact to 0xEF20
+002E4C7C24300    mov dx, 43h20
+00323C6C006    mov al, 06h20
+00351EE    out [dx], al20
+00361F4HALT:    hlt20
+00373E9FCFF    jmp halt20
+00370
+003A0TIMER_IRQ:
+003A4C7C2E904    mov dx, 04e9h20
+003E3C6C02E    mov al, '.'20
+00411EE    out [dx], al20
+00421CF    iret20
+00420
+00420end main
