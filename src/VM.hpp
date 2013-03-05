@@ -20,6 +20,7 @@
 #include "Breakpoint.hpp"
 
 class Instruction;
+class QTimer;
 
 class VM {
 
@@ -48,6 +49,8 @@ class VM {
 		inline void AddBreakpoint(Breakpoint* bp) { mBreakpoints.push_back(bp); }
 		inline void notifyReadCallbacks() { mMem.notifyReadCallbacks(); }
 		inline void notifyWriteCallbacks() { mMem.notifyWriteCallbacks(); }
+
+		void SetTimer(QTimer* timer) { mProc.SetTimer(timer); }
 
 		const static unsigned int MEM_SIZE = 0x10000;
 

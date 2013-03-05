@@ -68,6 +68,7 @@ void Processor::_InitializeDevices() {
 
 	mDevices.push_back(new Screen());
 	mDevices.push_back(new Keyboard(const_cast<Processor*>(this)));
+	mDevices.push_back(new Timer(const_cast<Processor*>(this), mTimer));
 }
 
 //Execute a single instruction

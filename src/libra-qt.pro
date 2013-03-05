@@ -70,6 +70,7 @@ SOURCES +=\
 	opcodes/StiCli.cpp \
 	peripherals/Screen.cpp \
 	peripherals/Keyboard.cpp \
+	peripherals/Timer.cpp \
 	QMemModel.cpp \
 	QKbdFilter.cpp
 
@@ -134,6 +135,7 @@ HEADERS  += MemWnd.hpp \
 	peripherals/Screen.hpp \
 	peripherals/AllPeripherals.hpp \
 	peripherals/Keyboard.hpp \
+	peripherals/Timer.hpp \
 	VirgoInstruction.hpp \
 	QMemModel.hpp \
 	QKbdFilter.hpp

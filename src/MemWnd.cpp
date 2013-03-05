@@ -14,6 +14,7 @@
 #include "Breakpoint.hpp"
 #include "peripherals/Screen.hpp"
 #include "peripherals/Keyboard.hpp"
+#include "peripherals/Timer.hpp"
 #include "QKbdFilter.hpp"
 
 #include <iostream>
@@ -36,6 +37,10 @@ MemWnd::MemWnd(QWidget *parent) :
 			scr = (Screen*)mVM.GetDevices().at(i);
 		}
 	}
+
+	QTimer* baseTimer = new QTimer(this);
+	connect(baseTimer, SIGNAL(timeout()), this, SLOT(TimerEvent()));
+	mVM.SetTimer(baseTimer);
 
 	QString s = "";
 	for(unsigned int i = 0; i < scr->GetWidth(); i++)
@@ -370,6 +375,15 @@ void MemWnd::KeyEvent(QKeyEvent* evt) {
 		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_KEYBOARD) {
 			qDebug("Keypress: %d", evt->key());
 			((Keyboard*)mVM.GetDevices().at(i))->Update(evt->key(), evt->type() == QEvent::KeyPress);
+		}
+	}
+}
+
+void MemWnd::TimerEvent() {
+	size_t numDevices = mVM.GetDevices().size();
+	for(size_t i = 0; i < numDevices; i++) {
+		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_TIMER) {
+			((Timer*)mVM.GetDevices().at(i))->Update();
 		}
 	}
 }
