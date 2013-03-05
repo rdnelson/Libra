@@ -135,7 +135,7 @@ HEADERS  += MemWnd.hpp \
 	opcodes/Hlt.hpp \
 	opcodes/StiCli.hpp \
 	opcodes/Nop.hpp \
-	opcodes/Xlat.cpp \
+	opcodes/Xlat.hpp \
 	peripherals/Screen.hpp \
 	peripherals/AllPeripherals.hpp \
 	peripherals/Keyboard.hpp \
