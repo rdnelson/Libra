@@ -70,6 +70,7 @@ SOURCES +=\
 	opcodes/StiCli.cpp \
 	opcodes/Nop.cpp \
 	opcodes/Xlat.cpp \
+	opcodes/Loop.cpp \
 	peripherals/Screen.cpp \
 	peripherals/Keyboard.cpp \
 	peripherals/Timer.cpp \
@@ -136,6 +137,7 @@ HEADERS  += MemWnd.hpp \
 	opcodes/StiCli.hpp \
 	opcodes/Nop.hpp \
 	opcodes/Xlat.hpp \
+	opcodes/Loop.hpp \
 	peripherals/Screen.hpp \
 	peripherals/AllPeripherals.hpp \
 	peripherals/Keyboard.hpp \

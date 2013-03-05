@@ -153,6 +153,7 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(StiCli);
 	OPCODE(Nop);
 	OPCODE(Xlat);
+	OPCODE(Loop);
 
 	NumOpcodes = AllInstructions.size();
 }
