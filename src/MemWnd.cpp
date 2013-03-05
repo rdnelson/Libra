@@ -103,6 +103,11 @@ void MemWnd::loadObjFile() {
 
 	QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Flat Binary (*.*);;Virgo Object (*.obj)"));
 	mFile = file;
+	if(mVM.isLoaded()) {
+		emit vmPause();
+		mVMWorker->wait(200);
+		mVM.Stop();
+	}
 	mVM.LoadVirgoFile(file.toStdString().c_str());
 	if(mVM.isLoaded()) {
 		ui->actionReload_File->setEnabled(true);
