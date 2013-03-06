@@ -33,6 +33,7 @@ class Pop : public Instruction {
 			POP_SS		= 0x17,
 			POP_DS		= 0x1F,
 			POP_ES		= 0x07,
+			POPF		= 0x9D,
 		};
 
 		static const unsigned int POP_SUB_OPCODE = 0x00;

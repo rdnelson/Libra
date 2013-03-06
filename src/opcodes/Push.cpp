@@ -104,6 +104,16 @@ Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			newPush->SetOperand(Operand::DST, dst);
 			break;
 		}
+		case PUSHF:
+		{
+			Operand* dst = new RegisterOperand(REG_FLAGS, proc);
+			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
+			GETINST(preSize + 1 + dst->GetBytecodeLen());
+			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
+			newPush->SetOperand(Operand::DST, dst);
+			break;
+		}
+
 	}
 	return newPush;
 
