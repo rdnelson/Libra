@@ -61,3 +61,4 @@
 #include "Stos.hpp"
 #include "Scas.hpp"
 #include "Sbb.hpp"
+#include "Lods.hpp"
