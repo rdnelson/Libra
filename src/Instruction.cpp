@@ -156,6 +156,7 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Loop);
 	OPCODE(Stos);
 	OPCODE(Scas);
+	OPCODE(Sbb);
 
 	NumOpcodes = AllInstructions.size();
 }
