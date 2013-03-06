@@ -73,6 +73,7 @@ SOURCES +=\
 	opcodes/Loop.cpp \
 	opcodes/Stos.cpp \
 	opcodes/Scas.cpp \
+	opcodes/Sbb.cpp \
 	peripherals/Screen.cpp \
 	peripherals/Keyboard.cpp \
 	peripherals/Timer.cpp \
@@ -142,6 +143,7 @@ HEADERS  += MemWnd.hpp \
 	opcodes/Loop.hpp \
 	opcodes/Stos.hpp \
 	opcodes/Scas.hpp \
+	opcodes/Sbb.hpp \
 	peripherals/Screen.hpp \
 	peripherals/AllPeripherals.hpp \
 	peripherals/Keyboard.hpp \
