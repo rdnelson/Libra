@@ -158,6 +158,7 @@ void Instruction::InitializeOpcodes() {
 	OPCODE(Scas);
 	OPCODE(Sbb);
 	OPCODE(Lods);
+	OPCODE(Movs);
 
 	NumOpcodes = AllInstructions.size();
 }
