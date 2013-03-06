@@ -83,6 +83,16 @@ Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			newPop->SetOperand(Operand::DST, dst);
 			break;
 		}
+		case POPF:
+		{
+			Operand* dst = new RegisterOperand(REG_FLAGS, proc);
+			snprintf(buf, 65, "POP %s", dst->GetDisasm().c_str());
+			GETINST(preSize + 1 + dst->GetBytecodeLen());
+			newPop = new Pop(pre, buf, inst, (unsigned char)*opLoc);
+			newPop->SetOperand(Operand::DST, dst);
+			break;
+		}
+
 	}
 	return newPop;
 
