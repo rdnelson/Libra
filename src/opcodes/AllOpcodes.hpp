@@ -59,3 +59,4 @@
 #include "Xlat.hpp"
 #include "Loop.hpp"
 #include "Stos.hpp"
+#include "Scas.hpp"
