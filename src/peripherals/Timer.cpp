@@ -86,7 +86,7 @@ void Timer::Dump() {
 
 void Timer::Update() {
 	mProc->SetInterrupt(TIMER_IRQ);
-	if(mTimer) {
+	if(mTimer && dataBuffer != 0) {
 		mTimer->setInterval(TIMER_FREQ/dataBuffer);
 		mTimer->start();
 	}
