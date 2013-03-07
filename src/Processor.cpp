@@ -48,6 +48,7 @@ int Processor::Initialize(unsigned int startAddr) {
 	SetRegister(REG_DI, 0x0000);
 	SetRegister(REG_FLAGS, 0x0000);
 	SetRegister(REG_IP, startAddr);
+	mHalt = false;
 
 	_InitializeDevices();
 
