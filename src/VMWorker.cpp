@@ -33,6 +33,7 @@ void VMWorker::run() {
 			updateCtr = (updateCtr + 1) % 300;
 			if(updateCtr == 0)
 				emit stepDone();
+			//This prevents CPU Burning, currently a randomly small value
 			usleep(50);
 		}
 		emit error(err);
@@ -41,17 +42,6 @@ void VMWorker::run() {
 	}
 }
 
-void VMWorker::step() {
-	if(mVM && mVM->isLoaded()) {
-		//mVM->Step();
-		emit stepDone();
-	} else {
-		emit quit();
-	}
-}
-
 void VMWorker::pause() {
-	if(mVM && mVM->isLoaded()) {
 		mPaused = true;
-	}
 }

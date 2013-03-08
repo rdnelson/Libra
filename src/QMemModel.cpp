@@ -31,7 +31,7 @@ QVariant QMemModel::headerData(int section, Qt::Orientation orientation, int rol
 		if(orientation == Qt::Horizontal) {
 			return QString("%1").arg(section, 0, 16).toUpper();
 		} else if(orientation == Qt::Vertical) {
-			return QString("0x" + QString("%1").arg(section * 0x10, 4, 16, QChar('0')).toUpper());
+			return QString(QString("%1").arg(section * 0x10, 4, 16, QChar('0')).toUpper());
 		}
 	}
 	return QVariant();
@@ -63,7 +63,7 @@ void QMemModel::setItem(int row, int col, char data, bool bUpdate) {
 		update();
 }
 
-void QMemModel::copyData(const unsigned char *data) {
+void QMemModel::setDataPtr(const unsigned char *data) {
 	mData = (unsigned char*)data;
 }
 

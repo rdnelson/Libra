@@ -17,158 +17,129 @@
 #include "peripherals/Timer.hpp"
 #include "QKbdFilter.hpp"
 
+#include <QTimer>
 #include <iostream>
 
-MemWnd::MemWnd(QWidget *parent) :
+MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MemWnd),
 	mFile("")
 {
+	//Setup the ui object (Qt Mandatory)
 	ui->setupUi(this);
+
+	//Initialize the keyboard filter
 	QKbdFilter* kbdFilter = new QKbdFilter();
 	this->connect(kbdFilter, SIGNAL(KeyEvent(QKeyEvent*)), this, SLOT(KeyEvent(QKeyEvent*)));
 	this->installEventFilter(kbdFilter);
-	//setWindowFlags(windowFlags() ^ Qt::WindowMaximizeButtonHint);
 
-	Screen* scr = 0;
-	unsigned int numDevices = mVM.GetDevices().size();
-	for(unsigned int i = 0; i < numDevices; i++) {
-		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_SCREEN) {
-			scr = (Screen*)mVM.GetDevices().at(i);
-		}
-	}
 
-	QTimer* baseTimer = new QTimer(this);
-	connect(baseTimer, SIGNAL(timeout()), this, SLOT(TimerEvent()));
-	mVM.SetTimer(baseTimer);
+	//Create a temporary screen, because the processor isn't initialized until a file is loaded
+	Screen scr;
 
-	QString s = "";
-	for(unsigned int i = 0; i < scr->GetWidth(); i++)
-		s.append(" ");
-	s.append('\n');
-	QString str = "";
-	for(unsigned int i = 0; i < scr->GetHeight(); i++) {
-		str.append(s);
-	}
-
-	//setup screen
+	//Initialize font size, and contents of screen
+	std::string strScreen = scr.GetStr();
 	QFont fnt = ui->textBrowser->font();
 	fnt.setPixelSize(15);
 	ui->textBrowser->setFont(fnt);
-	ui->textBrowser->setPlainText(str);
+	ui->textBrowser->setPlainText(QString::fromAscii(strScreen.data(), strScreen.size()));
 
-	ui->textBrowser->resize(ui->textBrowser->fontMetrics().width(s) + 10, ui->textBrowser->fontMetrics().height() * scr->GetHeight() + 10);
+	//Calculate font metrics for setting screen size
+	ui->textBrowser->resize(ui->textBrowser->fontMetrics().width(' ') * scr.GetWidth() + 10,
+							ui->textBrowser->fontMetrics().height() * scr.GetHeight() + 10);
 	ui->textBrowser->setFixedSize(ui->textBrowser->size());
 
-
 	//connect menubar actions
-	this->connect(this->ui->action_Open, SIGNAL(triggered()),this, SLOT(loadObjFile()));
-	this->connect(this->ui->actionRun, SIGNAL(triggered()), this, SLOT(runVM()));
+	this->connect(this->ui->action_Open, SIGNAL(triggered()),this, SLOT(loadObjFile_Clicked()));
+	this->connect(this->ui->actionRun, SIGNAL(triggered()), this, SLOT(runVM_Clicked()));
 	this->connect(this->ui->actionPause, SIGNAL(triggered()), this, SLOT(pauseVM_Clicked()));
 	this->connect(this->ui->actionStop, SIGNAL(triggered()), this, SLOT(stopVM_Clicked()));
-	this->connect(this->ui->actionStep_Into, SIGNAL(triggered()), this, SLOT(stepInVM()));
-	this->connect(this->ui->actionStep_Over, SIGNAL(triggered()), this, SLOT(stepOverVM()));
-	this->connect(this->ui->actionStep_Out, SIGNAL(triggered()), this, SLOT(stepOutVM()));
-	this->connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(appQuit()));
-	this->connect(this->ui->actionReload_File, SIGNAL(triggered()), this, SLOT(reloadObjFile()));
-	this->connect(this->ui->actionBreakpoint, SIGNAL(triggered()), this, SLOT(setBreakpoint()));
+	this->connect(this->ui->actionStep_Into, SIGNAL(triggered()), this, SLOT(stepInVM_Clicked()));
+	this->connect(this->ui->actionStep_Over, SIGNAL(triggered()), this, SLOT(stepOverVM_Clicked()));
+	this->connect(this->ui->actionStep_Out, SIGNAL(triggered()), this, SLOT(stepOutVM_Clicked()));
+	this->connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(appQuit_Clicked()));
+	this->connect(this->ui->actionReload_File, SIGNAL(triggered()), this, SLOT(reloadObjFile_Clicked()));
+	this->connect(this->ui->actionBreakpoint, SIGNAL(triggered()), this, SLOT(toggleBreakpoint_Clicked()));
 
-	QMemModel* model = new QMemModel(this);
-	model->copyData(mVM.GetMemPtr());
+	//Create the memory view model
+	QMemModel* memModel = new QMemModel(this);
+	memModel->setDataPtr(mVM.GetMemPtr());
 
-	int width = ui->tableView->fontMetrics().width('F') * 4;
-	ui->tableView->setModel(model);
+	//Setup the memory view control
+	int width = ui->tableView->fontMetrics().width(' ') * 3;
+	ui->tableView->setModel(memModel);
+	ui->tableView->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
+	ui->tableView->verticalHeader()->setResizeMode(QHeaderView::Fixed);
 	for(int i = 0; i < 0x10; i++) {
 		ui->tableView->setColumnWidth(i, width);
 	}
-	ui->tableView->setMaximumWidth(width * 0x14);
+	ui->tableView->setFixedWidth(width/3 * (3 * 17 + 5));
 
+	//Create the VMWorker and hook it up to the slots on the GUI.
 	mVMWorker = new VMWorker(&mVM);
-	connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
-	connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(vmBreakpoint()));
-	connect(mVMWorker, SIGNAL(runDone()), this, SLOT(vmDone()));
-	connect(mVMWorker, SIGNAL(paused()), this, SLOT(vmPaused()));
+	connect(mVMWorker, SIGNAL(breakpoint()), this, SLOT(workerBreakpoint()));
+	connect(mVMWorker, SIGNAL(runDone()), this, SLOT(workerRunDone()));
+	connect(mVMWorker, SIGNAL(paused()), this, SLOT(workerPaused()));
+	connect(mVMWorker, SIGNAL(stepDone()), this, SLOT(workerStepDone()));
+	connect(mVMWorker, SIGNAL(error(int)), this, SLOT(workerRunError(int)));
+	connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
 	connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
 	connect(this, SIGNAL(vmStep()), mVMWorker, SLOT(step()));
 	connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
-	connect(mVMWorker, SIGNAL(stepDone()), this, SLOT(stepDone()));
-	connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
-	connect(mVMWorker, SIGNAL(error(int)), this, SLOT(vmRunError(int)));
 
+	//Initialize the timer's QTimer object
+	QTimer* baseTimer = new QTimer();
+	connect(baseTimer, SIGNAL(timeout()), this, SLOT(TimerEvent()));
+	mVM.SetTimer(baseTimer);
+	baseTimer->moveToThread(mVMWorker);
 
+	//Now that everything is initialized, see if we can load the provided file
+	if(file != 0) {
+		mFile = QString::fromAscii(file);
+		loadFile(false);
+		if(!mVM.isLoaded()) {
+			mFile = "";
+		}
+	}
 }
 
 MemWnd::~MemWnd()
 {
+	mVMWorker->terminate();
 	delete mVMWorker;
 	delete ui;
 }
 
-void MemWnd::loadObjFile() {
+/*
+ * GUI Action Handler Section
+ */
 
-	QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Flat Binary (*.*);;Virgo Object (*.obj)"));
-	mFile = file;
-	if(mVM.isLoaded()) {
-		emit vmPause();
-		mVMWorker->wait(200);
-		mVM.Stop();
-	}
-	mVM.LoadVirgoFile(file.toStdString().c_str());
-	if(mVM.isLoaded()) {
-		ui->actionReload_File->setEnabled(true);
-		ui->actionRun->setEnabled(true);
-		ui->actionStop->setEnabled(false);
-		ui->actionStep_Into->setEnabled(true);
-		ui->actionStep_Over->setEnabled(true);
-		ui->actionStep_Out->setEnabled(true);
+void MemWnd::appQuit_Clicked() {
 
+	emit vmPause();
+	//Give the VM 1 second to shut down, if it fails, quit anyways.
+	mVMWorker->wait(1000);
+	qApp->exit();
+}
+
+void MemWnd::loadObjFile_Clicked() {
+	loadFile(true);
+}
+
+void MemWnd::reloadObjFile_Clicked() {
+	loadFile(false);
+}
+
+void MemWnd::runVM_Clicked() {
+	//Ensure a file is loaded
+	if(mVM.isLoaded()){
+		//Update the memory control, and clear highlighting
 		UpdateMemView();
 
-		ui->lstInstructions->clear();
-		mVM.Disassemble();
-		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
-			ui->lstInstructions->addItem(mVM.GetInstructionStr(i).c_str());
-			ui->lstInstructions->item(i)->setFlags(ui->lstInstructions->item(i)->flags() | Qt::ItemIsUserCheckable);
-			ui->lstInstructions->item(i)->setCheckState(Qt::Unchecked);
-		}
-		UpdateGui();
-	}
-}
-
-void MemWnd::reloadObjFile() {
-	stopVM_Clicked();
-	if(mFile != "") {
-		mVM.LoadVirgoFile(mFile.toStdString().c_str());
-		if(mVM.isLoaded()) {
-			ui->actionReload_File->setEnabled(true);
-			ui->actionRun->setEnabled(true);
-			ui->actionStop->setEnabled(false);
-			ui->actionStep_Into->setEnabled(true);
-			ui->actionStep_Over->setEnabled(true);
-			ui->actionStep_Out->setEnabled(true);
-
-			UpdateMemView();
-
-			ui->lstInstructions->clear();
-			mVM.Disassemble();
-			for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
-				ui->lstInstructions->addItem(mVM.GetInstructionStr(i).c_str());
-				ui->lstInstructions->item(i)->setFlags(ui->lstInstructions->item(i)->flags() | Qt::ItemIsUserCheckable);
-				ui->lstInstructions->item(i)->setCheckState(Qt::Unchecked);
-			}
-			UpdateGui();
-		}
-	}
-}
-
-void MemWnd::runVM() {
-	if(mVM.isLoaded()){
-		QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
-		if(qMemModel) {
-			qMemModel->ClearHighlights();
-			qMemModel->update();
-		}
+		//Disable focus (helps with keyboard input)
 		ui->tableView->setFocusPolicy(Qt::NoFocus);
+
+		//Clear all highlighting except breakpoints
 		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 			if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i)))
 				ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
@@ -176,49 +147,221 @@ void MemWnd::runVM() {
 				ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
 		}
 
+		//Disable all the run actions
 		DisableRun(0);
+
+		//start the vmworker thread to run the program
 		mVMWorker->start();
+
+		//Enable the stop button
+		ui->actionStop->setEnabled(true);
 	}
-	ui->actionStop->setEnabled(true);
 }
 
-void MemWnd::vmBreakpoint() {
+void MemWnd::stepInVM_Clicked() {
+	//Ensure program is loaded
+	if(mVM.isLoaded()) {
+		//Step once, and check for errors
+		int err = mVM.Step();
+		if(err < 0) {
+			//Something bad happened, program can't go any further
+			DisableRun(err);
+		}
+
+		//Enable stop (if it isn't already) because the program state can be reinitialized now
+		ui->actionStop->setEnabled(true);
+
+		//Update the entire gui
+		UpdateGui();
+
+		//Notify all Memory Logging functions to update their logs
+		mVM.notifyReadCallbacks();
+		mVM.notifyWriteCallbacks();
+	}
+}
+
+void MemWnd::stepOutVM_Clicked() {
+	//Ensure a file is loaded
+	if(mVM.isLoaded()) {
+		//Execute a step and check for errors
+		int err = mVM.Step();
+		//Loop until a RET is executed
+		while(err != Instruction::RET_CALLED) {
+			//Even if RET hasn't been hit, the program crashed, time to stop
+			if(err < 0) {
+				DisableRun(err);
+				break;
+			}
+			//Execute another instruction in the search for a RET
+			err = mVM.Step();
+		}
+		//Enable Stop, cause the program crashed.
+		ui->actionStop->setEnabled(true);
+
+		//Update the entire gui
+		UpdateGui();
+	}
+}
+
+void MemWnd::stepOverVM_Clicked() {
+	//Ensure a file is loaded
+	if(mVM.isLoaded()) {
+		//Execute one step and check for errors
+		int err = mVM.Step();
+		//check if a CALL was executed
+		if(err == Instruction::CALL_CALLED) {
+			//One CALL was executed
+			unsigned int numCall = 1;
+			//Until all calls have been returned from
+			while(numCall) {
+				//Execute another instruction in the search for enough RET
+				err = mVM.Step();
+				//This CALL has to be returned from as well
+				if(err == Instruction::CALL_CALLED) {
+					numCall++;
+				} else if(err == Instruction::RET_CALLED) {
+					numCall--;
+				} else if(err < 0) {
+					//Errors still cause problems
+					DisableRun(err);
+					break;
+				}
+			}
+		} else if(err < 0) {
+			//This is incase an error happened without a CALL happening
+			DisableRun(err);
+		}
+
+		ui->actionStop->setEnabled(true);
+		UpdateGui();
+	}
+}
+
+void MemWnd::pauseVM_Clicked() {
+	if(mVM.isLoaded()) {
+		emit vmPause();
+		UpdateGui();
+	}
+}
+
+void MemWnd::stopVM_Clicked() {
+	if(mVM.isLoaded()) {
+		emit vmPause();
+		mVMWorker->wait(200);
+		mVM.Stop();
+		UpdateGui();
+	}
+	ui->actionStop->setEnabled(false);
+}
+
+void MemWnd::toggleBreakpoint_Clicked() {
+	//Check if a breakpoint already exists on this line
+	Breakpoint* bp = mVM.FindBreakpoint(mVM.GetInstructionAddr(ui->lstInstructions->currentRow()));
+	if(bp != 0) {
+		//Remove any existing breakpoints
+		mVM.RemoveBreakpoint(bp->GetIP());
+		return;
+	}
+	//Create a new unconditional breakpoint
+	bp = new Breakpoint(mVM.GetInstructionAddr(ui->lstInstructions->currentRow()));
+	mVM.AddBreakpoint(bp);
+	//Highlight the new breakpoint
+	ui->lstInstructions->currentItem()->setBackgroundColor(Qt::red);
+}
+
+/*
+ * File loading functions
+ */
+
+void MemWnd::loadFile(bool newFile) {
+
+	//Open a file dialog if this is loading a new object file
+	if(newFile) {
+		QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Flat Binary (*.*);;Virgo Object (*.obj)"));
+		mFile = file;
+	}
+	
+	//Stop the VMWorker if the current program is running
+	if(mVM.isLoaded()) {
+		emit vmPause();
+		mVMWorker->wait(200);
+		mVM.Stop();
+	}
+
+	//Sanity check for mFile
+	if(mFile != "") {
+		mVM.LoadVirgoFile(mFile.toStdString().c_str());
+
+		//Ensure the loading succeeded
+		if(mVM.isLoaded()) {
+
+			//Enable the proper buttons
+			ui->actionReload_File->setEnabled(true);
+			ui->actionRun->setEnabled(true);
+			ui->actionStop->setEnabled(false);
+			ui->actionStep_Into->setEnabled(true);
+			ui->actionStep_Over->setEnabled(true);
+			ui->actionStep_Out->setEnabled(true);
+
+			//Initialize the instruction listing
+			ui->lstInstructions->clear();
+			mVM.Disassemble();
+			for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
+				ui->lstInstructions->addItem(mVM.GetInstructionStr(i).c_str());
+			}
+
+			//Update all the other controls
+			UpdateGui();
+		}
+	}
+}
+
+
+
+/*
+ * VMWorker Signal Handler Section
+ */
+
+//Breakpoint Hit
+void MemWnd::workerBreakpoint() {
 
 	EnableRun();
 	UpdateGui();
 
 }
-
-void MemWnd::vmDone() {
+//Program execution complete
+void MemWnd::workerRunDone() {
 	this->setWindowTitle("VM Stopped");
 	ui->tableView->setFocusPolicy(Qt::WheelFocus);
 	UpdateGui();
-
 }
-
-void MemWnd::vmRunError(int err) {
+//Program execution error
+void MemWnd::workerRunError(int err) {
 	UpdateGui();
 	DisableRun(err);
 }
-
-void MemWnd::vmPaused() {
+//Program paused
+void MemWnd::workerPaused() {
 	UpdateGui();
 	ui->tableView->setFocusPolicy(Qt::WheelFocus);
 	EnableRun();
 }
-
-void MemWnd::stepDone() {
+//Program step complete
+void MemWnd::workerStepDone() {
 	UpdateScreen();
+	mVM.notifyReadCallbacks();
+	mVM.notifyWriteCallbacks();
 }
 
+/*
+ * GUI Update Function Section
+ */
+
 void MemWnd::UpdateGui() {
-	unsigned int numDevices = mVM.GetDevices().size();
-	for(unsigned int i = 0; i < numDevices; i++) {
-		//found a screen
-		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_SCREEN) {
-			ui->textBrowser->setPlainText(mVM.GetDevices().at(i)->GetStr().c_str());
-		}
-	}
+
+	UpdateScreen();
+	
+	//Update all of the register and flag boxes
 	ui->txtAX->setText(mVM.GetProc().GetRegisterHex(REG_AX));
 	ui->txtBX->setText(mVM.GetProc().GetRegisterHex(REG_BX));
 	ui->txtCX->setText(mVM.GetProc().GetRegisterHex(REG_CX));
@@ -236,8 +379,10 @@ void MemWnd::UpdateGui() {
 	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
 	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
 	ui->chkInterrupt->setChecked(mVM.GetProc().GetFlag(FLAGS_IF));
+
 	UpdateMemView();
 
+	//Update the instruction listing highlight state
 	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
 	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 		if(mVM.GetInstructionAddr(i) == ip) {
@@ -249,162 +394,92 @@ void MemWnd::UpdateGui() {
 			ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
 		}
 	}
-	QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
-	if(qMemModel) {
-		qMemModel->ClearHighlights();
-		qMemModel->Highlight(ip,mVM.CalcInstructionLen(),Qt::yellow);
-		qMemModel->update();
-	}
 
+	UpdateMemView(ip, mVM.CalcInstructionLen());
 }
 
 void MemWnd::UpdateScreen() {
+	//Search for the screen
 	unsigned int numDevices = mVM.GetDevices().size();
 	for(unsigned int i = 0; i < numDevices; i++) {
 		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_SCREEN) {
+			//Found the screen, now update the screen control
 			ui->textBrowser->setPlainText(mVM.GetDevices().at(i)->GetStr().c_str());
+			break;
 		}
 	}
 }
 
-void MemWnd::UpdateMemView() {
+void MemWnd::UpdateMemView(unsigned int ip, unsigned int len) {
 	QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
-	//Remove execution highlighting
-	qMemModel->ClearHighlights();
-	//Let the GUI know that there are memory changes
-	qMemModel->update();
-}
-
-void MemWnd::stepInVM() {
-	if(mVM.isLoaded()) {
-		int err = mVM.Step();
-		if(err < 0) {
-			DisableRun(err);
+	if(qMemModel) {
+		//Remove execution highlighting
+		qMemModel->ClearHighlights();
+		if(len != 0) {
+			qMemModel->Highlight(ip & 0xFFFF, len, Qt::yellow);
 		}
-		ui->actionStop->setEnabled(true);
-		UpdateGui();
-		mVM.notifyReadCallbacks();
-		mVM.notifyWriteCallbacks();
+		//Let the GUI know that there are memory changes
+		qMemModel->update();
 	}
 }
-
-void MemWnd::stepOutVM() {
-
-	if(mVM.isLoaded()) {
-		int err = mVM.Step();
-		while(err != Instruction::RET_CALLED) {
-			if(err < 0) {
-				DisableRun(err);
-				break;
-			}
-			err = mVM.Step();
-		}
-		ui->actionStop->setEnabled(true);
-		UpdateGui();
-	}
-
-}
-
-void MemWnd::stepOverVM() {
-	if(mVM.isLoaded()) {
-		int err = mVM.Step();
-		if(err == Instruction::CALL_CALLED) {
-			unsigned int numCall = 1;
-			while(numCall) {
-				err = mVM.Step();
-				if(err == Instruction::CALL_CALLED) {
-					numCall++;
-				} else if(err == Instruction::RET_CALLED) {
-					numCall--;
-				} else if(err < 0) {
-					DisableRun(err);
-					break;
-				}
-			}
-		} else if(err < 0) {
-			DisableRun(err);
-		}
-		ui->actionStop->setEnabled(true);
-		UpdateGui();
-	}
-}
-
-void MemWnd::pauseVM_Clicked() {
-	if(mVM.isLoaded()) {
-		emit vmPause();
-	}
-}
-
-void MemWnd::stopVM_Clicked() {
-	if(mVM.isLoaded()) {
-		emit vmPause();
-		mVMWorker->wait(200);
-		mVM.Stop();
-		UpdateGui();
-	}
-}
-
 
 void MemWnd::DisableRun(int err) {
-	switch(err) {
-	case Processor::PROC_ERR_INV_INST:
-		QMessageBox::information(this, tr("Execution Halted"), tr("Encountered an unknown instruction, execution is stopping."));
-		break;
-	case Processor::PROC_ERR_INST:
-		QMessageBox::information(this, tr("Execution Halted"), tr("Encountered a malformed instruction, execution is stopping."));
-		break;
-	}
 
+	//Disable the run actions
 	ui->actionRun->setEnabled(false);
-	ui->actionPause->setEnabled(true);
 	ui->actionStep_Into->setEnabled(false);
 	ui->actionStep_Out->setEnabled(false);
 	ui->actionStep_Over->setEnabled(false);
+	
+	//Check for an error
+	switch(err) {
+	case Processor::PROC_ERR_INV_INST:
+		QMessageBox::information(this, tr("Execution Halted"), tr("Encountered an unknown instruction, execution is stopping."));
+		return;
+	case Processor::PROC_ERR_INST:
+		QMessageBox::information(this, tr("Execution Halted"), tr("Encountered a malformed instruction, execution is stopping."));
+		return;
+	}
+
+	//Only re-enable pause if there's no error
+	ui->actionPause->setEnabled(true);
 }
 
 void MemWnd::EnableRun() {
+	//Enable all the run commands
 	ui->actionRun->setEnabled(true);
-	ui->actionPause->setEnabled(false);
 	ui->actionStep_Into->setEnabled(true);
 	ui->actionStep_Out->setEnabled(true);
 	ui->actionStep_Over->setEnabled(true);
+
+	//Disable pause. Leave stop enabled, because it's valid to stop execution while paused.
+	ui->actionPause->setEnabled(false);
 }
 
-void MemWnd::appQuit() {
-
-	emit vmPause();
-	//Give the VM 1 second to shut down, if it fails, quit anyways.
-	mVMWorker->wait(1000);
-	qApp->exit();
-}
+/*
+ * Peripheral Event Handlers
+ */
 
 void MemWnd::KeyEvent(QKeyEvent* evt) {
-
+	//Search for a keyboard
 	unsigned int numDevices = mVM.GetDevices().size();
 	for(unsigned int i = 0; i < numDevices; i++) {
-		//found a screen
 		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_KEYBOARD) {
+			//found the keyboard, dispatch the keypress event
 			((Keyboard*)mVM.GetDevices().at(i))->Update(evt->key(), evt->type() == QEvent::KeyPress);
+			break;
 		}
 	}
 }
 
-void MemWnd::setBreakpoint() {
-	Breakpoint* bp = mVM.FindBreakpoint(mVM.GetInstructionAddr(ui->lstInstructions->currentRow()));
-	if(bp != 0) {
-		mVM.RemoveBreakpoint(bp->GetIP());
-		return;
-	}
-	bp = new Breakpoint(mVM.GetInstructionAddr(ui->lstInstructions->currentRow()));
-	mVM.AddBreakpoint(bp);
-	ui->lstInstructions->currentItem()->setBackgroundColor(Qt::red);
-}
-
 void MemWnd::TimerEvent() {
+	//Search for the timer
 	size_t numDevices = mVM.GetDevices().size();
 	for(size_t i = 0; i < numDevices; i++) {
 		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_TIMER) {
+			//Found timer, dispatch the elapsed event
 			((Timer*)mVM.GetDevices().at(i))->Update();
+			break;
 		}
 	}
 }
