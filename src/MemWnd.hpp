@@ -17,38 +17,37 @@ class MemWnd : public QMainWindow
 	Q_OBJECT
 
 public:
-	explicit MemWnd(QWidget *parent = 0);
+	explicit MemWnd(const char* const file = 0, QWidget *parent = 0);
+
 	~MemWnd();
 
 public slots:
-	//action slots
-	void loadObjFile();
-	void reloadObjFile();
-	void stepInVM();
-	void stepOutVM();
-	void stepOverVM();
-	void runVM();
-	void appQuit();
-	//trigger on pause
-	void pauseVM_Clicked();
 
-	//trigger on stop
+	//GUI action slots
+	void loadObjFile_Clicked();
+	void reloadObjFile_Clicked();
+	void stepInVM_Clicked();
+	void stepOutVM_Clicked();
+	void stepOverVM_Clicked();
+	void runVM_Clicked();
+	void appQuit_Clicked();
+	void pauseVM_Clicked();
 	void stopVM_Clicked();
+	void toggleBreakpoint_Clicked();
 
 	//VMWorker Slots
 	//trigger on breakpoint
-	void vmBreakpoint();
+	void workerBreakpoint();
 	//trigger on run finished
-	void vmDone();
+	void workerRunDone();
 	//trigger on step completion
-	void stepDone();
+	void workerStepDone();
 	//trigger on run error
-	void vmRunError(int err);
+	void workerRunError(int err);
 	//trigger on run paused
-	void vmPaused();
+	void workerPaused();
 
 	void KeyEvent(QKeyEvent*);
-	void setBreakpoint();
 	void TimerEvent();
 
 signals:
@@ -60,9 +59,10 @@ private:
 	Ui::MemWnd *ui;
 	VMWorker* mVMWorker;
 
+	void loadFile(bool newFile = false);
 	void UpdateScreen();
 	void UpdateGui();
-	void UpdateMemView();
+	void UpdateMemView(unsigned int ip = 0xFFFFFFFF, unsigned int len = 0);
 	void DisableRun(int err);
 	void EnableRun();
 

@@ -1,4 +1,3 @@
-#include <QMessageBox>
 #include "QKbdFilter.hpp"
 
 QKbdFilter::QKbdFilter(QObject* parent) : QObject(parent), mDisabled(false) {

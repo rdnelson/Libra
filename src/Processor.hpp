@@ -13,12 +13,13 @@
 #pragma once
 
 #include <vector>
-#include <QTimer>
 
 #include "Instruction.hpp"
 #include "Memory.hpp"
 #include "Register.hpp"
 #include "IPeripheral.hpp"
+
+class QTimer;
 
 enum eRegisters {
 	REG_AX,

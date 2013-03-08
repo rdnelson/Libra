@@ -16,8 +16,13 @@
 int main(int argc, char* argv[]) {
 
 	QApplication a(argc, argv);
-	MemWnd w;
-	w.show();
+	MemWnd* w = 0;
+	if(argc > 1) {
+		w = new MemWnd(argv[argc - 1]);
+	} else {
+		w = new MemWnd();
+	}
+	w->show();
 
 	return a.exec();
 }

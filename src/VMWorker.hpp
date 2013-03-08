@@ -14,7 +14,6 @@ public:
     static const int VM_NOT_LOADED = 0xFF;
 
 public slots:
-    void step();
     void run();
     void pause();
 
