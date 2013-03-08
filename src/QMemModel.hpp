@@ -16,7 +16,7 @@ public:
 	void setItem(int row, int col, char data, bool bUpdate = false);
 	void update();
 	bool setData(const QModelIndex &index, const QVariant &value, int role);
-	void copyData(const unsigned char* data);
+	void setDataPtr(const unsigned char* data);
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 	void Highlight(const int addr, const int len, const QColor color);
 	void ClearHighlights() { mHighlight.clear(); }
