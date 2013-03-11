@@ -20,7 +20,7 @@
 00220
 00241FBMAIN:    sti20
 00254C7C24000    mov dx, 40h20
-00294C7C00080    mov ax, 8000h20
+00294C7C08000    mov ax, 0080h20
 002D1EF    out [dx], ax ;Needs to be changed after the fact to 0xEF20
 002E4C7C24300    mov dx, 43h20
 00323C6C006    mov al, 06h20

@@ -71,12 +71,16 @@ void Processor::_InitializeDevices() {
 
 	mDevices.push_back(new Screen());
 	mDevices.push_back(new Keyboard(const_cast<Processor*>(this)));
-	mDevices.push_back(new Timer(const_cast<Processor*>(this), mTimer));
+	mDevices.push_back(new Timer(const_cast<Processor*>(this)));
 }
 
 //Execute a single instruction
 int Processor::Step() {
 	int retVal = PROC_SUCCESS;
+
+	for(size_t i = 0; i < mDevices.size(); i++) {
+		mDevices[i]->Update();
+	}
 
 	//Check for interrupts
 	if(GetFlag(FLAGS_IF) && mInterrupt != -1 && mInterrupt >= 0 && mInterrupt <= 255) {
