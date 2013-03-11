@@ -23,11 +23,9 @@
 #define TIMER_IRQ		0x08
 #define TIMER_FREQ		1193182
 
-class QTimer;
-
 class Timer : public IPeripheral {
 	public:
-		Timer(Processor* proc, QTimer* timer);
+		Timer(Processor* proc);
 
 		bool Put8(unsigned int port, unsigned int data);
 		bool Put16(unsigned int port, unsigned int data);
@@ -43,10 +41,13 @@ class Timer : public IPeripheral {
 
 	protected:
 
+		unsigned long GetSystemTime();
+
 		unsigned int  dataBuffer;
 		unsigned char ctrlBuffer;
+		unsigned long  timerBuffer;
 
 		Processor* mProc;
 
-		QTimer* mTimer;
+		unsigned long mTimeStart;
 };
