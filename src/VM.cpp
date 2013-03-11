@@ -59,7 +59,7 @@ int VM::LoadFlatFile(const char* filename) {
 		return VM_ERR_FOPEN;
 	}
 
-	int i = 0;
+	unsigned int i = 0;
 	while(!fin.eof()) {
 		if(((i + 1) * 1024) >= MEM_SIZE)
 			return VM_ERR_BIG_FILE;

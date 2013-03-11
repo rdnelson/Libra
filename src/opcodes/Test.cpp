@@ -65,7 +65,7 @@ Instruction* Test::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		case TEST_MOD8_IMM8:
 		case TEST_MOD16_IMM16:
 		{
-			if(((*(opLoc + 1) & 0x38) >> 3) != TEST_SUB_OPCODE)
+			if((unsigned int)((*(opLoc + 1) & 0x38) >> 3) != TEST_SUB_OPCODE)
 				return 0;
 
 			unsigned int size = (*opLoc == TEST_MOD8_IMM8 ? 1 : 2);

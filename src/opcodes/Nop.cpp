@@ -46,6 +46,6 @@ Instruction* Nop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 
 }
 
-int Nop::Execute(Processor* proc) {
+int Nop::Execute(Processor*) {
 	return 0;
 }

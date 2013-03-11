@@ -84,7 +84,7 @@ Instruction* Adc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 			modrm = *(opLoc + 1);
 
-			if(((modrm & 0x38) >> 3) == ADC_GRP_CONST) {
+			if((unsigned int)((modrm & 0x38) >> 3) == ADC_GRP_CONST) {
 				unsigned int immSize = (*opLoc == GRP1_ADC_MOD_IMM8) ? 1 : 2;
 
 				Operand* dst = ModrmOperand::GetModrmOperand(
