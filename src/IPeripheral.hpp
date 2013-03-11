@@ -25,6 +25,7 @@ class IPeripheral {
 		virtual unsigned int Get16(unsigned int port) = 0;
 
 		virtual void Dump() = 0;
+		virtual void Update() {}
 
 		virtual unsigned int GetType() = 0;
 		virtual std::string GetStr() { return ""; }

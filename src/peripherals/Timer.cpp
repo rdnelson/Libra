@@ -10,10 +10,20 @@
 
 #include "../IPeripheral.hpp"
 #include "Timer.hpp"
-#include <QTimer>
+#include <QObject>
+
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#elif __APPLE__
+#include <mach/mach_time.h>
+#else
+//linux
+#include <time.h>
+#endif
 
 //initialize keyboard to polling mode
-Timer::Timer(Processor* proc, QTimer* timer) : dataBuffer('\0'), ctrlBuffer(TIMER_CTRL_ENABLE), mProc(proc), mTimer(timer) {
+Timer::Timer(Processor* proc) : dataBuffer('\0'), ctrlBuffer(TIMER_CTRL_ENABLE), mProc(proc), mTimeStart(0) {
 
 }
 
@@ -23,10 +33,11 @@ bool Timer::Put8(unsigned int port, unsigned int data) {
 		//No commands yet though because this is supposed to be simplified
 		ctrlBuffer = data & 0xFF;
 		if((ctrlBuffer & TIMER_CTRL_ENABLE) == TIMER_CTRL_ENABLE) {
-			if(mTimer) {
-				mTimer->setInterval(TIMER_FREQ/dataBuffer);
-				mTimer->start();
-			}
+			timerBuffer=GetSystemTime()+dataBuffer;
+			mTimeStart=GetSystemTime();
+		} else {
+			//disable the timer
+			timerBuffer = 0;
 		}
 		return true;
 	} else if (port == TIMER_DATA_PORT) {
@@ -45,10 +56,11 @@ bool Timer::Put16(unsigned int port, unsigned int data) {
 	} else if (port == TIMER_CTRL_PORT) {
 		ctrlBuffer = data & 0xFF;
 		if((ctrlBuffer & TIMER_CTRL_ENABLE) == TIMER_CTRL_ENABLE) {
-			if(mTimer) {
-				mTimer->setInterval(TIMER_FREQ/dataBuffer);
-				mTimer->start();
-			}
+			timerBuffer=GetSystemTime()+dataBuffer;
+			mTimeStart=GetSystemTime();
+		} else {
+			//disable the timer
+			timerBuffer = 0;
 		}
 	}
 	return false;
@@ -81,13 +93,32 @@ unsigned int Timer::Get16(unsigned int port) {
 
 void Timer::Dump() {
 	std::cout << "Timer Interval: " << dataBuffer << std::endl;
-	std::cout << "Timer Enabled:  " << (mTimer->isActive() ? "True" : "False") << std::endl;
+	std::cout << "Timer Enabled:  " << ((mTimeStart < timerBuffer) ? "True" : "False") << std::endl;
 }
 
 void Timer::Update() {
-	mProc->SetInterrupt(TIMER_IRQ);
-	if(mTimer && dataBuffer != 0) {
-		mTimer->setInterval(TIMER_FREQ/dataBuffer);
-		mTimer->start();
+	//check if timer is enabled
+	if(mTimeStart >= timerBuffer)
+		return;
+	if(GetSystemTime() > timerBuffer) {
+		//Timer has ticked, reset it
+		mProc->SetInterrupt(TIMER_IRQ);
+		timerBuffer = GetSystemTime() + dataBuffer;
+		mTimeStart = GetSystemTime();
 	}
+}
+
+unsigned long Timer::GetSystemTime() {
+#ifdef _WIN32
+	return GetTickCount();
+#elif __APPLE__
+    mach_timebase_info_data_t info;
+    mach_timebase_info(&info);
+	unsigned long absTime = mach_absolute_time();
+	return absTime * info.numer / info.denom / 1000000;
+#else
+	struct timespec ts;
+	clock_gettime(CLOCK_MONOTONIC, &ts);
+	return ts.tv_nsec / 1000000 + ts.tv_sec * 1000; //convert ns to ms
+#endif
 }
