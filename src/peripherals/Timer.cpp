@@ -35,7 +35,6 @@ bool Timer::Put8(unsigned int port, unsigned int data) {
 		if((ctrlBuffer & TIMER_CTRL_ENABLE) == TIMER_CTRL_ENABLE) {
 			timerBuffer=GetSystemTime()+dataBuffer;
 			mTimeStart=GetSystemTime();
-			qDebug("Enabling Timer (8). CurrentTime: %lu, targetTime: %lu", mTimeStart, timerBuffer);
 		} else {
 			//disable the timer
 			timerBuffer = 0;
@@ -98,7 +97,6 @@ void Timer::Dump() {
 }
 
 void Timer::Update() {
-	//qDebug("Updating Timer. CurrentTime: %lu, targetTime: %lu", GetSystemTime(), timerBuffer);
 	//check if timer is enabled
 	if(mTimeStart >= timerBuffer)
 		return;
