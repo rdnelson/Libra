@@ -114,9 +114,10 @@ unsigned long Timer::GetSystemTime() {
 #ifdef _WIN32
 	return GetTickCount();
 #elif __APPLE__
+    mach_timebase_info_data_t info;
+    mach_timebase_info(&info);
 	unsigned long absTime = mach_absolute_time();
-	Nanoseconds ns = AbsoluteToNanoseconds(*(AbsoluteTime*)&absTime);
-	return *(unsigned long *)(&ns) / 1000000;
+	return absTime * info.numer / info.denom / 1000000;
 #else
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
