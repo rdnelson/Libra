@@ -32,8 +32,8 @@ Instruction* IDiv::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 
 	Instruction* newIDiv = 0;
 
-	if((*opLoc == IDIV_MOD8 || *opLoc == IDIV_MOD16) && 
-			(((*(opLoc + 1) & 0x38) >> 3) == IDIV_SUB_OPCODE)) {
+	if((*opLoc == IDIV_MOD8 || *opLoc == IDIV_MOD16) &&
+			((unsigned int)((*(opLoc + 1) & 0x38) >> 3) == IDIV_SUB_OPCODE)) {
 		unsigned int size = *opLoc == IDIV_MOD8 ? 1 : 2;
 		Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 		snprintf(buf, 65, "IDIV %s", dst->GetDisasm().c_str());

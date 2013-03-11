@@ -51,8 +51,8 @@ Instruction* Jmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		}
 		case JMP_MOD16:
 		//case JMP_MOD16_16
-		if(((*(opLoc + 1) & 0x38) >> 3) == JMP_SUB_OPCODE || 
-				((*(opLoc + 1) & 0x38) >> 3) == JMP_SUB_SEG_OPCODE)
+		if(((unsigned int)((*(opLoc + 1) & 0x38) >> 3) == JMP_SUB_OPCODE) ||
+				((unsigned int)((*(opLoc + 1) & 0x38) >> 3) == JMP_SUB_SEG_OPCODE))
 		{
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
 			snprintf(buf, 65, "JMP %s", dst->GetDisasm().c_str());

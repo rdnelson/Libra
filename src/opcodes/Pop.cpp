@@ -37,7 +37,7 @@ Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	switch(*opLoc) {
 		case POP_MOD16:
 		{
-			if(((*(opLoc + 1) & 0x38) >> 3) != POP_SUB_OPCODE)
+			if((unsigned int)((*(opLoc + 1) & 0x38) >> 3) != POP_SUB_OPCODE)
 				return newPop;
 
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
