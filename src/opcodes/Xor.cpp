@@ -59,7 +59,7 @@ Instruction* Xor::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case XOR_MOD16_IMM16:
 		case XOR_MOD16_IMM8:
 		{
-			if(((*(opLoc + 1) & 0x38) >> 3) != XOR_REG_CONST)
+			if((unsigned int)((*(opLoc + 1) & 0x38) >> 3) != XOR_REG_CONST)
 				break;
 
 			unsigned int size = *opLoc == XOR_MOD8_IMM8 ? 1 : 2;

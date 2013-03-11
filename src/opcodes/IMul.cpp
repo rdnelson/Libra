@@ -44,7 +44,7 @@ Instruction* IMul::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		case IMUL_MOD8:
 		case IMUL_MOD16:
 		{
-			if((((*(opLoc + 1) & 0x38) >> 3) != IMUL_SUB_OPCODE) || twoByte) {
+			if(((unsigned int)((*(opLoc + 1) & 0x38) >> 3) != IMUL_SUB_OPCODE) || twoByte) {
 				return 0;
 			}
 
