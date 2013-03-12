@@ -40,7 +40,7 @@ class VM {
 		unsigned int GetInstructionAddr(unsigned int index) const;
 		unsigned int GetInstructionLen(unsigned int index) const;
 		unsigned int CalcInstructionLen();
-		unsigned int GetNumInstructions() { return mInstructions.size(); }
+		size_t GetNumInstructions() { return mInstructions.size(); }
 		const std::vector<IPeripheral*> & GetDevices() { return mProc.GetDevices(); }
 		const Processor & GetProc() { return mProc; }
 		unsigned char GetMemory(unsigned int addr);

@@ -51,7 +51,7 @@ class Instruction {
 		inline std::string GetInstruction() { return mInst; }
 
 		//returns the number of bytes in the instruction
-		inline unsigned int GetLength() { return mInst.size(); }
+		inline size_t GetLength() { return mInst.size(); }
 
 		//returns the reg/opcode field in modrm
 		inline unsigned char GetRegOpcode() { return (modrm & 0x38) >> 3; }

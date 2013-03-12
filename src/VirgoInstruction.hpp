@@ -19,8 +19,7 @@ class VirgoInstruction : public Instruction {
 		VirgoInstruction(Prefix* pre, std::string text, std::string inst, int op) :
 			Instruction(pre,text,inst,op) {}
 
-		int Execute(Processor* proc) {
-			proc+=0;
+		int Execute(Processor*) {
 			return 0;
 		}
 };
