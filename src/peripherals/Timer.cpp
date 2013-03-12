@@ -35,7 +35,6 @@ bool Timer::Put8(unsigned int port, unsigned int data) {
 		if((ctrlBuffer & TIMER_CTRL_ENABLE) == TIMER_CTRL_ENABLE) {
 			timerBuffer=GetSystemTime()+dataBuffer;
 			mTimeStart=GetSystemTime();
-			qDebug("Enabling Timer (8). CurrentTime: %lu, targetTime: %lu", mTimeStart, timerBuffer);
 		} else {
 			//disable the timer
 			timerBuffer = 0;
@@ -98,7 +97,6 @@ void Timer::Dump() {
 }
 
 void Timer::Update() {
-	//qDebug("Updating Timer. CurrentTime: %lu, targetTime: %lu", GetSystemTime(), timerBuffer);
 	//check if timer is enabled
 	if(mTimeStart >= timerBuffer)
 		return;
@@ -114,9 +112,10 @@ unsigned long Timer::GetSystemTime() {
 #ifdef _WIN32
 	return GetTickCount();
 #elif __APPLE__
+    mach_timebase_info_data_t info;
+    mach_timebase_info(&info);
 	unsigned long absTime = mach_absolute_time();
-	Nanoseconds ns = AbsoluteToNanoseconds(*(AbsoluteTime*)&absTime);
-	return *(unsigned long *)(&ns) / 1000000;
+	return absTime * info.numer / info.denom / 1000000;
 #else
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
