@@ -203,7 +203,7 @@ int VM::LoadVirgoFile(const char* filename) {
 		dis.erase(0, dis.find_first_not_of(" \f\n\r\t\v"));
 
 		//Prefix with label
-		dis = label + dis;
+		dis = label + ('\t' + dis);
 
 		s.insert(0, text, hexSize);
 		if(dis.size() == 0 || (hexSize == 0 && label[0] == '\0'))
