@@ -8,7 +8,6 @@ VMWorker::VMWorker(VM* vm) : mVM(vm), mPaused(false)
 
 void VMWorker::run() {
 	int err;
-	int updateCtr = 0;
 	mPaused = false;
 	if(mVM && mVM->isLoaded()) {
 		for(EVER) {
@@ -24,17 +23,10 @@ void VMWorker::run() {
 				emit procReturn(err);
 				emit breakpoint();
 				return;
-			} else if(err > 0) {
-			//	emit procReturn(err);
+			} else if(err == Processor::PROC_PERIPH_WRITE) {
+				emit procReturn(err);
 			}
-			mVM->notifyReadCallbacks();
-			mVM->notifyWriteCallbacks();
-			//Only update the GUI every 300 instructions (~0.005 seconds)
-			updateCtr = (updateCtr + 1) % 300;
-			if(updateCtr == 0)
-				emit stepDone();
-			//This prevents CPU Burning, currently a randomly small value
-			usleep(50);
+			usleep(15);
 		}
 		emit error(err);
 	} else {

@@ -83,6 +83,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(mVMWorker, SIGNAL(stepDone()), this, SLOT(workerStepDone()));
 	connect(mVMWorker, SIGNAL(error(int)), this, SLOT(workerRunError(int)));
 	connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
+	connect(mVMWorker, SIGNAL(procReturn(int)), this, SLOT(workerProcReturn(int)));
 	connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
 	connect(this, SIGNAL(vmStep()), mVMWorker, SLOT(step()));
 	connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
@@ -351,6 +352,12 @@ void MemWnd::workerStepDone() {
 	UpdateScreen();
 	mVM.notifyReadCallbacks();
 	mVM.notifyWriteCallbacks();
+}
+//Program's processor returned an info code
+void MemWnd::workerProcReturn(int err) {
+	if(err == Processor::PROC_PERIPH_WRITE) {
+		UpdateScreen();
+	}
 }
 
 /*

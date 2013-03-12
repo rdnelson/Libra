@@ -46,6 +46,8 @@ public slots:
 	void workerRunError(int err);
 	//trigger on run paused
 	void workerPaused();
+	//trigger on proc return positive
+	void workerProcReturn(int err);
 
 	void KeyEvent(QKeyEvent*);
 	void TimerEvent();
