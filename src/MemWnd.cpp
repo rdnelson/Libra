@@ -66,7 +66,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	memModel->setDataPtr(mVM.GetMemPtr());
 
 	//Setup the memory view control
-	int width = ui->tableView->fontMetrics().width(' ') * 3;
+	int width = ui->tableView->fontMetrics().width(" FF ");// * 3;
 	ui->tableView->setModel(memModel);
 	ui->tableView->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
 	ui->tableView->verticalHeader()->setResizeMode(QHeaderView::Fixed);
