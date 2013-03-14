@@ -50,6 +50,8 @@ int Processor::Initialize(unsigned int startAddr) {
 	SetRegister(REG_IP, startAddr);
 	mHalt = false;
 
+	mInterrupt = -1;
+
 	_InitializeDevices();
 
 	return PROC_SUCCESS;
@@ -83,7 +85,7 @@ int Processor::Step() {
 	}
 
 	//Check for interrupts
-	if(GetFlag(FLAGS_IF) && mInterrupt != -1 && mInterrupt >= 0 && mInterrupt <= 255) {
+	if(GetFlag(FLAGS_IF) && mInterrupt >= 0 && mInterrupt <= 255) {
 		PushRegister(REG_FLAGS);
 		SetFlag(FLAGS_IF, false);
 		SetFlag(FLAGS_TF, false);
