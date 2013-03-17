@@ -76,10 +76,10 @@ int Out::Execute(Processor* proc) {
 
 	if(mOpcode == OUT_IMM8_AL || mOpcode == OUT_DX_AL) {
 		proc->Outb(dst->GetValue(), src->GetValue());
-		return Processor::PROC_PERIPH_WRITE;
+		return Instruction::PERIPH_WRITE;
 	} else if(mOpcode == OUT_IMM8_AX || mOpcode == OUT_DX_AX) {
 		proc->Outw(dst->GetValue(), src->GetValue());
-		return Processor::PROC_PERIPH_WRITE;
+		return Instruction::PERIPH_WRITE;
 	}
 
 	return INVALID_ARGS;
