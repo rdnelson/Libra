@@ -355,7 +355,7 @@ void MemWnd::workerStepDone() {
 }
 //Program's processor returned an info code
 void MemWnd::workerProcReturn(int err) {
-	if(err == Processor::PROC_PERIPH_WRITE) {
+	if(err == Instruction::PERIPH_WRITE) {
 		UpdateScreen();
 	}
 }

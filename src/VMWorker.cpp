@@ -23,7 +23,7 @@ void VMWorker::run() {
 				emit procReturn(err);
 				emit breakpoint();
 				return;
-			} else if(err == Processor::PROC_PERIPH_WRITE) {
+			} else if(err == Instruction::PERIPH_WRITE) {
 				emit procReturn(err);
 			}
 			usleep(15);

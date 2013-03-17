@@ -87,11 +87,12 @@ class Instruction {
 		}
 
 		enum eExecuteRetCode {
-			SUCCESS		=  0,
-			INVALID_ARGS 	= -1,
-			RET_CALLED	=  1,
-			CALL_CALLED	=  2,
-			RES_BREAKPOINT = 3
+			INVALID_ARGS = -1,
+			SUCCESS,
+			RET_CALLED,
+			CALL_CALLED,
+			RES_BREAKPOINT,
+			PERIPH_WRITE,
 		};
 
 
