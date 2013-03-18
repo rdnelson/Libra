@@ -16,7 +16,6 @@ void VMWorker::run() {
 				emit paused();
 				return;
 			}
-
 			if((err = mVM->Step()) < 0) {
 				break;
 			} else if (err == VM::VM_BREAKPOINT) {
@@ -25,6 +24,11 @@ void VMWorker::run() {
 				return;
 			} else if(err == Instruction::PERIPH_WRITE) {
 				emit procReturn(err);
+			} else if (err == Processor::PROC_HALT) {
+				if(!mVM->GetProc().GetFlag(FLAGS_IF)) {
+					emit paused();
+					return;
+				}
 			}
 			usleep(15);
 		}
