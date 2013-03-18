@@ -64,12 +64,7 @@ Instruction* Instruction::ReadInstruction(Memory::MemoryOffset& memLoc, Processo
 
 	bool memLog = memLoc.IsMemReadLogEnabled();
 	memLoc.DisableMemReadLog();
-	/*for(unsigned int i = 0; i < NumOpcodes; i++) {
-		if((instr = AllInstructions[i](memLoc, proc)) != NULL) {
-			instr->SetAddress(proc->GetRegister(REG_IP));
-			break;
-		}
-	}*/
+
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	if(pre == 0 && AllInstructions[*memLoc][0]) {
 		instr = AllInstructions[*memLoc][0](memLoc, proc);
@@ -92,9 +87,7 @@ Instruction* Instruction::CreateSubcodeInstruction(Memory::MemoryOffset& memLoc,
 	delete pre;
 
 	unsigned int subcodeIndex = ((*(memLoc + offset + 1) & 0x38) >> 3) + 1;
-/*	if(SubcodeMap.count(subcodeIndex)) {
-		instr = SubcodeMap[subcodeIndex](memLoc, proc);
-	}*/
+
 	if(AllInstructions[*(memLoc + offset)][subcodeIndex]) {
 		instr = AllInstructions[*(memLoc + offset)][subcodeIndex](memLoc, proc);
 	}
@@ -134,59 +127,3 @@ bool Instruction::AdjustSub(unsigned int op1, unsigned int op2) {
 	return (((op1 & 0x0F) - (op2 & 0x0F)) & ~0x0F) != 0;
 }
 
-//New mnemonics need to be added here to be registered
-/*void Instruction::InitializeOpcodes() {
-	OPCODE(Add);
-	OPCODE(Mov);
-	OPCODE(Jcc);
-	OPCODE(Test);
-	OPCODE(Call);
-	OPCODE(Ret);
-	OPCODE(Aam);
-	OPCODE(Xor);
-	OPCODE(Aaa);
-	OPCODE(CLSTX);
-	OPCODE(Aad);
-	OPCODE(Aas);
-	OPCODE(Cmp);
-	OPCODE(And);
-	OPCODE(Adc);
-	OPCODE(Cbw);
-	OPCODE(CmpsX);
-	OPCODE(Cwd);
-	OPCODE(IncDec);
-	OPCODE(Div);
-	OPCODE(Jmp);
-	OPCODE(IDiv);
-	OPCODE(IMul);
-	OPCODE(Sub);
-	OPCODE(Push);
-	OPCODE(Neg);
-	OPCODE(Not);
-	OPCODE(Or);
-	OPCODE(Pop);
-	OPCODE(Lahf);
-	OPCODE(Mul);
-	OPCODE(Sahf);
-	OPCODE(Sxx);
-	OPCODE(Lxs);
-	OPCODE(Lea);
-	OPCODE(Out);
-	OPCODE(In);
-	OPCODE(Rot);
-	OPCODE(Int);
-	OPCODE(Iret);
-	OPCODE(Hlt);
-	OPCODE(StiCli);
-	OPCODE(Nop);
-	OPCODE(Xlat);
-	OPCODE(Loop);
-	OPCODE(Stos);
-	OPCODE(Scas);
-	OPCODE(Sbb);
-	OPCODE(Lods);
-	OPCODE(Movs);
-	OPCODE(Xchg);
-
-	NumOpcodes = AllInstructions.size();
-}*/

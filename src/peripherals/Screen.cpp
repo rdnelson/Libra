@@ -148,7 +148,7 @@ std::string Screen::GetStr() {
     } while(row != mFirstRow);*/
 	unsigned int prevRow = ((mFirstRow + NUM_ROWS - 1) % NUM_ROWS);
 	std::string str;
-	for(int row = mFirstRow; row != prevRow; row = (row + 1) % NUM_ROWS) {
+	for(unsigned int row = mFirstRow; row != prevRow; row = (row + 1) % NUM_ROWS) {
 		str.assign(&mScreen[row * NUM_COLS], NUM_COLS);
 		ss << str << std::endl;
 	}

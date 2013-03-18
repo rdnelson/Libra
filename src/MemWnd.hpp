@@ -51,6 +51,7 @@ public slots:
 
 	void KeyEvent(QKeyEvent*);
 	void TimerEvent();
+	void UpdateScreenTick();
 
 signals:
 	void vmResume();

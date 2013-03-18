@@ -10,14 +10,13 @@
 |
 \*-------------------------------------*/
 
-#include "InstTable.hpp"
 #include "Instruction.hpp"
-#include "opcodes\AllOpcodes.hpp"
+#include "opcodes/AllOpcodes.hpp"
 
 #include <string>
 #include <map>
 
-#define MNEMONIC(op) { PCreateInst opName = op ## ::CreateInstruction;
+#define MNEMONIC(op) { PCreateInst opName = op::CreateInstruction;
 
 #ifdef OLD
 #define VARIANT(bc) { if(bc < 0x100) { AllInstructions[bc] = opName; } }
@@ -37,10 +36,6 @@
 #define END_MNEMONIC }
 
 #define PREFIX(op, bc) InstTable::PrefixMap[#op] = bc
-
-std::map<std::string, Instruction*> InstTable::InstMap;
-std::map<std::string, unsigned int> InstTable::PrefixMap;
-std::set<unsigned char> InstTable::VirgoBlacklist;
 
 void Instruction::InitializeOpcodes() {
 
