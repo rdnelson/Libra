@@ -73,7 +73,7 @@ class Processor {
 		void Stop();
 
 		static const int PROC_SUCCESS		=  0;
-		static const int PROC_HALT		=  1;
+		static const int PROC_HALT		=  1000;
 		static const int PROC_ERR_INV_ADDR 	= -1;
 		static const int PROC_ERR_INV_INST 	= -2;
 		static const int PROC_ERR_INST		= -3;
