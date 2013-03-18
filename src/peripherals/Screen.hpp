@@ -43,7 +43,8 @@ class Screen : public IPeripheral {
 		static const unsigned int NUM_COLS = 40;
 
 		//third index is for character data / color data
-		char mScreen[NUM_COLS][NUM_ROWS][2];
+		char mScreen[NUM_COLS * NUM_ROWS];
+		char mColor[NUM_COLS * NUM_ROWS];
 
 		unsigned int mCurX, mCurY;
 		unsigned int mFirstRow;

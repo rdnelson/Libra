@@ -27,7 +27,8 @@ unsigned int Instruction::NumOpcodes = 0;
 class Processor;
 
 //Vector to contain the create functions for all mnemonics
-std::vector<Instruction::PCreateInst> Instruction::AllInstructions;
+Instruction::PCreateInst Instruction::AllInstructions[0x100][9];
+std::map<unsigned int, Instruction::PCreateInst> Instruction::SubcodeMap;
 
 
 Instruction::Instruction() : mValid(false), mOpcode(-1), mInst(""), mText(""), modrm(0), mPrefix(0) {
@@ -63,14 +64,33 @@ Instruction* Instruction::ReadInstruction(Memory::MemoryOffset& memLoc, Processo
 
 	bool memLog = memLoc.IsMemReadLogEnabled();
 	memLoc.DisableMemReadLog();
-	for(unsigned int i = 0; i < NumOpcodes; i++) {
-		if((instr = AllInstructions[i](memLoc, proc)) != NULL) {
-			instr->SetAddress(proc->GetRegister(REG_IP));
-			break;
-		}
+
+	Prefix* pre = Prefix::GetPrefix(memLoc);
+	if(pre == 0 && AllInstructions[*memLoc][0]) {
+		instr = AllInstructions[*memLoc][0](memLoc, proc);
+	} else if(pre && AllInstructions[*(memLoc + pre->GetLength())][0]) {
+		instr = AllInstructions[*(memLoc + pre->GetLength())][0](memLoc, proc);
 	}
+	delete pre;
 	if(memLog)
 		memLoc.EnableMemReadLog();
+	return instr;
+}
+
+Instruction* Instruction::CreateSubcodeInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	Instruction* instr = NULL;
+	Prefix* pre = Prefix::GetPrefix(memLoc);
+	unsigned int offset = 0;
+	if(pre) {
+		offset = pre->GetLength();
+	}
+	delete pre;
+
+	unsigned int subcodeIndex = ((*(memLoc + offset + 1) & 0x38) >> 3) + 1;
+
+	if(AllInstructions[*(memLoc + offset)][subcodeIndex]) {
+		instr = AllInstructions[*(memLoc + offset)][subcodeIndex](memLoc, proc);
+	}
 	return instr;
 }
 
@@ -107,59 +127,3 @@ bool Instruction::AdjustSub(unsigned int op1, unsigned int op2) {
 	return (((op1 & 0x0F) - (op2 & 0x0F)) & ~0x0F) != 0;
 }
 
-//New mnemonics need to be added here to be registered
-void Instruction::InitializeOpcodes() {
-	OPCODE(Add);
-	OPCODE(Mov);
-	OPCODE(Jcc);
-	OPCODE(Test);
-	OPCODE(Call);
-	OPCODE(Ret);
-	OPCODE(Aam);
-	OPCODE(Xor);
-	OPCODE(Aaa);
-	OPCODE(CLSTX);
-	OPCODE(Aad);
-	OPCODE(Aas);
-	OPCODE(Cmp);
-	OPCODE(And);
-	OPCODE(Adc);
-	OPCODE(Cbw);
-	OPCODE(CmpsX);
-	OPCODE(Cwd);
-	OPCODE(IncDec);
-	OPCODE(Div);
-	OPCODE(Jmp);
-	OPCODE(IDiv);
-	OPCODE(IMul);
-	OPCODE(Sub);
-	OPCODE(Push);
-	OPCODE(Neg);
-	OPCODE(Not);
-	OPCODE(Or);
-	OPCODE(Pop);
-	OPCODE(Lahf);
-	OPCODE(Mul);
-	OPCODE(Sahf);
-	OPCODE(Sxx);
-	OPCODE(Lxs);
-	OPCODE(Lea);
-	OPCODE(Out);
-	OPCODE(In);
-	OPCODE(Rot);
-	OPCODE(Int);
-	OPCODE(Iret);
-	OPCODE(Hlt);
-	OPCODE(StiCli);
-	OPCODE(Nop);
-	OPCODE(Xlat);
-	OPCODE(Loop);
-	OPCODE(Stos);
-	OPCODE(Scas);
-	OPCODE(Sbb);
-	OPCODE(Lods);
-	OPCODE(Movs);
-	OPCODE(Xchg);
-
-	NumOpcodes = AllInstructions.size();
-}

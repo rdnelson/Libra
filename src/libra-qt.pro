@@ -81,7 +81,8 @@ SOURCES +=\
 	peripherals/Keyboard.cpp \
 	peripherals/Timer.cpp \
 	QMemModel.cpp \
-	QKbdFilter.cpp
+	QKbdFilter.cpp \
+	InstTable.cpp
 
 HEADERS  += MemWnd.hpp \
 	VM.hpp \

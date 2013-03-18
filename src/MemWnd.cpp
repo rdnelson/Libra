@@ -85,7 +85,6 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
 	connect(mVMWorker, SIGNAL(procReturn(int)), this, SLOT(workerProcReturn(int)));
 	connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
-	connect(this, SIGNAL(vmStep()), mVMWorker, SLOT(step()));
 	connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
 
 	//Initialize the timer's QTimer object
@@ -93,6 +92,12 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(baseTimer, SIGNAL(timeout()), this, SLOT(TimerEvent()));
 	mVM.SetTimer(baseTimer);
 	baseTimer->moveToThread(mVMWorker);
+
+	QTimer* guiTimer = new QTimer();
+	guiTimer->setInterval(30); //~30th of a second
+	guiTimer->setSingleShot(false);
+	connect(guiTimer, SIGNAL(timeout()), this, SLOT(UpdateScreenTick()));
+	guiTimer->start();
 
 	//Now that everything is initialized, see if we can load the provided file
 	if(file != 0) {
@@ -489,4 +494,8 @@ void MemWnd::TimerEvent() {
 			break;
 		}
 	}
+}
+
+void MemWnd::UpdateScreenTick() {
+	UpdateScreen();
 }
