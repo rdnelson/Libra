@@ -306,6 +306,9 @@
     <ClCompile Include="..\src\RegisterOperand.cpp">
       <Filter>Source Files\Operands</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\InstTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\GeneratedFiles\ui_MemWnd.h">

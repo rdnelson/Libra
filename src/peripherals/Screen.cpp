@@ -18,6 +18,7 @@
 
 Screen::Screen() : mCurX(0), mCurY(0), mFirstRow(0){
 	memset(mScreen, ' ', sizeof(mScreen));
+	memset(mColor, 0, sizeof(mColor));
 }
 
 void Screen::Dump() {
@@ -27,7 +28,7 @@ void Screen::Dump() {
 	do {
 		std::cout << "| ";
 		for(unsigned int col = 0; col < NUM_COLS; col++) { 
-			std::cout << mScreen[col][row][0];
+			std::cout << mScreen[col + row * NUM_COLS];
 		}
 		std::cout << " |" << std::endl;
 
@@ -58,8 +59,8 @@ bool Screen::Put16(unsigned int port, unsigned int data) {
 				mFirstRow = (mFirstRow + 1) % NUM_ROWS;
 			}
 				for(unsigned int i = 0; i < NUM_ROWS; i++) {
-				mScreen[i][mCurY][0] = ' ';
-				mScreen[i][mCurY][1] = 0;
+				mScreen[i + mCurY * NUM_COLS] = ' ';
+				mColor[i + mCurY * NUM_COLS] = 0;
 				}
 		} else if(chr == 0x0D) {
 			mCurX = 0;
@@ -88,7 +89,7 @@ unsigned int Screen::Get8(unsigned int port) {
 	case 0x04E8: //Control
 		return 0;
 	case 0x04E9:
-		return mScreen[mCurX][mCurY][0];
+		return mScreen[mCurX + mCurY * NUM_COLS];
 	case 0x04EA:
 		return mCurX;
 	case 0x04EB:
@@ -102,7 +103,7 @@ unsigned int Screen::Get16(unsigned int port) {
 	case 0x04E8: //Control
 		return 0;
 	case 0x04E9:
-		return mScreen[mCurX][mCurY][0] | (mScreen[mCurX][mCurY][1] << 8);
+		return mScreen[mCurX + mCurY * NUM_COLS] | (mColor[mCurX + mCurY * NUM_COLS] << 8);
 	case 0x04EA:
 		return mCurX;
 	case 0x04EB:
@@ -113,7 +114,7 @@ unsigned int Screen::Get16(unsigned int port) {
 }
 
 void Screen::_PutChar(char chr) {
-	mScreen[mCurX][mCurY][0] = chr;
+	mScreen[mCurX + mCurY * NUM_COLS] = chr;
 
 	if(mCurX + 1 == NUM_COLS) {
 		mCurY = (mCurY + 1) % NUM_ROWS;
@@ -121,8 +122,8 @@ void Screen::_PutChar(char chr) {
 			mFirstRow = (mFirstRow + 1) % NUM_ROWS;
 		}
 		for(unsigned int i = 0; i < NUM_ROWS; i++) {
-			mScreen[i][mCurY][0] = ' ';
-			mScreen[i][mCurY][1] = 0;
+			mScreen[i + mCurY * NUM_COLS] = ' ';
+			mColor[i + mCurY * NUM_COLS] = 0;
 		}
 		mCurX = 0;
 	} else {
@@ -131,19 +132,25 @@ void Screen::_PutChar(char chr) {
 }
 
 void Screen::_PutColour(unsigned char colour) {
-	mScreen[mCurX][mCurY][1] = colour;
+	mColor[mCurX + mCurY * NUM_COLS] = colour;
 }
 
 std::string Screen::GetStr() {
     std::stringstream ss;
-    unsigned int row = mFirstRow;
+    //unsigned int row = mFirstRow;
 
-    do {
+    /*do {
         for(unsigned int col = 0; col < NUM_COLS; col++) {
-            ss << mScreen[col][row][0];
+            ss << mScreen[col + row * NUM_COLS][0];
         }
         ss << std::endl;
         row = (row + 1) % NUM_ROWS;
-    } while(row != mFirstRow);
+    } while(row != mFirstRow);*/
+	unsigned int prevRow = ((mFirstRow + NUM_ROWS - 1) % NUM_ROWS);
+	std::string str;
+	for(int row = mFirstRow; row != prevRow; row = (row + 1) % NUM_ROWS) {
+		str.assign(&mScreen[row * NUM_COLS], NUM_COLS);
+		ss << str << std::endl;
+	}
     return ss.str();
 }

@@ -1,4 +1,5 @@
 #include "VMWorker.hpp"
+#include "peripherals\Timer.hpp"
 #define EVER ;;
 
 VMWorker::VMWorker(VM* vm) : mVM(vm), mPaused(false)
@@ -10,6 +11,7 @@ void VMWorker::run() {
 	int err;
 	mPaused = false;
 	if(mVM && mVM->isLoaded()) {
+		unsigned int guiTimeout = 0;
 		for(EVER) {
 			//Set by a different thread
 			if(mPaused) {
@@ -23,14 +25,14 @@ void VMWorker::run() {
 				emit breakpoint();
 				return;
 			} else if(err == Instruction::PERIPH_WRITE) {
-				emit procReturn(err);
+				if(guiTimeout++ % 600 == 0)
+					emit procReturn(err);
 			} else if (err == Processor::PROC_HALT) {
 				if(!mVM->GetProc().GetFlag(FLAGS_IF)) {
 					emit paused();
 					return;
 				}
 			}
-			usleep(15);
 		}
 		emit error(err);
 	} else {

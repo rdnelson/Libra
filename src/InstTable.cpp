@@ -1,0 +1,477 @@
+/*-------------------------------------*\
+|
+|  File Name: InstTable.cpp
+|
+|  Creation Date: 31-10-2012
+|
+|  Last Modified:
+|
+|  Created By: Robert Nelson
+|
+\*-------------------------------------*/
+
+#include "InstTable.hpp"
+#include "Instruction.hpp"
+#include "opcodes\AllOpcodes.hpp"
+
+#include <string>
+#include <map>
+
+#define MNEMONIC(op) { PCreateInst opName = op ## ::CreateInstruction;
+
+#ifdef OLD
+#define VARIANT(bc) { if(bc < 0x100) { AllInstructions[bc] = opName; } }
+
+#define VARIANT_S(bc, sc) { AllInstructions[bc] = Instruction::CreateSubcodeInstruction; \
+	SubcodeMap[(bc << 8) + sc] = opName; }
+
+#define VARIANT_R(bc) { for(int i = 0; i < 8; i++) { AllInstructions[bc + i] = opName; } }
+#else
+#define VARIANT(bc) { if(bc < 0x100) { AllInstructions[bc][0] = opName; } }
+
+#define VARIANT_S(bc, sc) { if(bc < 0x100 && sc < 0x8) { AllInstructions[bc][0] = Instruction::CreateSubcodeInstruction; AllInstructions[bc][sc + 1] = opName; } }
+
+#define VARIANT_R(bc) { if(bc + 8 < 0x100) { for(int i = 0; i < 8; i++) { AllInstructions[bc + i][0] = opName; } } }
+#endif
+
+#define END_MNEMONIC }
+
+#define PREFIX(op, bc) InstTable::PrefixMap[#op] = bc
+
+std::map<std::string, Instruction*> InstTable::InstMap;
+std::map<std::string, unsigned int> InstTable::PrefixMap;
+std::set<unsigned char> InstTable::VirgoBlacklist;
+
+void Instruction::InitializeOpcodes() {
+
+	MNEMONIC(Aaa);
+	VARIANT		(0x37);
+	END_MNEMONIC;
+
+	MNEMONIC(Aad);
+	VARIANT		(0xD50A);
+	END_MNEMONIC;
+
+	MNEMONIC(Aam);
+	VARIANT		(0xD40A);
+	END_MNEMONIC;
+
+	MNEMONIC(Aas);
+	VARIANT		(0x3F);
+	END_MNEMONIC;
+
+	MNEMONIC(Adc);
+	VARIANT	(0x14);
+	VARIANT	(0x15);
+	VARIANT_S	(0x80,	0x02);
+	VARIANT_S	(0x81,	0x02);
+	VARIANT_S	(0x83,	0x02);
+	VARIANT	(0x10);
+	VARIANT	(0x11);
+	VARIANT	(0x12);
+	VARIANT	(0x13);
+	END_MNEMONIC;
+
+	MNEMONIC(Add);
+	VARIANT	(0x04);
+	VARIANT	(0x05);
+	VARIANT_S	(0x80,	0x00);
+	VARIANT_S	(0x81,	0x00);
+	VARIANT_S	(0x83,	0x00);
+	VARIANT	(0x00);
+	VARIANT	(0x01);
+	VARIANT	(0x02);
+	VARIANT	(0x03);
+	END_MNEMONIC;
+	
+	MNEMONIC(And);
+	VARIANT	(0x24);
+	VARIANT	(0x25);
+	VARIANT_S	(0x80,	0x04);
+	VARIANT_S	(0x81,	0x04);
+	VARIANT_S	(0x83,	0x04);
+	VARIANT	(0x20);
+	VARIANT	(0x21);
+	VARIANT	(0x22);
+	VARIANT	(0x23);
+	END_MNEMONIC;
+
+	MNEMONIC(Call);
+	VARIANT	(0xE8);
+	VARIANT_S	(0xFF,	0x02);
+	VARIANT	(0x9A);
+	VARIANT_S	(0xFF,	0x03);
+	END_MNEMONIC;
+
+	MNEMONIC(Cbw);
+	VARIANT		(0x98);
+	END_MNEMONIC;
+
+	MNEMONIC(CLSTX);
+	VARIANT		(0xF8);
+	VARIANT		(0xFC);
+	VARIANT		(0xFA);
+	VARIANT		(0xF5);
+	VARIANT		(0xF9);
+	VARIANT		(0xFD);
+	VARIANT		(0xFB);
+	END_MNEMONIC;
+
+	MNEMONIC(Cmp);
+	VARIANT	(0x3C);
+	VARIANT	(0x3D);
+	VARIANT_S	(0x80,	0x07);
+	VARIANT_S	(0x81,	0x07);
+	VARIANT_S	(0x83,	0x07);
+	VARIANT	(0x38);
+	VARIANT	(0x39);
+	VARIANT	(0x3A);
+	VARIANT	(0x3B);
+	END_MNEMONIC;
+
+	MNEMONIC(CmpsX);
+	VARIANT		(0xA6);
+	VARIANT		(0xA7);
+	END_MNEMONIC;
+
+	MNEMONIC(Cwd);
+	VARIANT		(0x99);
+	END_MNEMONIC;
+
+	/*MNEMONIC(Daa);
+	VARIANT		(0x27);
+	END_MNEMONIC;*/
+
+	/*MNEMONIC(DAS);
+	VARIANT		(0x2F);
+	END_MNEMONIC;*/
+
+	MNEMONIC(IncDec);
+	VARIANT_S	(0xFE,	0x01);
+	VARIANT_S	(0xFF,	0x01);
+	VARIANT_R	(0x48);
+	VARIANT_S	(0xFE,	0x00);
+	VARIANT_S	(0xFF,	0x00);
+	VARIANT_R	(0x40);
+	END_MNEMONIC;
+
+	MNEMONIC(Div);
+	VARIANT_S	(0xF6,	0x06);
+	VARIANT_S	(0xF7,	0x06);
+	END_MNEMONIC;
+
+	MNEMONIC(Hlt);
+	VARIANT		(0xF4);
+	END_MNEMONIC;
+
+	MNEMONIC(IDiv);
+	VARIANT_S	(0xF6,	0x07);
+	VARIANT_S	(0xF7,	0x07);
+	END_MNEMONIC;
+
+	MNEMONIC(IMul);
+	VARIANT_S	(0xF6,	0x05);
+	VARIANT_S	(0xF7,	0x05);
+	VARIANT	(0x0FAF);
+	VARIANT	(0x6B);
+	VARIANT	(0x69);
+	END_MNEMONIC;
+
+	MNEMONIC(In);
+	VARIANT	(0xE4);
+	VARIANT	(0xE5);
+	VARIANT	(0xEC);
+	VARIANT	(0xED);
+	END_MNEMONIC;
+	
+	MNEMONIC(Int);
+	VARIANT	(0xCD);
+	VARIANT	(0xCC);
+	VARIANT		(0xCE);
+	END_MNEMONIC;
+
+	MNEMONIC(Iret);
+	VARIANT		(0xCF);
+	END_MNEMONIC;
+
+	MNEMONIC(Jcc);
+	VARIANT	(0x77);
+	VARIANT	(0x0F87);
+	VARIANT	(0x73);
+	VARIANT	(0x0F83);
+	VARIANT	(0x76);
+	VARIANT	(0x0F86);
+	VARIANT	(0x72);
+	VARIANT	(0x0F82);
+	VARIANT	(0x74);
+	VARIANT	(0x0F84);
+	VARIANT	(0x7F);
+	VARIANT	(0x0F8F);
+	VARIANT	(0x7D);
+	VARIANT	(0x0F8D);
+	VARIANT	(0x7C);
+	VARIANT	(0x0F8C);
+	VARIANT	(0x7E);
+	VARIANT	(0x0F8E);
+	VARIANT	(0x75);
+	VARIANT	(0x0F85);
+	VARIANT	(0x7D);
+	VARIANT	(0x0F8D);
+	VARIANT	(0x71);
+	VARIANT	(0x0F81);
+	VARIANT	(0x7B);
+	VARIANT	(0x0F8B);
+	VARIANT	(0x79);
+	VARIANT	(0x0F89);
+	VARIANT	(0x70);
+	VARIANT	(0x0F80);
+	VARIANT	(0x7A);
+	VARIANT	(0x0F8A);
+	VARIANT	(0x78);
+	VARIANT	(0x0F88);
+	END_MNEMONIC;
+
+	MNEMONIC(Jmp);
+	VARIANT	(0xEB);
+	VARIANT	(0xE9);
+	VARIANT_S	(0xFF,	0x04);
+	VARIANT	(0xEA);
+	VARIANT_S	(0xFF,	0x05);
+	END_MNEMONIC;
+
+	MNEMONIC(Lahf);
+	VARIANT		(0x9f);
+	END_MNEMONIC;
+
+	MNEMONIC(Lxs);
+	VARIANT	(0xC5);
+	VARIANT	(0xC4);
+	END_MNEMONIC;
+
+	MNEMONIC(Lea);
+	VARIANT	(0x8D);
+	END_MNEMONIC;
+
+	MNEMONIC(Lods);
+	VARIANT		(0xAC);
+	VARIANT		(0xAD);
+	END_MNEMONIC;
+
+	MNEMONIC(Loop);
+	VARIANT	(0xE2);
+	VARIANT	(0xE1);
+	VARIANT	(0xE0);
+	END_MNEMONIC;
+
+	MNEMONIC(Mov);
+	VARIANT	(0x88);
+	VARIANT	(0x89);
+	VARIANT	(0x8A);
+	VARIANT	(0x8B);
+	VARIANT	(0x8C);
+	VARIANT	(0x8E);
+	VARIANT	(0xA0);
+	VARIANT	(0xA1);
+	VARIANT	(0xA2);
+	VARIANT	(0xA3);
+	VARIANT_R	(0xB0);
+	VARIANT_R	(0xB8);
+	VARIANT_S	(0xC6,	0x00);
+	VARIANT_S	(0xC7, 	0x00);
+	END_MNEMONIC;
+
+	MNEMONIC(Movs);
+	VARIANT		(0xA4);
+	VARIANT		(0xA5);
+	END_MNEMONIC;
+
+	MNEMONIC(Mul);
+	VARIANT_S	(0xF6,	0x04);
+	VARIANT_S	(0xF7,	0x04);
+	END_MNEMONIC;
+
+	MNEMONIC(Neg);
+	VARIANT_S	(0xF6,	0x03);
+	VARIANT_S	(0xF7,	0x03);
+	END_MNEMONIC;
+
+	MNEMONIC(Nop);
+	VARIANT		(0x90);
+	END_MNEMONIC;
+
+	MNEMONIC(Not);
+	VARIANT_S	(0xF6,	0x02);
+	VARIANT_S	(0xF7,	0x02);
+	END_MNEMONIC;
+
+	MNEMONIC(Or);
+	VARIANT	(0x0C);
+	VARIANT	(0x0D);
+	VARIANT_S	(0x80,	0x01);
+	VARIANT_S	(0x81,	0x01);
+	VARIANT_S	(0x83,	0x01);
+	VARIANT	(0x08);
+	VARIANT	(0x09);
+	VARIANT	(0x0A);
+	VARIANT	(0x0B);
+	END_MNEMONIC;
+
+	MNEMONIC(Out);
+	VARIANT	(0xE6);
+	VARIANT	(0xE7);
+	VARIANT	(0xEE);
+	VARIANT	(0xEF);
+	END_MNEMONIC;
+
+	MNEMONIC(Pop);
+	VARIANT_S	(0x8F,	0x00);
+	VARIANT_R	(0x58);
+	VARIANT	(0x1F);
+	VARIANT	(0x07);
+	VARIANT	(0x17);
+//	VARIANT		(0x61);
+	VARIANT		(0x9D);
+	END_MNEMONIC;
+
+	MNEMONIC(Push);
+	VARIANT_S	(0xFF,	0x06);
+	VARIANT_R	(0x50);
+	VARIANT	(0x6A);
+	VARIANT	(0x68);
+	VARIANT	(0x0E);
+	VARIANT	(0x16);
+	VARIANT	(0x1E);
+	VARIANT	(0x06);
+//	VARIANT		(0x60);
+	VARIANT		(0x9C);
+	END_MNEMONIC;
+
+	MNEMONIC(Rot);
+	VARIANT_S	(0xD0,	0x02);
+	VARIANT_S	(0xD2,	0x02);
+	VARIANT_S	(0xC0,	0x02);
+	VARIANT_S	(0xD1,	0x02);
+	VARIANT_S	(0xD3,	0x02);
+	VARIANT_S	(0xC1,	0x02);
+	VARIANT_S	(0xD0,	0x03);
+	VARIANT_S	(0xD2,	0x03);
+	VARIANT_S	(0xC0,	0x03);
+	VARIANT_S	(0xD1,	0x03);
+	VARIANT_S	(0xD3,	0x03);
+	VARIANT_S	(0xC1,	0x03);
+	VARIANT_S	(0xD0,	0x00);
+	VARIANT_S	(0xD2,	0x00);
+	VARIANT_S	(0xC0,	0x00);
+	VARIANT_S	(0xD1,	0x00);
+	VARIANT_S	(0xD3,	0x00);
+	VARIANT_S	(0xC1,	0x00);
+	VARIANT_S	(0xD0,	0x01);
+	VARIANT_S	(0xD2,	0x01);
+	VARIANT_S	(0xC0,	0x01);
+	VARIANT_S	(0xD1,	0x01);
+	VARIANT_S	(0xD3,	0x01);
+	VARIANT_S	(0xC1,	0x01);
+	END_MNEMONIC;
+
+	MNEMONIC(Ret);
+	VARIANT		(0xC3);
+	VARIANT	(0xC2);
+	VARIANT		(0xCB);
+	VARIANT	(0xCA);
+	END_MNEMONIC;
+
+	MNEMONIC(Sahf);
+	VARIANT		(0x9E);
+	END_MNEMONIC;
+
+	MNEMONIC(Sxx);
+	VARIANT_S	(0xD0,	0x04);
+	VARIANT_S	(0xD2,	0x04);
+	VARIANT_S	(0xC0,	0x04);
+	VARIANT_S	(0xD1,	0x04);
+	VARIANT_S	(0xD3,	0x04);
+	VARIANT_S	(0xC1,	0x04);
+	VARIANT_S	(0xD0,	0x07);
+	VARIANT_S	(0xD2,	0x07);
+	VARIANT_S	(0xC0,	0x07);
+	VARIANT_S	(0xD1,	0x07);
+	VARIANT_S	(0xD3,	0x07);
+	VARIANT_S	(0xC1,	0x07);
+	VARIANT_S	(0xD0,	0x04);
+	VARIANT_S	(0xD2,	0x04);
+	VARIANT_S	(0xC0,	0x04);
+	VARIANT_S	(0xD1,	0x04);
+	VARIANT_S	(0xD3,	0x04);
+	VARIANT_S	(0xC1,	0x04);
+	VARIANT_S	(0xD0,	0x05);
+	VARIANT_S	(0xD2,	0x05);
+	VARIANT_S	(0xC0,	0x05);
+	VARIANT_S	(0xD1,	0x05);
+	VARIANT_S	(0xD3,	0x05);
+	VARIANT_S	(0xC1,	0x05);
+	END_MNEMONIC;
+
+	MNEMONIC(Sbb);
+	VARIANT	(0x1C);
+	VARIANT	(0x1D);
+	VARIANT_S	(0x80,	0x03);
+	VARIANT_S	(0x81,	0x03);
+	VARIANT_S	(0x83,	0x03);
+	VARIANT	(0x18);
+	VARIANT	(0x19);
+	VARIANT	(0x1A);
+	VARIANT	(0x1B);
+	END_MNEMONIC;
+
+	MNEMONIC(Scas);
+	VARIANT		(0xAE);
+	VARIANT		(0xAF);
+	END_MNEMONIC;
+
+	MNEMONIC(Stos);
+	VARIANT		(0xAA);
+	VARIANT		(0xAB);
+	END_MNEMONIC;
+
+	MNEMONIC(Sub);
+	VARIANT	(0x2C);
+	VARIANT	(0x2D);
+	VARIANT_S	(0x80,	0x05);
+	VARIANT_S	(0x81,	0x05);
+	VARIANT_S	(0x83,	0x05);
+	VARIANT	(0x28);
+	VARIANT	(0x29);
+	VARIANT	(0x2A);
+	VARIANT	(0x2B);
+	END_MNEMONIC;
+
+	MNEMONIC(Test);
+	VARIANT	(0xA8);
+	VARIANT	(0xA9);
+	VARIANT_S	(0xF6,	0x00);
+	VARIANT_S	(0xF7,	0x00);
+	VARIANT	(0x84);
+	VARIANT	(0x85);
+	END_MNEMONIC;
+
+	MNEMONIC(Xchg);
+	VARIANT_R	(0x90);
+	VARIANT	(0x86);
+	VARIANT	(0x87);
+	END_MNEMONIC;
+
+	MNEMONIC(Xlat);
+	VARIANT		(0xD7);
+	END_MNEMONIC;
+
+	MNEMONIC(Xor);
+	VARIANT	(0x34);
+	VARIANT_S	(0x80,	0x06);
+	VARIANT_S	(0x81,	0x06);
+	VARIANT_S	(0x83,	0x06);
+	VARIANT	(0x30);
+	VARIANT	(0x31);
+	VARIANT	(0x32);
+	VARIANT	(0x33);
+	END_MNEMONIC;
+}

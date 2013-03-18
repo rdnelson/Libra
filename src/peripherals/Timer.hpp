@@ -39,9 +39,10 @@ class Timer : public IPeripheral {
 
 		void Update();
 
+		static unsigned long GetSystemTime();
+
 	protected:
 
-		unsigned long GetSystemTime();
 
 		unsigned int  dataBuffer;
 		unsigned char ctrlBuffer;
