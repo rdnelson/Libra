@@ -97,7 +97,6 @@ int VM::LoadVirgoFile(const char* filename) {
 	fin >> addrStart;
 	fin >> bytesTotal;
 
-	mProc.Initialize(addrStart);
 
 	int i = 0;
 	unsigned int hexSize;
@@ -222,6 +221,8 @@ int VM::LoadVirgoFile(const char* filename) {
 
 	mLoaded = true;
 	mVirgo = true;
+
+	mProc.Initialize(addrStart);
 
 	return VM_SUCCESS;
 }

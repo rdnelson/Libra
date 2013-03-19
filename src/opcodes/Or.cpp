@@ -20,7 +20,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-Or::Or(Prefix* pre, std::string text, std::string inst, int op) 
+Or::Or(Prefix* pre, std::string text, std::string inst, int op)
 {
 	mPrefix = pre;
        	mText = text;
@@ -55,13 +55,12 @@ Instruction* Or::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc
 	//Switch for the different valid opcodes
 	switch(*opLoc) {
 		case OR_AL_IMM8:
-			
 			sprintf(buf, "OR AL, 0x%02X", (int)*(opLoc + 1));
 
-			GETINST(prefixLen + 2);	
+			GETINST(prefixLen + 2);
 
 			newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
-			newOr->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
+			newOr->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1,(opLoc + 1).getOffset()));
 			newOr->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
 
 			break;
@@ -74,7 +73,7 @@ Instruction* Or::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc
 			GETINST(prefixLen + 3);
 
 			newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
-			newOr->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
+			newOr->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2, (opLoc + 1).getOffset()));
 			newOr->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
 
 			break;
@@ -105,7 +104,7 @@ Instruction* Or::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc
 
 				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_OR_MOD16_IMM8 ? 1 : 0));
 				newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
-				newOr->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
+				newOr->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize, (opLoc + 2 + dst->GetBytecodeLen()).getOffset()));
 				newOr->SetOperand(Operand::DST, dst);
 			}
 			break;
@@ -124,7 +123,6 @@ Instruction* Or::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc
 				newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
 				newOr->SetOperand(Operand::SRC, src);
 				newOr->SetOperand(Operand::DST, dst);
-				
 				break;
 			}
 
@@ -142,7 +140,6 @@ Instruction* Or::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc
 				newOr = new Or(prefix, buf, inst, (unsigned char)*opLoc);
 				newOr->SetOperand(Operand::SRC, src);
 				newOr->SetOperand(Operand::DST, dst);
-				
 				break;
 
 
@@ -164,7 +161,7 @@ int Or::Execute(Processor* proc) {
 	if(!dst || !src) {
 		return INVALID_ARGS;
 	}
-	
+
 	unsigned int dstVal = dst->GetValue();
 	unsigned int srcVal = src->GetValue();
 	unsigned int newVal = dstVal | srcVal;

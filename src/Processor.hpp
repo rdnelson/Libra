@@ -114,6 +114,7 @@ class Processor {
 
 		const std::vector<IPeripheral*> & GetDevices() { return mDevices; }
 		const char* GetRegisterHex(eRegisters reg) const;
+		const Instruction* GetNextInstruction() const { return mNextInst; }
 
 		void SetTimer(QTimer* timer) { mTimer = timer; }
 
@@ -131,6 +132,7 @@ class Processor {
 
 		Register	mRegisters[NumRegisters];
 		Memory&	mMem;
+		Instruction* mNextInst;
 
 		std::vector<IPeripheral*> mDevices;
 

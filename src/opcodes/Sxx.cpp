@@ -23,7 +23,7 @@ Sxx::Sxx(Prefix* pre, std::string text, std::string inst, int op) : Instruction(
 
 Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
-	int preLen = 0;	
+	int preLen = 0;
 	char buf[65];
 	unsigned char subCode;
 	std::string inst;
@@ -46,15 +46,15 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		{
 			unsigned int size = *opLoc == SXX_MOD8_1 ? 1 : 2;
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
-			snprintf(buf,65, "%s %s, 1", 
-					subCode == SAL_SUB_OPCODE ? "SAL" : 
-						(subCode == SAR_SUB_OPCODE ? "SAR" : "SHR"), 
+			snprintf(buf,65, "%s %s, 1",
+					subCode == SAL_SUB_OPCODE ? "SAL" :
+						(subCode == SAR_SUB_OPCODE ? "SAR" : "SHR"),
 					dst->GetDisasm().c_str());
 
 			GETINST(preLen + 2 + dst->GetBytecodeLen());
 			newSxx = new Sxx(pre, buf, inst, (int)*opLoc);
 			newSxx->SetOperand(Operand::DST, dst);
-			newSxx->SetOperand(Operand::SRC, new ImmediateOperand(1, 1));
+			newSxx->SetOperand(Operand::SRC, new ImmediateOperand(1, 1, 0x10000));
 			newSxx->mType = subCode;
 			break;
 		}
@@ -63,9 +63,9 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		{
 			unsigned int size = *opLoc == SXX_MOD8_CL ? 1 : 2;
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
-			snprintf(buf,65, "%s %s, CL", 
-					subCode == SAL_SUB_OPCODE ? "SAL" : 
-						(subCode == SAR_SUB_OPCODE ? "SAR" : "SHR"), 
+			snprintf(buf,65, "%s %s, CL",
+					subCode == SAL_SUB_OPCODE ? "SAL" :
+						(subCode == SAR_SUB_OPCODE ? "SAR" : "SHR"),
 					dst->GetDisasm().c_str());
 
 			GETINST(preLen + 2 + dst->GetBytecodeLen());
@@ -81,10 +81,10 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			unsigned int size = *opLoc == SXX_MOD8_IMM8 ? 1 : 2;
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 			unsigned int val = *(opLoc + 2 + dst->GetBytecodeLen());
-			Operand* src = new ImmediateOperand(val, 1);
-			snprintf(buf,65, "%s %s, %s", 
-					subCode == SAL_SUB_OPCODE ? "SAL" : 
-						(subCode == SAR_SUB_OPCODE ? "SAR" : "SHR"), 
+			Operand* src = new ImmediateOperand(val, 1, (opLoc + 2 + dst->GetBytecodeLen()).getOffset());
+			snprintf(buf,65, "%s %s, %s",
+					subCode == SAL_SUB_OPCODE ? "SAL" :
+						(subCode == SAR_SUB_OPCODE ? "SAR" : "SHR"),
 					dst->GetDisasm().c_str(),
 					src->GetDisasm().c_str());
 

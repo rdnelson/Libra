@@ -35,7 +35,7 @@ Instruction* Int::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 	switch(*opLoc) {
 		case INT_3:
 		{
-			Operand* dst = new ImmediateOperand(3, 1);
+			Operand* dst = new ImmediateOperand(3, 1, 0x10000);
 			GETINST(preSize + 1);
 			snprintf(buf, 65, "INT 3");
 			newInt = new Int(pre, buf, inst, (int)*opLoc);
@@ -44,7 +44,7 @@ Instruction* Int::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 		}
 		case INT_IMM8:
 		{
-			Operand* dst = new ImmediateOperand(*(opLoc + 1), 1);
+			Operand* dst = new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset());
 			GETINST(preSize + 2);
 			snprintf(buf, 65, "INT %s", dst->GetDisasm().c_str());
 
@@ -54,7 +54,7 @@ Instruction* Int::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 		}
 		case INTO:
 		{
-			Operand* dst = new ImmediateOperand(4,1);
+			Operand* dst = new ImmediateOperand(4,1,0x10000);
 			GETINST(preSize + 1);
 			snprintf(buf, 65, "INTO");
 			newInt = new Int(pre, buf, inst, (int)*opLoc);

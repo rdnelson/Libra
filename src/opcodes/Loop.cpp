@@ -35,7 +35,7 @@ Instruction* Loop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 	switch(*opLoc) {
 		case LOOP:
 		{
-			Operand* dst = new ImmediateOperand(*(opLoc + 1), 1);
+			Operand* dst = new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset());
 			GETINST(preSize + 2);
 			snprintf(buf, 65, "LOOP %s", dst->GetDisasm().c_str());
 			newLoop = new Loop(pre, buf, inst, (int)*opLoc);
@@ -44,7 +44,7 @@ Instruction* Loop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 		}
 		case LOOPE:
 		{
-			Operand* dst = new ImmediateOperand(*(opLoc + 1), 1);
+			Operand* dst = new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset());
 			GETINST(preSize + 2);
 			snprintf(buf, 65, "LOOPE %s", dst->GetDisasm().c_str());
 			newLoop = new Loop(pre, buf, inst, (int)*opLoc);
@@ -53,7 +53,7 @@ Instruction* Loop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 		}
 		case LOOPNE:
 		{
-			Operand* dst = new ImmediateOperand(*(opLoc + 1), 1);
+			Operand* dst = new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset());
 			GETINST(preSize + 2);
 			snprintf(buf, 65, "LOOPNE %s", dst->GetDisasm().c_str());
 			newLoop = new Loop(pre, buf, inst, (int)*opLoc);

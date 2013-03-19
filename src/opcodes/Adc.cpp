@@ -20,7 +20,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-Adc::Adc(Prefix* pre, std::string text, std::string inst, int op) 
+Adc::Adc(Prefix* pre, std::string text, std::string inst, int op)
 {
 	mPrefix = pre;
        	mText = text;
@@ -57,10 +57,10 @@ Instruction* Adc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case ADC_AL_BYTE:
 			snprintf(buf, 65, "ADC AL, 0x%02X", (int)*(opLoc + 1));
 
-			GETINST(prefixLen + 2);	
+			GETINST(prefixLen + 2);
 
 			newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
-			newAdc->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
+			newAdc->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset()));
 			newAdc->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
 
 			break;
@@ -73,7 +73,7 @@ Instruction* Adc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 3);
 
 			newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
-			newAdc->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
+			newAdc->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2, (opLoc + 1).getOffset()));
 			newAdc->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
 
 			break;
@@ -106,7 +106,7 @@ Instruction* Adc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADC_MOD_SIMM8 ? 1 : 0));
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
-				newAdc->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
+				newAdc->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize, (opLoc + 2 + dst->GetBytecodeLen()).getOffset()));
 				newAdc->SetOperand(Operand::DST, dst);
 			}
 			break;
@@ -125,7 +125,7 @@ Instruction* Adc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdc->SetOperand(Operand::SRC, src);
 				newAdc->SetOperand(Operand::DST, dst);
-				
+
 				break;
 			}
 
@@ -144,7 +144,7 @@ Instruction* Adc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				newAdc = new Adc(prefix, buf, inst, (unsigned char)*opLoc);
 				newAdc->SetOperand(Operand::SRC, src);
 				newAdc->SetOperand(Operand::DST, dst);
-				
+
 				break;
 
 
