@@ -220,6 +220,10 @@ unsigned int ModrmOperand::GetBytecodeLen() {
 
 }
 
-const std::string ModrmOperand::GetDisasm() { 
+const std::string ModrmOperand::GetDisasm() {
 	return mText;
-};
+}
+
+int ModrmOperand::GetUnresolvedValue() const {
+	return mAddr.getOffset() & 0xFFFF;
+}

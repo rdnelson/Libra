@@ -75,7 +75,7 @@ Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 				val += (val >= 0x80) ? 0xFF00 : 0x0000;
 			}
 
-			Operand* dst = new ImmediateOperand(val, 2);
+			Operand* dst = new ImmediateOperand(val, 2, (opLoc + 1).getOffset());
 			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + size);
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);

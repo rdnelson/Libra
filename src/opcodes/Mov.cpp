@@ -182,7 +182,7 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			if(size == 2) {
 				val += (int)*(opLoc + 2 + dst->GetBytecodeLen()) << 8;
 			}
-			Operand* src = new ImmediateOperand(val, size);
+			Operand* src = new ImmediateOperand(val, size, (opLoc + 1 + dst->GetBytecodeLen()).getOffset());
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
@@ -202,7 +202,7 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			if(size == 2) {
 				val += (int)*(opLoc + 3 + dst->GetBytecodeLen()) << 8;
 			}
-			Operand* src = new ImmediateOperand(val, size);
+			Operand* src = new ImmediateOperand(val, size, (opLoc + 2 + dst->GetBytecodeLen()).getOffset());
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 

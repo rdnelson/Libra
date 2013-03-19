@@ -98,3 +98,8 @@ const std::string RegisterOperand::GetDisasm() {
 	};
 	return "INVALID";
 }
+
+int RegisterOperand::GetUnresolvedValue() const {
+	return mReg + 0x10000;
+}
+

@@ -42,7 +42,7 @@ Instruction* Jmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			if(size == 2) {
 				val += *(opLoc + 2) << 8;
 			}
-			Operand* dst = new ImmediateOperand(val, size);
+			Operand* dst = new ImmediateOperand(val, size, (opLoc + 1).getOffset());
 			snprintf(buf, 65, "JMP %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 1 + size);
 			newJmp = new Jmp(pre, buf, inst, (int)*opLoc);
@@ -68,7 +68,7 @@ Instruction* Jmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				(*(opLoc + 2) << 0x08) + ((
 				(*(opLoc + 3)) +
 				(*(opLoc + 4) << 0x08)) << 0x4);
-			Operand* dst = new ImmediateOperand(val & 0xFFFF, 2);
+			Operand* dst = new ImmediateOperand(val & 0xFFFF, 4, (opLoc + 1).getOffset());
 			snprintf(buf, 65, "JMP %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 4);
 			newJmp = new Jmp(pre, buf, inst, (int)*opLoc);

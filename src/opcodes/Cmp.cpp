@@ -20,7 +20,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-Cmp::Cmp(Prefix* pre, std::string text, std::string inst, int op) 
+Cmp::Cmp(Prefix* pre, std::string text, std::string inst, int op)
 {
 	mPrefix = pre;
        	mText = text;
@@ -55,13 +55,12 @@ Instruction* Cmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	//Switch for the different valid opcodes
 	switch(*opLoc) {
 		case CMP_AL_IMM8:
-			
 			sprintf(buf, "CMP AL, 0x%02X", (int)*(opLoc + 1));
 
-			GETINST(prefixLen + 2);	
+			GETINST(prefixLen + 2);
 
 			newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
-			newCmp->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
+			newCmp->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset()));
 			newCmp->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
 
 			break;
@@ -74,7 +73,7 @@ Instruction* Cmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 3);
 
 			newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
-			newCmp->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
+			newCmp->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2, (opLoc + 1).getOffset()));
 			newCmp->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
 
 			break;
@@ -105,7 +104,7 @@ Instruction* Cmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_CMP_MOD16_IMM8 ? 1 : 0));
 				newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
-				newCmp->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
+				newCmp->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize, (opLoc + 2 + dst->GetBytecodeLen()).getOffset()));
 				newCmp->SetOperand(Operand::DST, dst);
 			}
 			break;
@@ -124,7 +123,6 @@ Instruction* Cmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
 				newCmp->SetOperand(Operand::SRC, src);
 				newCmp->SetOperand(Operand::DST, dst);
-				
 				break;
 			}
 
@@ -143,7 +141,6 @@ Instruction* Cmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				newCmp = new Cmp(prefix, buf, inst, (unsigned char)*opLoc);
 				newCmp->SetOperand(Operand::SRC, src);
 				newCmp->SetOperand(Operand::DST, dst);
-				
 				break;
 
 
@@ -165,14 +162,12 @@ int Cmp::Execute(Processor* proc) {
 	if(!dst || !src) {
 		return INVALID_ARGS;
 	}
-	
 	compare(proc, dst, src);
 
 	return 0;
 }
 
 unsigned int Cmp::compare(Processor* proc, Operand* dst, Operand* src) {
-	
 	if(!dst || !src) {
 		return 0xFFFFFFFF;
 	}
@@ -181,7 +176,7 @@ unsigned int Cmp::compare(Processor* proc, Operand* dst, Operand* src) {
 	unsigned int srcVal = src->GetValue();
 	unsigned int newVal = dstVal - srcVal;
 	unsigned int sign = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
-	
+
 	proc->SetFlag(FLAGS_CF, newVal > dstVal);
 	newVal &= dst->GetBitmask();
 
@@ -194,3 +189,4 @@ unsigned int Cmp::compare(Processor* proc, Operand* dst, Operand* src) {
 
 	return newVal;
 }
+

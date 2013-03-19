@@ -53,7 +53,7 @@ Instruction* Test::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			GETINST(preSize + 1 + size);
 
 
-			Operand* src = new ImmediateOperand(val, size);
+			Operand* src = new ImmediateOperand(val, size, (opLoc + 1).getOffset());
 			Operand* dst = new RegisterOperand(*opLoc == TEST_AL_IMM8 ? REG_AL : REG_AX, proc);
 
 			snprintf(buf, 65, "TEST %s, %s", size == 1 ? "AL" : "AH", src->GetDisasm().c_str());
@@ -76,7 +76,7 @@ Instruction* Test::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			}
 
 
-			Operand* src = new ImmediateOperand(val, size);
+			Operand* src = new ImmediateOperand(val, size, (opLoc + 1).getOffset());
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 
 			snprintf(buf, 65, "TEST %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());

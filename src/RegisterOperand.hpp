@@ -24,6 +24,7 @@ class RegisterOperand : public Operand {
 		unsigned int GetValue();
 		void SetValue(unsigned int val);
 		unsigned int GetBytecodeLen() { return 0; }
+		int GetUnresolvedValue() const;
 
 		unsigned int GetBitmask();
 		const std::string GetDisasm();

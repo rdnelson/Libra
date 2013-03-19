@@ -34,7 +34,7 @@ Instruction* Aad::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 	if(*opLoc == AAD) {
 
 		unsigned int val = (int)*(opLoc + 1);
-		Operand* dst = new ImmediateOperand(val, 1);
+		Operand* dst = new ImmediateOperand(val, 1, (opLoc + 1).getOffset());
 
 		GETINST(preSize + 1 + dst->GetBytecodeLen());
 		snprintf(buf, 65, "AAD %s", dst->GetDisasm().c_str());

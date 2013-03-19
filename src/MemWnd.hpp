@@ -65,6 +65,7 @@ private:
 	void UpdateScreen();
 	void UpdateGui();
 	void UpdateMemView(unsigned int ip = 0xFFFFFFFF, unsigned int len = 0);
+	void UpdateInstHighlight();
 	void DisableRun(int err);
 	void EnableRun();
 

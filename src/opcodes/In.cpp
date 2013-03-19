@@ -37,7 +37,7 @@ Instruction* In::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc
 		case IN_AX_IMM8:
 		{
 			eRegisters reg = *opLoc == IN_AL_IMM8 ? REG_AL : REG_AX;
-			Operand* src = new ImmediateOperand(*(opLoc + 1), 1);
+			Operand* src = new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset());
 			Operand* dst = new RegisterOperand(reg, proc);
 			GETINST(preSize + 2);
 			snprintf(buf, 65, "IN %s, %s",reg == REG_AX ? "AX" : "AL", src->GetDisasm().c_str());

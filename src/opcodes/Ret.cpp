@@ -43,7 +43,7 @@ Instruction* Ret::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 		case RET_FAR_POP:
 		{
 			unsigned int val = (unsigned int)*(opLoc + 1) + ((unsigned int)*(opLoc + 2) << 8);
-			Operand* dst = new ImmediateOperand(val, 2);
+			Operand* dst = new ImmediateOperand(val, 2, (opLoc + 1).getOffset());
 			snprintf(buf, 65, "RET %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newRet = new Ret(pre, buf, inst, (unsigned int)*opLoc);
