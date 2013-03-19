@@ -48,7 +48,7 @@ Instruction* Xor::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(preSize + 1 + size);
 
 			Operand* dst = new RegisterOperand(size == 1 ? REG_AL : REG_AX, proc);
-			Operand* src = new ImmediateOperand(val, size);
+			Operand* src = new ImmediateOperand(val, size, (opLoc + 2).getOffset());
 			snprintf(buf, 65, "XOR %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			newXor = new Xor(pre, buf, inst, (int)*opLoc);
 			newXor->SetOperand(Operand::SRC, src);
@@ -73,8 +73,7 @@ Instruction* Xor::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 					val += val >= 0x80 ? 0xFF00 : 0x0000;
 			}
 
-			Operand* src = new ImmediateOperand(val, size);
-			
+			Operand* src = new ImmediateOperand(val, size, (opLoc + 2 + dst->GetBytecodeLen()).getOffset());
 			GETINST(preSize + 2 + (*opLoc == XOR_MOD16_IMM8 ? 1 : size) + dst->GetBytecodeLen());
 			snprintf(buf, 65, "XOR %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 

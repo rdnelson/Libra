@@ -29,6 +29,7 @@ class ModrmOperand : public Operand {
 		void SetValue(unsigned int addr);
 		unsigned int GetValue() { return GetValue(0); }
 		unsigned int GetValue(unsigned int size);
+		int GetUnresolvedValue() const;
 
 		static Operand* GetModrmOperand(Processor* proc, Memory::MemoryOffset& inst, eModRm modrm, unsigned int size);
 

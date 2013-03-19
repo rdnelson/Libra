@@ -69,12 +69,13 @@ class Instruction {
 		typedef Instruction* (*PCreateInst)(Memory::MemoryOffset&, Processor*);
 
 		void SetOperand(const unsigned int operand, Operand* newOp);
+		Operand* GetOperand(const unsigned int num) const { if(num < 4) { return mOperands[num]; } return 0; }
 
 		void SetAddress(const unsigned int addr) { mAddress = addr; }
 		unsigned int GetAddress() const { return mAddress; }
 
 		virtual ~Instruction();
-		
+
 		static bool Parity(unsigned int val);
 		static bool OverflowAdd(unsigned int dst, unsigned int src, unsigned int size);
 		static bool OverflowSub(unsigned int dst, unsigned int src, unsigned int size);

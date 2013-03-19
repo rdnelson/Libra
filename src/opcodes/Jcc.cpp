@@ -91,7 +91,7 @@ Instruction* Jcc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 		case JS:
 
 			GETINST(preSize + 1 + (opcodeOffset == TWO_BYTE_OFFSET ? 2 : 1));
-			src = new ImmediateOperand(val, opcodeOffset == TWO_BYTE_OFFSET ? 2 : 1);
+			src = new ImmediateOperand(val, opcodeOffset == TWO_BYTE_OFFSET ? 2 : 1, (opLoc + 1).getOffset());
 			snprintf(buf, 65, "%s %s", _GetStr(*opLoc - opcodeOffset), src->GetDisasm().c_str());
 			newJcc = new Jcc(pre, buf, inst, (unsigned char)*opLoc - opcodeOffset);
 			newJcc->SetOperand(Operand::SRC, src);

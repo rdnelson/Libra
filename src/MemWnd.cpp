@@ -286,7 +286,7 @@ void MemWnd::loadFile(bool newFile) {
 		QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Flat Binary (*.*);;Virgo Object (*.obj)"));
 		mFile = file;
 	}
-	
+
 	//Stop the VMWorker if the current program is running
 	if(mVM.isLoaded()) {
 		emit vmPause();
@@ -372,16 +372,24 @@ void MemWnd::workerProcReturn(int err) {
 void MemWnd::UpdateGui() {
 
 	UpdateScreen();
-	
+
 	//Update all of the register and flag boxes
 	ui->txtAX->setText(mVM.GetProc().GetRegisterHex(REG_AX));
+	ui->txtAX->setStyleSheet("");
 	ui->txtBX->setText(mVM.GetProc().GetRegisterHex(REG_BX));
+	ui->txtBX->setStyleSheet("");
 	ui->txtCX->setText(mVM.GetProc().GetRegisterHex(REG_CX));
+	ui->txtCX->setStyleSheet("");
 	ui->txtDX->setText(mVM.GetProc().GetRegisterHex(REG_DX));
+	ui->txtDX->setStyleSheet("");
 	ui->txtSI->setText(mVM.GetProc().GetRegisterHex(REG_SI));
+	ui->txtSI->setStyleSheet("");
 	ui->txtDI->setText(mVM.GetProc().GetRegisterHex(REG_DI));
+	ui->txtDI->setStyleSheet("");
 	ui->txtBP->setText(mVM.GetProc().GetRegisterHex(REG_BP));
+	ui->txtBP->setStyleSheet("");
 	ui->txtSP->setText(mVM.GetProc().GetRegisterHex(REG_SP));
+	ui->txtSP->setStyleSheet("");
 	ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
 	ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS));
 	ui->chkAdjust->setChecked(mVM.GetProc().GetFlag(FLAGS_AF));
@@ -408,6 +416,8 @@ void MemWnd::UpdateGui() {
 	}
 
 	UpdateMemView(ip, mVM.CalcInstructionLen());
+
+	UpdateInstHighlight();
 }
 
 void MemWnd::UpdateScreen() {
@@ -432,6 +442,90 @@ void MemWnd::UpdateMemView(unsigned int ip, unsigned int len) {
 		}
 		//Let the GUI know that there are memory changes
 		qMemModel->update();
+	}
+}
+
+void MemWnd::UpdateInstHighlight() {
+	const Instruction* inst = mVM.GetProc().GetNextInstruction();
+	Operand* op = 0;
+	QColor color = Qt::white;
+	if(!inst) {
+		return;
+	}
+	for(unsigned int i = 0; i < 4; i++) {
+		switch(i) {
+			case 0:
+				color = Qt::green;
+				break;
+			case 1:
+				color = Qt::red;
+				break;
+			case 2:
+				color = Qt::magenta;
+				break;
+			case 3:
+				color = Qt::cyan;
+				break;
+			default:
+				color = Qt::white;
+		}
+		op = inst->GetOperand(i);
+		if(op) {
+			int val = op->GetUnresolvedValue();
+			if(val > 0 && val < 0x10000) {
+				//Address, highlight it in mem view
+				QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
+				if(qMemModel) {
+					qMemModel->Highlight(val, 2, color);
+				}
+				qMemModel->update();
+			} else if(val < 0) {
+				//Immediate, highlight it in mem view
+				QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
+				if(qMemModel) {
+					qMemModel->Highlight(op->GetOffset(),op->GetBytecodeLen(),color);
+					qMemModel->update();
+				}
+			} else if(val >= 0x10000) {
+				//Register, highlight the register box
+				val -= 0x10000;
+				switch(val) {
+				case REG_AX:
+				case REG_AL:
+				case REG_AH:
+					ui->txtAX->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+					break;
+				case REG_BX:
+				case REG_BL:
+				case REG_BH:
+					ui->txtBX->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+					break;
+				case REG_CX:
+				case REG_CL:
+				case REG_CH:
+					ui->txtCX->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+					break;
+				case REG_DX:
+				case REG_DL:
+				case REG_DH:
+					ui->txtDX->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+					break;
+				case REG_SP:
+					ui->txtSP->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+					break;
+				case REG_BP:
+					ui->txtBP->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+					break;
+				case REG_SI:
+					ui->txtSI->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+					break;
+				case REG_DI:
+					ui->txtDI->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+					break;
+				}
+
+			}
+		}
 	}
 }
 

@@ -53,13 +53,13 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				Operand* dst = ModrmOperand::GetModrmOperand
 					(proc, opLoc, ModrmOperand::MOD, size);
 
-				snprintf(buf,65, "%s %s, 1", 
-					modrm == ROL_MODRM ? "ROL" : 
-						(modrm == ROR_MODRM ? "ROR" : 
-						(modrm == RCL_MODRM ? "RCL" : "RCR")), 
+				snprintf(buf,65, "%s %s, 1",
+					modrm == ROL_MODRM ? "ROL" :
+						(modrm == ROR_MODRM ? "ROR" :
+						(modrm == RCL_MODRM ? "RCL" : "RCR")),
 					dst->GetDisasm().c_str());
 
-				Operand* src = new ImmediateOperand(1, 1);
+				Operand* src = new ImmediateOperand(1, 1, 0x10000);
 				GETINST(preSize + 2 + dst->GetBytecodeLen() + 0);
 
 				newRot = new Rot(pre, buf, inst, (unsigned char)*opLoc, modrm);
@@ -73,11 +73,11 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				unsigned int size = (*opLoc == ROT_MOD8_CL ? 1 : 2);
 				Operand* dst = ModrmOperand::GetModrmOperand
 					(proc, opLoc, ModrmOperand::MOD, size);
-				
-				snprintf(buf,65, "%s %s, CL", 
-					modrm == ROL_MODRM ? "ROL" : 
-						(modrm == ROR_MODRM ? "ROR" : 
-						(modrm == RCL_MODRM ? "RCL" : "RCR")), 
+
+				snprintf(buf,65, "%s %s, CL",
+					modrm == ROL_MODRM ? "ROL" :
+						(modrm == ROR_MODRM ? "ROR" :
+						(modrm == RCL_MODRM ? "RCL" : "RCR")),
 					dst->GetDisasm().c_str());
 
 				Operand* src = new RegisterOperand(REG_CL, proc);
@@ -95,14 +95,14 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				Operand* dst = ModrmOperand::GetModrmOperand
 					(proc, opLoc, ModrmOperand::MOD, size);
 				unsigned int val = int(*(opLoc + 2 + dst->GetBytecodeLen())) & 0xFF;
-				
-				snprintf(buf,65, "%s %s, %d", 
-					modrm == ROL_MODRM ? "ROL" : 
-						(modrm == ROR_MODRM ? "ROR" : 
-						(modrm == RCL_MODRM ? "RCL" : "RCR")), 
+
+				snprintf(buf,65, "%s %s, %d",
+					modrm == ROL_MODRM ? "ROL" :
+						(modrm == ROR_MODRM ? "ROR" :
+						(modrm == RCL_MODRM ? "RCL" : "RCR")),
 					dst->GetDisasm().c_str(), val);
 
-				Operand* src = new ImmediateOperand(val, size);
+				Operand* src = new ImmediateOperand(val, size, (opLoc + 2 + dst->GetBytecodeLen()).getOffset());
 				GETINST(preSize + 2 + dst->GetBytecodeLen() + 1);
 
 				newRot = new Rot(pre, buf, inst, (unsigned char)*opLoc, modrm);

@@ -18,7 +18,7 @@
 #include <cstring>
 #include <cstdio>
 
-Processor::Processor(Memory& mem): mMem(mem), mLastPort(0xFFFFFFFF), mLastDevice(0), mInterrupt(-1), mHalt(false) {
+Processor::Processor(Memory& mem): mMem(mem), mNextInst(0), mLastPort(0xFFFFFFFF), mLastDevice(0), mInterrupt(-1), mHalt(false) {
 
 }
 
@@ -53,6 +53,10 @@ int Processor::Initialize(unsigned int startAddr) {
 	mInterrupt = -1;
 
 	_InitializeDevices();
+
+	//Fetch first instruction
+	Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
+	mNextInst = Instruction::ReadInstruction(curMem, this);
 
 	return PROC_SUCCESS;
 
@@ -100,28 +104,27 @@ int Processor::Step() {
 		return PROC_HALT;
 	}
 
-	//Fetch
-	Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
-	Instruction* inst = Instruction::ReadInstruction(curMem, this);
 
 	//Ensure it exists and is valid
-	if(inst && inst->IsValid()) {
+	if(mNextInst && mNextInst->IsValid()) {
 		//Increment IP
-		SetRegister(REG_IP, GetRegister(REG_IP) + inst->GetLength());
+		SetRegister(REG_IP, GetRegister(REG_IP) + mNextInst->GetLength());
 
 #ifdef DEBUG
-		inst->AddLengthToDisasm();
+		mNextInst->AddLengthToDisasm();
 
-		std::cout << inst->GetDisasm() << std::endl;
+		std::cout << mNextInst->GetDisasm() << std::endl;
 
 #endif
 		//Execute
-		if((retVal = inst->Execute(this)) < 0) {
-			delete inst;
+		if((retVal = mNextInst->Execute(this)) < 0) {
+			delete mNextInst;
 			return PROC_ERR_INST;
 		}
-		delete inst;
-		inst = 0;
+		delete mNextInst;
+
+		Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
+		mNextInst = Instruction::ReadInstruction(curMem, this);
 
 	} else {
 		return PROC_ERR_INV_INST;

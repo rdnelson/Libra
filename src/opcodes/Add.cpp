@@ -20,7 +20,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-Add::Add(Prefix* pre, std::string text, std::string inst, int op) 
+Add::Add(Prefix* pre, std::string text, std::string inst, int op)
 {
 	mPrefix = pre;
        	mText = text;
@@ -57,10 +57,10 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case ADD_AL_BYTE:
 			snprintf(buf, 65, "ADD AL, 0x%02X", (int)*(opLoc + 1));
 
-			GETINST(prefixLen + 2);	
+			GETINST(prefixLen + 2);
 
 			newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
-			newAdd->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
+			newAdd->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset()));
 			newAdd->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
 
 			break;
@@ -73,7 +73,7 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 3);
 
 			newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
-			newAdd->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
+			newAdd->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2, (opLoc + 1).getOffset()));
 			newAdd->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
 
 			break;
@@ -106,7 +106,7 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADD_MOD_SIMM8 ? 1 : 0));
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
-				newAdd->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
+				newAdd->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize, (opLoc + 2 + dst->GetBytecodeLen()).getOffset()));
 				newAdd->SetOperand(Operand::DST, dst);
 			}
 			break;

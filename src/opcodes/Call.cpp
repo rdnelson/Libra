@@ -34,7 +34,6 @@ Instruction* Call::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	
 	Instruction* newCall = 0;
 
 	if(pre) {
@@ -53,7 +52,7 @@ Instruction* Call::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 				val += seg << 4;
 			}
 
-			Operand* dst = new ImmediateOperand(val, size);
+			Operand* dst = new ImmediateOperand(val, size, (opLoc + 1).getOffset());
 
 
 			snprintf(buf, 65, "CALL %s", dst->GetDisasm().c_str());

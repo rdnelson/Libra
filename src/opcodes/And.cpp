@@ -51,7 +51,7 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 			GETINST(preSize + 1 + size);
 
-			Operand* src = new ImmediateOperand(val, size);
+			Operand* src = new ImmediateOperand(val, size, (opLoc + 1).getOffset());
 			Operand* dst = new RegisterOperand(*opLoc == AND_AL_IMM8 ? REG_AL : REG_AX, proc);
 
 			newAnd = new And(pre, buf, inst, (unsigned char)*opLoc);
@@ -62,7 +62,6 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case AND_MOD8_IMM8:
 		case AND_MOD16_IMM16:
 		case AND_MOD16_IMM8:
-		
 		modrm = *(opLoc + 1);
 		if(((modrm & 0x38) >> 3) == 4)
 		{
@@ -79,13 +78,12 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			}
 
 
-			Operand* src = new ImmediateOperand(val, size);
+			Operand* src = new ImmediateOperand(val, size, (opLoc + 2 + dst->GetBytecodeLen()).getOffset());
 
 			GETINST(preSize + 2 + (*opLoc == AND_MOD16_IMM8 ? 1 : size) + dst->GetBytecodeLen());
 			newAnd = new And(pre, buf, inst, (unsigned char)*opLoc);
 			newAnd->SetOperand(Operand::SRC, src);
 			newAnd->SetOperand(Operand::DST, dst);
-			
 		}
 		break;
 
@@ -93,7 +91,6 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case AND_MOD16_REG16:
 		{
 			unsigned int size = (*opLoc == AND_MOD8_REG8 ? 1 : 2);
-			
 			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 
@@ -107,7 +104,7 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case AND_REG16_MOD16:
 		{
 			unsigned int size = (*opLoc == AND_REG8_MOD8 ? 1 : 2);
-			
+
 			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
 			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
 
@@ -138,7 +135,7 @@ int And::Execute(Processor* proc) {
 	parity ^= parity >> 8;
 	parity ^= parity >> 4;
 	parity &= 0x0f;
-	
+
 	proc->SetFlag(FLAGS_CF, false);
 	proc->SetFlag(FLAGS_OF, false);
 	proc->SetFlag(FLAGS_PF, (0x6996 >> parity) & 1);

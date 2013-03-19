@@ -63,7 +63,7 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 2);
 
 			newSbb = new Sbb(prefix, buf, inst, (unsigned char)*opLoc);
-			newSbb->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
+			newSbb->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset()));
 			newSbb->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
 
 			break;
@@ -76,7 +76,7 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 3);
 
 			newSbb = new Sbb(prefix, buf, inst, (unsigned char)*opLoc);
-			newSbb->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
+			newSbb->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2, (opLoc + 1).getOffset()));
 			newSbb->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
 
 			break;
@@ -107,7 +107,7 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_SBB_MOD16_IMM8 ? 1 : 0));
 				newSbb = new Sbb(prefix, buf, inst, (unsigned char)*opLoc);
-				newSbb->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
+				newSbb->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize, (opLoc + 2 + dst->GetBytecodeLen()).getOffset()));
 				newSbb->SetOperand(Operand::DST, dst);
 			}
 			break;

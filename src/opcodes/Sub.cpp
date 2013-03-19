@@ -22,7 +22,7 @@
 #include <cstdlib>
 #include <cstdio>
 
-Sub::Sub(Prefix* pre, std::string text, std::string inst, int op) 
+Sub::Sub(Prefix* pre, std::string text, std::string inst, int op)
 {
 	mPrefix = pre;
        	mText = text;
@@ -57,13 +57,12 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	//Switch for the different valid opcodes
 	switch(*opLoc) {
 		case SUB_AL_IMM8:
-			
 			sprintf(buf, "SUB AL, 0x%02X", (int)*(opLoc + 1));
 
 			GETINST(prefixLen + 2);
 
 			newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
-			newSub->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1));
+			newSub->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset()));
 			newSub->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
 
 			break;
@@ -76,7 +75,7 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 3);
 
 			newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
-			newSub->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2));
+			newSub->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2, (opLoc + 1).getOffset()));
 			newSub->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
 
 			break;
@@ -107,7 +106,7 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_SUB_MOD16_IMM8 ? 1 : 0));
 				newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
-				newSub->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize));
+				newSub->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize, (opLoc + 2 + dst->GetBytecodeLen()).getOffset()));
 				newSub->SetOperand(Operand::DST, dst);
 			}
 			break;
@@ -126,7 +125,7 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
 				newSub->SetOperand(Operand::SRC, src);
 				newSub->SetOperand(Operand::DST, dst);
-				
+
 				break;
 			}
 
@@ -145,7 +144,7 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
 				newSub->SetOperand(Operand::SRC, src);
 				newSub->SetOperand(Operand::DST, dst);
-				
+
 				break;
 
 
