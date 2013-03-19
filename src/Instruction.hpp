@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <map>
 
 #include "Memory.hpp"
 #include "Prefix.hpp"
@@ -34,6 +35,8 @@ class Instruction {
 	public:
 		//Create an instruction from a memory location
 		static Instruction* ReadInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
+
+		static Instruction* CreateSubcodeInstruction(Memory::MemoryOffset& memLoc, Processor*);
 
 		//Register the mnemonics with the ReadInstruction function
 		static void InitializeOpcodes();
@@ -108,7 +111,8 @@ class Instruction {
 
 		Prefix* mPrefix;
 
-		static std::vector<PCreateInst> AllInstructions;
+		static PCreateInst AllInstructions[0x100][9];
+		static std::map<unsigned int, PCreateInst> SubcodeMap;
 
 		Operand* mOperands[4];
 		unsigned int mAddress;

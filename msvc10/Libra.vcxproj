@@ -161,6 +161,7 @@ echo Edit msvc10\Libra.vcxproj.user to fix path if necessary.</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\src\InstTable.cpp" />
     <ClCompile Include="..\src\opcodes\Aaa.cpp" />
     <ClCompile Include="..\src\opcodes\Aad.cpp" />
     <ClCompile Include="..\src\opcodes\Aam.cpp" />
