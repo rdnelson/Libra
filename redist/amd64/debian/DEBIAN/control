@@ -1,0 +1,12 @@
+Package: libra
+Version: 1.0-1
+Section: devel
+Installed-Size: 650
+Priority: optional
+Maintainer: Robert Nelson <libra@rnelson.ca>
+Architecture: amd64
+Depends: libqtgui4 (>= 4:4.8.3), libc6 (>= 2.12), libqtcore4 (>= 4:4.8.3),
+ libstdc++6 (>= 4.6), libgcc1 (>= 1:4.1.1)
+Description: Libra x86 emulator
+ Libra is an educational x86 emulator that provides many features
+ centered on showing the workings of a CPU.
