@@ -73,6 +73,12 @@
     <Filter Include="Header Files\Peripherals">
       <UniqueIdentifier>{ca87c025-2752-4f2b-a000-2715115b8ec9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Generated Files\Release_Static">
+      <UniqueIdentifier>{83fe38f4-0741-4cd3-b451-556d75b91b45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files\Debug_Static">
+      <UniqueIdentifier>{eabe25ff-adbe-451c-901d-57db09d61b4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Debug\moc_MemWnd.cpp">
@@ -308,6 +314,30 @@
     </ClCompile>
     <ClCompile Include="..\src\InstTable.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release_Static\moc_MemWnd.cpp">
+      <Filter>Generated Files\Release_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release_Static\moc_QKbdFilter.cpp">
+      <Filter>Generated Files\Release_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release_Static\moc_QMemModel.cpp">
+      <Filter>Generated Files\Release_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release_Static\moc_VMWorker.cpp">
+      <Filter>Generated Files\Release_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug_Static\moc_MemWnd.cpp">
+      <Filter>Generated Files\Debug_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug_Static\moc_QKbdFilter.cpp">
+      <Filter>Generated Files\Debug_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug_Static\moc_QMemModel.cpp">
+      <Filter>Generated Files\Debug_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug_Static\moc_VMWorker.cpp">
+      <Filter>Generated Files\Debug_Static</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
