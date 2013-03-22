@@ -106,7 +106,7 @@ int VM::LoadVirgoFile(const char* filename) {
 	unsigned int addr;
 	unsigned int delay;
 	char line[512];
-	char text[20];
+	char text[TEXT_LEN];
 	memset(line, 0, 512);
 	fin.ignore(100, '\n');
 
@@ -175,8 +175,13 @@ int VM::LoadVirgoFile(const char* filename) {
 		}
 
 		//convert ascii hex into real hex
-		memset(text, 0, 20);
+		memset(text, 0, TEXT_LEN);
 		for(size_t j = 0; j < strlen(hex); j++) {
+			if(j == TEXT_LEN) {
+				delete hex;
+				mLoaded = false;
+				return VM_ERR_OVERFLOW;
+			}
 			if(hex[j] >= '0' && hex[j] <= '9') {
 				text[j/2] |= (hex[j] - '0') << (j % 2 == 0 ? 4 : 0);
 			}else if(toupper(hex[j])  >= 'A' && toupper(hex[j]) <= 'F') {
@@ -188,7 +193,7 @@ int VM::LoadVirgoFile(const char* filename) {
 		delete hex;
 
 		//Try to build a prefix
-		Prefix* pre = Prefix::GetPrefix((unsigned char*)text, 20);
+		Prefix* pre = Prefix::GetPrefix((unsigned char*)text, TEXT_LEN);
 		char* opLoc = text;
 		if(pre) {
 			opLoc += pre->GetLength();
