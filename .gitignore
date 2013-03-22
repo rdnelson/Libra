@@ -22,9 +22,10 @@ test/gtest_main.a
 # Build results
 
 msvc10/[Rr]elease/
-
 msvc10/[Bb]uild/
 msvc10/[Dd]ebug/
+
+msvc10/[Ww]in32/
 
 
 [Tt]est[Rr]esult
