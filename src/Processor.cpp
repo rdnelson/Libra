@@ -95,6 +95,8 @@ int Processor::Step() {
 		SetFlag(FLAGS_TF, false);
 		PushRegister(REG_IP);
 		SetRegister(REG_IP, GetMemory(mInterrupt << 2, 2));
+		Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
+		mNextInst = Instruction::ReadInstruction(curMem, this);
 		mInterrupt = -1;
 		mHalt = false;
 		return PROC_SUCCESS;
