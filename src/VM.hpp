@@ -57,12 +57,14 @@ class VM {
 		void SetTimer(QTimer* timer) { mProc.SetTimer(timer); }
 
 		const static unsigned int MEM_SIZE = 0x10000;
+		const static unsigned int TEXT_LEN = 0x400;
 
 		const static int VM_SUCCESS	= 0x00;
 		const static int VM_ERR_FOPEN	= 0x01;
 		const static int VM_ERR_FREAD	= 0x02;
 		const static int VM_ERR_BIG_FILE = 0x03;
 		const static int VM_ERR_CORRUPT = 0x04;
+		const static int VM_ERR_OVERFLOW = 0x05;
 
 		const static int VM_BREAKPOINT = 0x03;
 
