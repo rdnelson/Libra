@@ -13,6 +13,11 @@
 #include <QApplication>
 #include "MemWnd.hpp"
 
+#ifdef QICO_NEEDED
+#include <QtPlugin>
+Q_IMPORT_PLUGIN(qico)
+#endif
+
 int main(int argc, char* argv[]) {
 
 	QApplication a(argc, argv);
