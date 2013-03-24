@@ -297,7 +297,7 @@ void MemWnd::loadFile(bool newFile) {
 
 	//Sanity check for mFile
 	if(mFile != "") {
-		mVM.LoadVirgoFile(mFile.toStdString().c_str());
+		int err = mVM.LoadVirgoFile(mFile.toStdString().c_str());
 
 		//Ensure the loading succeeded
 		if(mVM.isLoaded()) {
@@ -319,6 +319,8 @@ void MemWnd::loadFile(bool newFile) {
 
 			//Update all the other controls
 			UpdateGui();
+		} else {
+			QMessageBox::critical(this, "File loading failed", "Loading the file \"" + mFile + "\" Failed.\n" + mVM.GetErrStr(err));
 		}
 	}
 }
