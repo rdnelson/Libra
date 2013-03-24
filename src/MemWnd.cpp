@@ -32,6 +32,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	QKbdFilter* kbdFilter = new QKbdFilter();
 	this->connect(kbdFilter, SIGNAL(KeyEvent(QKeyEvent*)), this, SLOT(KeyEvent(QKeyEvent*)));
 	this->installEventFilter(kbdFilter);
+	this->setWindowTitle("Libra - 8086 Emulator");
 
 
 	//Create a temporary screen, because the processor isn't initialized until a file is loaded
