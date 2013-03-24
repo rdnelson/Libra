@@ -11,7 +11,7 @@ bool QKbdFilter::eventFilter(QObject*, QEvent* event) {
 			return false;
 		}
 		char keyPress =	kbdEvent->key();
-		if((keyPress < ' ' || keyPress > '~') && (keyPress != 0x04)) //Allow printable charachters, and enter
+		if((keyPress < ' ' || keyPress > '~') && (keyPress != (char)Qt::Key_Return)) //Allow printable charachters, and Enter
 			return false;
 		emit KeyEvent(kbdEvent);
 		return true;

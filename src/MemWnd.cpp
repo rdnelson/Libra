@@ -566,6 +566,9 @@ void MemWnd::EnableRun() {
  * Peripheral Event Handlers
  */
 
+#define ENTER_KEY_NL 0x0A
+#define ENTER_KEY_CR 0x0D
+
 void MemWnd::KeyEvent(QKeyEvent* evt) {
 	//Search for a keyboard
 	unsigned int numDevices = mVM.GetDevices().size();
@@ -574,8 +577,8 @@ void MemWnd::KeyEvent(QKeyEvent* evt) {
 			//found the keyboard, dispatch the keypress event
 			if (evt->text().toAscii().size() > 0) {
 				char key = evt->text().toAscii().at(0);
-				if (key == 0x0D) {
-					key = 0x0A; //Convert Enter's Carriage Return	 to Newline
+				if (key == ENTER_KEY_CR) {
+					key = ENTER_KEY_NL; //Convert Enter's Carriage Return to Newline
 				}
 				((Keyboard*)mVM.GetDevices().at(i))->Update(key, evt->type() == QEvent::KeyPress);
 				break;
