@@ -80,8 +80,8 @@ void Keyboard::Update(char keyPress, bool) {
 	//Only update if there's no data waiting
 	if(!(statBuffer & KBD_STAT_DATA_AVAIL)) {
 
-		//Allow all visible keys
-		if(keyPress >= FIRST_PRINTABLE_CHAR && keyPress <= LAST_PRINTABLE_CHAR) {
+		//Allow all visible keys and control keys
+		if((keyPress >= FIRST_PRINTABLE_CHAR && keyPress <= LAST_PRINTABLE_CHAR) || keyPress == 0x0A || keyPress == 0x08 || keyPress == 0x09) {
 			dataBuffer = (unsigned char)keyPress;
 			statBuffer |= KBD_STAT_DATA_AVAIL;
 		}

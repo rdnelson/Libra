@@ -572,8 +572,14 @@ void MemWnd::KeyEvent(QKeyEvent* evt) {
 	for(unsigned int i = 0; i < numDevices; i++) {
 		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_KEYBOARD) {
 			//found the keyboard, dispatch the keypress event
-			((Keyboard*)mVM.GetDevices().at(i))->Update(evt->key(), evt->type() == QEvent::KeyPress);
-			break;
+			if (evt->text().toAscii().size() > 0) {
+				char key = evt->text().toAscii().at(0);
+				if (key == 0x0D) {
+					key = 0x0A; //Convert Enter's Carriage Return	 to Newline
+				}
+				((Keyboard*)mVM.GetDevices().at(i))->Update(key, evt->type() == QEvent::KeyPress);
+				break;
+			}
 		}
 	}
 }
