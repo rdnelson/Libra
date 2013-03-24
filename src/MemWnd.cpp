@@ -85,6 +85,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(mVMWorker, SIGNAL(error(int)), this, SLOT(workerRunError(int)));
 	connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
 	connect(mVMWorker, SIGNAL(procReturn(int)), this, SLOT(workerProcReturn(int)));
+	connect(mVMWorker, SIGNAL(stopped()), this, SLOT(workerStopped()));
 	connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
 	connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
 
@@ -364,6 +365,10 @@ void MemWnd::workerProcReturn(int err) {
 	if(err == Instruction::PERIPH_WRITE) {
 		UpdateScreen();
 	}
+}
+//Program's processor halted
+void MemWnd::workerStopped() {
+	QMessageBox::information(this, "Halt Encountered", "HLT was encountered, execution is terminated.");
 }
 
 /*

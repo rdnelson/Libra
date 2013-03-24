@@ -48,6 +48,8 @@ public slots:
 	void workerPaused();
 	//trigger on proc return positive
 	void workerProcReturn(int err);
+	//trigger op proc halt
+	void workerStopped();
 
 	void KeyEvent(QKeyEvent*);
 	void TimerEvent();
