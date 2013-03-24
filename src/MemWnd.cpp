@@ -567,14 +567,23 @@ void MemWnd::EnableRun() {
  * Peripheral Event Handlers
  */
 
+#define ENTER_KEY_NL 0x0A
+#define ENTER_KEY_CR 0x0D
+
 void MemWnd::KeyEvent(QKeyEvent* evt) {
 	//Search for a keyboard
 	unsigned int numDevices = mVM.GetDevices().size();
 	for(unsigned int i = 0; i < numDevices; i++) {
 		if(mVM.GetDevices().at(i)->GetType() == IPeripheral::PERIPH_KEYBOARD) {
 			//found the keyboard, dispatch the keypress event
-			((Keyboard*)mVM.GetDevices().at(i))->Update(evt->key(), evt->type() == QEvent::KeyPress);
-			break;
+			if (evt->text().toAscii().size() > 0) {
+				char key = evt->text().toAscii().at(0);
+				if (key == ENTER_KEY_CR) {
+					key = ENTER_KEY_NL; //Convert Enter's Carriage Return to Newline
+				}
+				((Keyboard*)mVM.GetDevices().at(i))->Update(key, evt->type() == QEvent::KeyPress);
+				break;
+			}
 		}
 	}
 }
