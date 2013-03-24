@@ -174,8 +174,9 @@ int Jcc::Execute(Processor* proc) {
 		unsigned int newIP = proc->GetRegister(REG_IP);
 		unsigned int relAddr = src->GetValue();
 		if (relAddr & 0x80)
-			relAddr |= std::numeric_limits<int>::max() << 8; // If relAddr is 8 bit negative, negate
-		newIP += relAddr;
+			newIP -= 0xFF & (~relAddr + 1);
+		else 
+			newIP += relAddr;
 		newIP &= 0xFFFF;
 		proc->SetRegister(REG_IP, newIP);
 	}
