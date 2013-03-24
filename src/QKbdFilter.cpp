@@ -10,7 +10,8 @@ bool QKbdFilter::eventFilter(QObject*, QEvent* event) {
 		if(kbdEvent->modifiers() & Qt::ControlModifier) {
 			return false;
 		}
-		if(kbdEvent->key() < ' ' || kbdEvent->key() > '~')
+		char keyPress =	kbdEvent->key();
+		if((keyPress < ' ' || keyPress > '~') && (keyPress != (char)Qt::Key_Return)) //Allow printable charachters, and Enter
 			return false;
 		emit KeyEvent(kbdEvent);
 		return true;
