@@ -17,6 +17,7 @@
 #include "../Prefix.hpp"
 
 #include <cstdio>
+#include <limits>
 
 const char Jcc::JA_STR[] = "JA";
 const char Jcc::JB_STR[] = "JB";
