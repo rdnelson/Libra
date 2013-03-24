@@ -22,6 +22,8 @@
 
 #define EVER ;;
 
+const char* const VM::VM_ERR_STRINGS[] = { "Success", "Failed to open file", "Failed to read file", "File exceeded maximum size limits", "File was corrupt", "File contained an instruction longer than 512 bytes" };
+
 void mem_rlog(size_t offset, size_t size) {
 	std::ofstream fout("mem.log", std::ios::app);
 	fout << size << " byte(s) of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " read" << std::endl;
@@ -350,6 +352,13 @@ Breakpoint* VM::FindBreakpoint(unsigned int addr) {
 		if(mBreakpoints[i]->GetIP() == addr) {
 			return mBreakpoints[i];
 		}
+	}
+	return 0;
+}
+
+const char* const VM::GetErrStr(unsigned int err) const {
+	if(err < sizeof(VM::VM_ERR_STRINGS) / sizeof(const char* const)) {
+		return VM_ERR_STRINGS[err];
 	}
 	return 0;
 }

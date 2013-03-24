@@ -66,6 +66,10 @@ class VM {
 		const static int VM_ERR_CORRUPT = 0x04;
 		const static int VM_ERR_OVERFLOW = 0x05;
 
+		const static char* const VM_ERR_STRINGS[];
+
+		const char* const GetErrStr (unsigned int err) const;
+
 		const static int VM_BREAKPOINT = 0x03;
 
 	private:
