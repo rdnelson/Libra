@@ -58,7 +58,7 @@ bool Screen::Put16(unsigned int port, unsigned int data) {
 			if(mCurY == mFirstRow) {
 				mFirstRow = (mFirstRow + 1) % NUM_ROWS;
 			}
-				for(unsigned int i = 0; i < NUM_ROWS; i++) {
+				for(unsigned int i = 0; i < NUM_COLS; i++) {
 				mScreen[i + mCurY * NUM_COLS] = ' ';
 				mColor[i + mCurY * NUM_COLS] = 0;
 				}
