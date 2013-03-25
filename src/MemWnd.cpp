@@ -582,9 +582,9 @@ void MemWnd::UpdateInstructions() {
 		horz->setResizeMode(1, QHeaderView::Fixed);
 		horz->setResizeMode(2, QHeaderView::ResizeToContents);
 		if(ui->actionEnable_Listings->isChecked()) {
-			horz->setDefaultSectionSize(75);
+			horz->resizeSection(1, 75);
 		} else {
-			horz->setDefaultSectionSize(0);
+			horz->resizeSection(1, 0);
 		}
 	}
 	QHeaderView* vert = ui->lstInstructions->verticalHeader();
