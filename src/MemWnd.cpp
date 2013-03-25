@@ -578,7 +578,14 @@ void MemWnd::UpdateInstructions() {
 	}
 	QHeaderView* horz = ui->lstInstructions->horizontalHeader();
 	if(horz) {
-		horz->setResizeMode(QHeaderView::ResizeToContents);
+		horz->setResizeMode(0, QHeaderView::ResizeToContents);
+		horz->setResizeMode(1, QHeaderView::Fixed);
+		horz->setResizeMode(2, QHeaderView::ResizeToContents);
+		if(ui->actionEnable_Listings->isChecked()) {
+			horz->setDefaultSectionSize(75);
+		} else {
+			horz->setDefaultSectionSize(0);
+		}
 	}
 	QHeaderView* vert = ui->lstInstructions->verticalHeader();
 	if(vert) {
