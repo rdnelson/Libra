@@ -70,7 +70,9 @@ void Keyboard::Dump() {
 
 #define FIRST_PRINTABLE_CHAR	' '
 #define LAST_PRINTABLE_CHAR	'~'
-#define ENTER_KEY 0x0A
+#define NEW_LINE 0x0A
+#define CARRIAGE_RETURN 0x0D
+#define TAB 0x09
 
 void Keyboard::Update(char keyPress, bool) {
 	//Only update if the keyboard is enabled
@@ -82,7 +84,7 @@ void Keyboard::Update(char keyPress, bool) {
 	if(!(statBuffer & KBD_STAT_DATA_AVAIL)) {
 
 		//Allow all visible keys and control keys
-		if((keyPress >= FIRST_PRINTABLE_CHAR && keyPress <= LAST_PRINTABLE_CHAR) || keyPress == ENTER_KEY) {
+		if((keyPress >= FIRST_PRINTABLE_CHAR && keyPress <= LAST_PRINTABLE_CHAR) || keyPress == CARRIAGE_RETURN || keyPress == NEW_LINE || keyPress == TAB) {
 			dataBuffer = (unsigned char)keyPress;
 			statBuffer |= KBD_STAT_DATA_AVAIL;
 		}

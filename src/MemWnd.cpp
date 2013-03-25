@@ -576,6 +576,8 @@ void MemWnd::EnableRun() {
 
 #define ENTER_KEY_NL 0x0A
 #define ENTER_KEY_CR 0x0D
+#define QT_TAB_KEY 0x01
+#define TAB_KEY 0x09
 
 void MemWnd::KeyEvent(QKeyEvent* evt) {
 	//Search for a keyboard
@@ -586,7 +588,11 @@ void MemWnd::KeyEvent(QKeyEvent* evt) {
 			if (evt->text().toAscii().size() > 0) {
 				char key = evt->text().toAscii().at(0);
 				if (key == ENTER_KEY_CR) {
+					//need to print both a newline and a carriage return
+					((Keyboard*)mVM.GetDevices().at(i))->Update(key, evt->type() == QEvent::KeyPress);
 					key = ENTER_KEY_NL; //Convert Enter's Carriage Return to Newline
+				} else if(key == QT_TAB_KEY) {
+					key = TAB_KEY;
 				}
 				((Keyboard*)mVM.GetDevices().at(i))->Update(key, evt->type() == QEvent::KeyPress);
 				break;
