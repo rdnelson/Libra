@@ -39,6 +39,9 @@ bool Keyboard::Put16(unsigned int port, unsigned int data) {
 	return false;
 }
 
+#define ENTER_KEY_LF 0x0A
+#define ENTER_KEY_CR 0x0D
+
 unsigned int Keyboard::Get8(unsigned int port) {
 	switch(port) {
 
@@ -48,7 +51,10 @@ unsigned int Keyboard::Get8(unsigned int port) {
 	case KBD_DATA_PORT:
 		if(statBuffer & KBD_STAT_DATA_AVAIL)
 			statBuffer &= ~KBD_STAT_DATA_AVAIL;
-		return dataBuffer;
+		unsigned char printChar = dataBuffer;
+		if(dataBuffer == ENTER_KEY_CR) // Enter requires both Carriage return and newline
+			Update(ENTER_KEY_LF, true);
+		return printChar;
 		break;
 	}
 	return 0xFFFFFFFF;
