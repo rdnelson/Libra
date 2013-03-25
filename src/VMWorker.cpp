@@ -36,7 +36,7 @@ void VMWorker::run() {
 					fout << "Time (msec): " << end - start << std::endl;
 					fout << "KIPS: " << (end - start == 0 ? 0 : instCount / (end - start)) << std::endl;
 					fout.close();
-					emit paused();
+					emit stopped();
 					return;
 				}
 			}

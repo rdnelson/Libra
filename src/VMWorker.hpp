@@ -25,6 +25,7 @@ signals:
     void stepDone();
     void runDone();
     void paused();
+    void stopped();
 
 private:
     VM* mVM;
