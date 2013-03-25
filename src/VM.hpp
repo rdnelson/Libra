@@ -37,6 +37,8 @@ class VM {
 		inline bool isLoaded() { return mLoaded; }
 		void Disassemble();
 		std::string GetInstructionStr(unsigned int index) const;
+		std::string GetInstructionLabel(unsigned int index) const;
+		std::string GetInstructionText(unsigned int index) const;
 		unsigned int GetInstructionAddr(unsigned int index) const;
 		unsigned int GetInstructionLen(unsigned int index) const;
 		unsigned int CalcInstructionLen();
@@ -83,5 +85,6 @@ class VM {
 
 		std::vector<Instruction*> mInstructions;
 		std::vector<Breakpoint*> mBreakpoints;
+		std::vector<std::string> mLabels;
 
 };

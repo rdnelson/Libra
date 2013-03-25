@@ -34,6 +34,7 @@ public slots:
 	void pauseVM_Clicked();
 	void stopVM_Clicked();
 	void toggleBreakpoint_Clicked();
+	void enableListings_Clicked();
 
 	//VMWorker Slots
 	//trigger on breakpoint
@@ -69,11 +70,16 @@ private:
 	void UpdateGui();
 	void UpdateMemView(unsigned int ip = 0xFFFFFFFF, unsigned int len = 0);
 	void UpdateInstHighlight();
+	void UpdateInstructions();
 	void DisableRun(int err);
 	void EnableRun();
 
 	VM mVM;
 	QString mFile;
+
+	int COL_LABEL;
+	int COL_LST;
+	int COL_INST;
 
 };
 

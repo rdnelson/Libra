@@ -82,7 +82,7 @@ class Instruction {
 		static bool AdjustAdd(unsigned int op1, unsigned int op2);
 		static bool AdjustSub(unsigned int op1, unsigned int op2);
 
-		inline std::string GetDisasm() { return mText; }
+		inline std::string GetDisasm() const { return mText; }
 
 		void AddLengthToDisasm() {
 			std::stringstream ss;
