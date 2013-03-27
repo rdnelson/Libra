@@ -34,6 +34,7 @@ class Pop : public Instruction {
 			POP_DS		= 0x1F,
 			POP_ES		= 0x07,
 			POPF		= 0x9D,
+			POPA		= 0x61,
 		};
 
 		static const unsigned int POP_SUB_OPCODE = 0x00;
