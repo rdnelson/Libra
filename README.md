@@ -1,15 +1,67 @@
-Libra, an 8086 emulator with a focus on computer systems education features.
-Copyright (C) 2012 Robert Nelson
+Libra - An educational 8086 emulator
+====================================
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Libra is an 8086 emulator with a focus on educational features. This
+includes features such as:
+* instruction list
+* operand highlighting
+* IDE like stepping functions
+* simple to use peripherals
+    * Screen
+    * Keyboard
+    * Timer
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Building
+========
 
-You should have received a copy of the GNU General Public License
-long with this program.  If not, see <http://www.gnu.org/licenses/>.
+Tool Dependencies
+-----------------
+
+For building just the libra binaries:
+* Qt 4.8.3
+
+For building the documentation:
+* [sphinx] (http://sphinx-doc.org)
+
+Windows
+-------
+
+Visual Studio 2010 project files are included in the msvc10 folder.
+
+Libra.vcxproj has four different build targets, a debug and release
+target for dynamic linking (Debug, Release), and a debug and release
+target for static linking (Debug_Static, Release_Static.) These only
+refer to whether Qt is statically or dynamically linked. The CRT is
+always dynamically linked (Qt requires a dynamically linked CRT for
+proper memory management.)
+
+In order to build either of the Static builds, Qt must have been
+compiled for static linking. See the [Qt wiki] (http://qt-project.org/wiki/Build_Standalone_Qt_Application_for_Windows)
+for instructions on how to compile Qt in static mode.
+
+The dynamic builds are dependent on qtgui4.dll, qtcore4.dll,
+msvcr100.dll and msvcp100.dll.
+
+The static builds are dependent on msvcr100.dll and msvcp100.dll.
+
+Linux
+-----
+
+The following commands can be run to build Libra on linux.
+
+	$ cd src
+	$ qmake libra-qt.pro
+	$ make
+
+Mac OS X
+--------
+
+An Xcode project is available in the xcode folder.
+
+Running
+=======
+
+Most features have to be accessed from the GUI itself, but libra
+can be run with one argument, being the file to open on startup
+
+	$ libra-qt [path_to_obj_file]
