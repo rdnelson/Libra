@@ -71,6 +71,7 @@ private:
 	void UpdateMemView(unsigned int ip = 0xFFFFFFFF, unsigned int len = 0);
 	void UpdateInstHighlight();
 	void UpdateInstructions();
+	void ClearRegisterHighlighting();
 	void DisableRun(int err);
 	void EnableRun();
 
