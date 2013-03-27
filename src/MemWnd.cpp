@@ -555,6 +555,7 @@ void MemWnd::UpdateInstHighlight() {
 }
 
 void MemWnd::UpdateInstructions() {
+	ui->lstInstructions->clear();
 	ui->lstInstructions->setRowCount(0);
 	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 		//add a new row
