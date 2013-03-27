@@ -386,6 +386,7 @@ void MemWnd::workerProcReturn(int err) {
 //Program's processor halted
 void MemWnd::workerStopped() {
 	QMessageBox::information(this, "Halt Encountered", "HLT was encountered, execution is terminated.");
+	workerPaused();
 }
 
 /*
