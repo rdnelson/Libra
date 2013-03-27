@@ -169,6 +169,8 @@ void MemWnd::runVM_Clicked() {
 			}
 		}
 
+		ClearRegisterHighlighting();
+
 		//Disable all the run actions
 		DisableRun(0);
 
@@ -399,22 +401,15 @@ void MemWnd::UpdateGui() {
 
 	//Update all of the register and flag boxes
 	ui->txtAX->setText(mVM.GetProc().GetRegisterHex(REG_AX));
-	ui->txtAX->setStyleSheet("");
 	ui->txtBX->setText(mVM.GetProc().GetRegisterHex(REG_BX));
-	ui->txtBX->setStyleSheet("");
 	ui->txtCX->setText(mVM.GetProc().GetRegisterHex(REG_CX));
-	ui->txtCX->setStyleSheet("");
 	ui->txtDX->setText(mVM.GetProc().GetRegisterHex(REG_DX));
-	ui->txtDX->setStyleSheet("");
 	ui->txtSI->setText(mVM.GetProc().GetRegisterHex(REG_SI));
-	ui->txtSI->setStyleSheet("");
 	ui->txtDI->setText(mVM.GetProc().GetRegisterHex(REG_DI));
-	ui->txtDI->setStyleSheet("");
 	ui->txtBP->setText(mVM.GetProc().GetRegisterHex(REG_BP));
-	ui->txtBP->setStyleSheet("");
 	ui->txtSP->setText(mVM.GetProc().GetRegisterHex(REG_SP));
-	ui->txtSP->setStyleSheet("");
 	ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
+	ClearRegisterHighlighting();
 	ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS));
 	ui->chkAdjust->setChecked(mVM.GetProc().GetFlag(FLAGS_AF));
 	ui->chkOverflow->setChecked(mVM.GetProc().GetFlag(FLAGS_OF));
@@ -595,6 +590,19 @@ void MemWnd::UpdateInstructions() {
 		vert->setResizeMode(QHeaderView::Fixed);
 		vert->resizeSections(QHeaderView::Fixed);
 	}
+}
+
+void MemWnd::ClearRegisterHighlighting() {
+	ui->txtAX->setStyleSheet("");
+	ui->txtBX->setStyleSheet("");
+	ui->txtCX->setStyleSheet("");
+	ui->txtDX->setStyleSheet("");
+	ui->txtSI->setStyleSheet("");
+	ui->txtDI->setStyleSheet("");
+	ui->txtBP->setStyleSheet("");
+	ui->txtSP->setStyleSheet("");
+	ui->txtIP->setStyleSheet("");
+	ui->txtFLAGS->setStyleSheet("");
 }
 
 void MemWnd::DisableRun(int err) {
