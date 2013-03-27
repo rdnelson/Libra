@@ -20,7 +20,7 @@ class Das : public Instruction {
 		int Execute(Processor* proc);
 
 		enum eValidOpcodes {
-			DAS = 0x3F
+			DAS = 0x2F
 		};
 
 	protected:
