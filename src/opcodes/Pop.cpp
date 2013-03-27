@@ -86,12 +86,17 @@ Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case POPF:
 		{
 			Operand* dst = new RegisterOperand(REG_FLAGS, proc);
-			snprintf(buf, 65, "POP %s", dst->GetDisasm().c_str());
-			GETINST(preSize + 1 + dst->GetBytecodeLen());
+			snprintf(buf, 65, "POPF");
+			GETINST(preSize + 1);
 			newPop = new Pop(pre, buf, inst, (unsigned char)*opLoc);
 			newPop->SetOperand(Operand::DST, dst);
 			break;
 		}
+		case POPA:
+			snprintf(buf, 65, "POPA");
+			GETINST(preSize + 1);
+			newPop = new Pop(pre, buf, inst, (unsigned char)*opLoc);
+			break;
 
 	}
 	return newPop;
@@ -100,11 +105,24 @@ Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 int Pop::Execute(Processor* proc) {
 
-	Operand* dst = mOperands[Operand::DST];
-	if(!dst) {
-		return INVALID_ARGS;
-	}
+	if(mOpcode == POPA) {
+		proc->PopRegister(REG_DI);
+		proc->PopRegister(REG_SI);
+		proc->PopRegister(REG_BP);
+		proc->PopSize(2);
+		proc->PopRegister(REG_BX);
+		proc->PopRegister(REG_DX);
+		proc->PopRegister(REG_CX);
+		proc->PopRegister(REG_AX);
 
-	dst->SetValue(proc->PopValue());
+	} else {
+
+		Operand* dst = mOperands[Operand::DST];
+		if(!dst) {
+			return INVALID_ARGS;
+		}
+
+		dst->SetValue(proc->PopValue());
+	}
 	return 0;
 }

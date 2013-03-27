@@ -36,7 +36,8 @@ class Push : public Instruction {
 			PUSH_SS		= 0x16,
 			PUSH_DS		= 0x1E,
 			PUSH_ES		= 0x06,
-			PUSHF		= 0x9C
+			PUSHF		= 0x9C,
+			PUSHA		= 0x60
 		};
 
 		static const unsigned int PUSH_SUB_OPCODE = 0x06;
