@@ -54,7 +54,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QListWidget" name="lstInstructions">
+         <widget class="QTableWidget" name="lstInstructions">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
             <horstretch>0</horstretch>
@@ -88,6 +88,27 @@
           <property name="selectionMode">
            <enum>QAbstractItemView::SingleSelection</enum>
           </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="showGrid">
+           <bool>false</bool>
+          </property>
+          <property name="wordWrap">
+           <bool>false</bool>
+          </property>
+          <property name="cornerButtonEnabled">
+           <bool>false</bool>
+          </property>
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
          </widget>
         </item>
        </layout>
@@ -747,7 +768,7 @@
      <x>0</x>
      <y>0</y>
      <width>1004</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -778,8 +799,15 @@
     </property>
     <addaction name="actionHelp"/>
    </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Options</string>
+    </property>
+    <addaction name="actionEnable_Listings"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Debug"/>
+   <addaction name="menuOptions"/>
    <addaction name="menu_Help"/>
   </widget>
   <action name="actionRun">
@@ -812,6 +840,9 @@
   <action name="actionExit">
    <property name="text">
     <string>E&amp;xit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q, Alt+F4</string>
    </property>
   </action>
   <action name="actionStep_Into">
@@ -919,6 +950,17 @@
    </property>
    <property name="shortcut">
     <string>F9</string>
+   </property>
+  </action>
+  <action name="actionEnable_Listings">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable Listings</string>
    </property>
   </action>
  </widget>

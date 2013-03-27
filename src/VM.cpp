@@ -191,8 +191,6 @@ int VM::LoadVirgoFile(const char* filename) {
 			}
 		}
 
-		//clear up buffer from above
-		delete hex;
 
 		//Try to build a prefix
 		Prefix* pre = Prefix::GetPrefix((unsigned char*)text, TEXT_LEN);
@@ -209,16 +207,21 @@ int VM::LoadVirgoFile(const char* filename) {
 		dis.erase(0, dis.find_first_not_of(" \f\n\r\t\v"));
 
 		//Prefix with label
-		dis = label + ('\t' + dis);
+//		dis = label + ('\t' + dis);
 
-		s.insert(0, text, hexSize);
-		if(dis.size() == 0 || (hexSize == 0 && label[0] == '\0'))
+		s.insert(0, hex);
+
+		//clear up buffer from above
+		delete hex;
+
+		if((dis.size() == 0 || (hexSize == 0 && label[0] == '\0')) && (strlen(label) == 0))
 			continue;
 
 		Instruction* inst = new VirgoInstruction(pre, dis, s, (int)*opLoc);
 		inst->SetAddress(addr);
 
 		mInstructions.push_back(inst);
+		mLabels.push_back(label);
 
 		memcpy(mMem.getPtr() + (addr % MEM_SIZE), text, hexSize);
 
@@ -256,6 +259,13 @@ std::string VM::GetInstructionStr(unsigned int index) const {
 	return "";
 }
 
+std::string VM::GetInstructionLabel(unsigned int index) const {
+	if(mLoaded && index < mLabels.size()) {
+		return mLabels[index];
+	}
+	return "";
+}
+
 unsigned int VM::GetInstructionAddr(unsigned int index) const {
 	if(mLoaded && index < mInstructions.size()) {
 		return mInstructions[index]->GetAddress();
@@ -268,6 +278,13 @@ unsigned int VM::GetInstructionLen(unsigned int index) const {
 		return mInstructions[index]->GetLength();
 	}
 	return 0;
+}
+
+std::string VM::GetInstructionText(unsigned int index) const {
+	if(mLoaded && index < mInstructions.size()) {
+		return mInstructions[index]->GetInstruction();
+	}
+	return "";
 }
 
 unsigned int VM::CalcInstructionLen() {

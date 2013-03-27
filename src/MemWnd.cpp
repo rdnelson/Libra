@@ -20,10 +20,15 @@
 #include <QTimer>
 #include <iostream>
 
+#define TABLE(a) (new QTableWidgetItem(a))
+
 MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MemWnd),
-	mFile("")
+	mFile(""),
+	COL_LABEL(0),
+	COL_LST(1),
+	COL_INST(2)
 {
 	//Setup the ui object (Qt Mandatory)
 	ui->setupUi(this);
@@ -34,6 +39,9 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	this->installEventFilter(kbdFilter);
 	this->setWindowTitle("Libra - 8086 Emulator");
 
+	ui->lstInstructions->setColumnCount(3);
+	ui->lstInstructions->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+	ui->lstInstructions->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
 
 	//Create a temporary screen, because the processor isn't initialized until a file is loaded
 	Screen scr;
@@ -61,6 +69,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	this->connect(this->ui->actionExit, SIGNAL(triggered()), this, SLOT(appQuit_Clicked()));
 	this->connect(this->ui->actionReload_File, SIGNAL(triggered()), this, SLOT(reloadObjFile_Clicked()));
 	this->connect(this->ui->actionBreakpoint, SIGNAL(triggered()), this, SLOT(toggleBreakpoint_Clicked()));
+	this->connect(this->ui->actionEnable_Listings, SIGNAL(triggered()), this, SLOT(enableListings_Clicked()));
 
 	//Create the memory view model
 	QMemModel* memModel = new QMemModel(this);
@@ -149,10 +158,15 @@ void MemWnd::runVM_Clicked() {
 
 		//Clear all highlighting except breakpoints
 		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
-			if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i)))
-				ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
-			else
-				ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
+			if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
+				for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+					ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::red);
+				}
+			} else {
+				for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+					ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::white);
+				}
+			}
 		}
 
 		//Disable all the run actions
@@ -277,6 +291,9 @@ void MemWnd::toggleBreakpoint_Clicked() {
 	ui->lstInstructions->currentItem()->setBackgroundColor(Qt::red);
 }
 
+void MemWnd::enableListings_Clicked() {
+	UpdateInstructions();
+}
 /*
  * File loading functions
  */
@@ -312,11 +329,9 @@ void MemWnd::loadFile(bool newFile) {
 			ui->actionStep_Out->setEnabled(true);
 
 			//Initialize the instruction listing
-			ui->lstInstructions->clear();
 			mVM.Disassemble();
-			for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
-				ui->lstInstructions->addItem(mVM.GetInstructionStr(i).c_str());
-			}
+			ui->lstInstructions->clear();
+			UpdateInstructions();
 
 			//Update all the other controls
 			UpdateGui();
@@ -413,13 +428,15 @@ void MemWnd::UpdateGui() {
 	//Update the instruction listing highlight state
 	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
 	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
-		if(mVM.GetInstructionAddr(i) == ip) {
-			ui->lstInstructions->item(i)->setBackgroundColor(Qt::yellow);
-			ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i));
-		} else if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
-			ui->lstInstructions->item(i)->setBackgroundColor(Qt::red);
-		} else {
-			ui->lstInstructions->item(i)->setBackgroundColor(Qt::white);
+		for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+			if(mVM.GetInstructionAddr(i) == ip) {
+				ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::yellow);
+				ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i,0));
+			} else if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
+				ui->lstInstructions->item(i,j)->setBackgroundColor(Qt::red);
+			} else {
+				ui->lstInstructions->item(i,j)->setBackgroundColor(Qt::white);
+			}
 		}
 	}
 
@@ -534,6 +551,47 @@ void MemWnd::UpdateInstHighlight() {
 
 			}
 		}
+	}
+}
+
+void MemWnd::UpdateInstructions() {
+	ui->lstInstructions->setRowCount(0);
+	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
+		//add a new row
+		ui->lstInstructions->setRowCount(ui->lstInstructions->rowCount() + 1);
+		for(int j = 0; j <  ui->lstInstructions->columnCount(); j++) {
+
+			//If labels are enabled
+			if(j == COL_LABEL) {
+				ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE(mVM.GetInstructionLabel(i).c_str()));
+			} else if(j == COL_LST) {
+				if(ui->actionEnable_Listings->isChecked()) {
+					ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE(mVM.GetInstructionText(i).c_str()));
+				} else {
+					ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE(""));
+				}
+
+			} else if(j == COL_INST) {
+				ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE(mVM.GetInstructionStr(i).c_str()));
+			}
+		}
+	}
+	QHeaderView* horz = ui->lstInstructions->horizontalHeader();
+	if(horz) {
+		horz->setResizeMode(0, QHeaderView::ResizeToContents);
+		horz->setResizeMode(1, QHeaderView::Fixed);
+		horz->setResizeMode(2, QHeaderView::ResizeToContents);
+		if(ui->actionEnable_Listings->isChecked()) {
+			horz->resizeSection(1, 75);
+		} else {
+			horz->resizeSection(1, 0);
+		}
+	}
+	QHeaderView* vert = ui->lstInstructions->verticalHeader();
+	if(vert) {
+		vert->setDefaultSectionSize(15);
+		vert->setResizeMode(QHeaderView::Fixed);
+		vert->resizeSections(QHeaderView::Fixed);
 	}
 }
 
