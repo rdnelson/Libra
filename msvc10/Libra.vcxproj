@@ -342,6 +342,8 @@ xcopy %SYSTEMROOT%\System32\msvcr100.dll $(TargetDir) /C /Y</Command>
     <ClCompile Include="..\src\opcodes\Cmp.cpp" />
     <ClCompile Include="..\src\opcodes\CmpsX.cpp" />
     <ClCompile Include="..\src\opcodes\Cwd.cpp" />
+    <ClCompile Include="..\src\opcodes\Daa.cpp" />
+    <ClCompile Include="..\src\opcodes\Das.cpp" />
     <ClCompile Include="..\src\opcodes\Div.cpp" />
     <ClCompile Include="..\src\opcodes\Hlt.cpp" />
     <ClCompile Include="..\src\opcodes\IDiv.cpp" />
@@ -455,6 +457,8 @@ xcopy %SYSTEMROOT%\System32\msvcr100.dll $(TargetDir) /C /Y</Command>
     <ClInclude Include="..\src\opcodes\Cmp.hpp" />
     <ClInclude Include="..\src\opcodes\CmpsX.hpp" />
     <ClInclude Include="..\src\opcodes\Cwd.hpp" />
+    <ClInclude Include="..\src\opcodes\Daa.hpp" />
+    <ClInclude Include="..\src\opcodes\Das.hpp" />
     <ClInclude Include="..\src\opcodes\Div.hpp" />
     <ClInclude Include="..\src\opcodes\Hlt.hpp" />
     <ClInclude Include="..\src\opcodes\IDiv.hpp" />
