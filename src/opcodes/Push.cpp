@@ -107,13 +107,18 @@ Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		case PUSHF:
 		{
 			Operand* dst = new RegisterOperand(REG_FLAGS, proc);
-			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
-			GETINST(preSize + 1 + dst->GetBytecodeLen());
+			snprintf(buf, 65, "PUSHF");
+			GETINST(preSize + 1);
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
 			newPush->SetOperand(Operand::DST, dst);
 			break;
 		}
-
+		case PUSHA:
+		{
+			snprintf(buf, 65, "PUSHA");
+			GETINST(preSize + 1);
+			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
+		}
 	}
 	return newPush;
 
@@ -121,11 +126,24 @@ Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 
 int Push::Execute(Processor* proc) {
 
-	Operand* dst = mOperands[Operand::DST];
-	if(!dst) {
-		return INVALID_ARGS;
-	}
+	if(mOpcode == PUSHA) {
+		unsigned int sp = proc->GetRegister(REG_SP);
+		proc->PushRegister(REG_AX);
+		proc->PushRegister(REG_CX);
+		proc->PushRegister(REG_DX);
+		proc->PushRegister(REG_BX);
+		proc->PushValue(sp);
+		proc->PushRegister(REG_BP);
+		proc->PushRegister(REG_SI);
+		proc->PushRegister(REG_DI);
 
-	proc->PushValue(dst->GetValue());
+	} else {
+
+		Operand* dst = mOperands[Operand::DST];
+		if(!dst) {
+			return INVALID_ARGS;
+		}
+		proc->PushValue(dst->GetValue());
+	}
 	return 0;
 }
