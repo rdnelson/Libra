@@ -150,6 +150,12 @@
     <ClCompile Include="..\src\opcodes\Cwd.cpp">
       <Filter>Source Files\Opcodes</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\opcodes\Daa.cpp">
+      <Filter>Source Files\Opcodes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\opcodes\Das.cpp">
+      <Filter>Source Files\Opcodes</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\opcodes\Div.cpp">
       <Filter>Source Files\Opcodes</Filter>
     </ClCompile>
@@ -387,6 +393,12 @@
       <Filter>Header Files\Opcodes</Filter>
     </ClInclude>
     <ClInclude Include="..\src\opcodes\Cwd.hpp">
+      <Filter>Header Files\Opcodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opcodes\Daa.hpp">
+      <Filter>Header Files\Opcodes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\opcodes\Das.hpp">
       <Filter>Header Files\Opcodes</Filter>
     </ClInclude>
     <ClInclude Include="..\src\opcodes\Div.hpp">

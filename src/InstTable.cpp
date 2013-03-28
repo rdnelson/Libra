@@ -133,13 +133,13 @@ void Instruction::InitializeOpcodes() {
 	VARIANT		(0x99);
 	END_MNEMONIC;
 
-	/*MNEMONIC(Daa);
+	MNEMONIC(Daa);
 	VARIANT		(0x27);
-	END_MNEMONIC;*/
+	END_MNEMONIC;
 
-	/*MNEMONIC(DAS);
+	MNEMONIC(Das);
 	VARIANT		(0x2F);
-	END_MNEMONIC;*/
+	END_MNEMONIC;
 
 	MNEMONIC(IncDec);
 	VARIANT_S	(0xFE,	0x01);
