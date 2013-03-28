@@ -77,6 +77,8 @@ SOURCES +=\
 	opcodes/Lods.cpp \
 	opcodes/Movs.cpp \
 	opcodes/Xchg.cpp \
+	opcodes/Daa.cpp \
+	opcodes/Das.cpp \
 	peripherals/Screen.cpp \
 	peripherals/Keyboard.cpp \
 	peripherals/Timer.cpp \
@@ -151,6 +153,8 @@ HEADERS  += MemWnd.hpp \
 	opcodes/Lods.hpp \
 	opcodes/Movs.hpp \
 	opcodes/Xchg.hpp \
+	opcodes/Daa.hpp \
+	opcodes/Das.hpp \
 	peripherals/Screen.hpp \
 	peripherals/AllPeripherals.hpp \
 	peripherals/Keyboard.hpp \

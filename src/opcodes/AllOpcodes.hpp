@@ -64,3 +64,5 @@
 #include "Lods.hpp"
 #include "Movs.hpp"
 #include "Xchg.hpp"
+#include "Daa.hpp"
+#include "Das.hpp"
