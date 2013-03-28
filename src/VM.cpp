@@ -214,6 +214,10 @@ int VM::LoadVirgoFile(const char* filename) {
 		//clear up buffer from above
 		delete hex;
 
+		if(hexSize != 0) {
+			memcpy(mMem.getPtr() + (addr % MEM_SIZE), text, hexSize);
+		}
+
 		if((dis.size() == 0 || (hexSize == 0 && label[0] == '\0')) && (strlen(label) == 0))
 			continue;
 
@@ -223,7 +227,6 @@ int VM::LoadVirgoFile(const char* filename) {
 		mInstructions.push_back(inst);
 		mLabels.push_back(label);
 
-		memcpy(mMem.getPtr() + (addr % MEM_SIZE), text, hexSize);
 
 		if(++i >= numLines)
 			break;
