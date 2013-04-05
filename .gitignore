@@ -24,6 +24,8 @@ test/gtest_main.a
 msvc10/[Rr]elease/
 msvc10/[Bb]uild/
 msvc10/[Dd]ebug/
+msvc10/[Rr]elease_[Ss]tatic/
+msvc10/[Dd]ebug_[Ss]tatic/
 
 msvc10/[Ww]in32/
 
