@@ -530,6 +530,9 @@
     <ClInclude Include="..\src\MemWnd.hpp">
       <Filter>Under Test\Manual</Filter>
     </ClInclude>
+    <ClInclude Include="..\test\Common.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\src\MemWnd.ui">
