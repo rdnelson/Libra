@@ -36,7 +36,7 @@ void mem_wlog(size_t offset, size_t size) {
 	fout.close();
 }
 
-VM::VM() : mLoaded(false), mRunning(false), mVirgo(false), mMem(MEM_SIZE), mProc(mMem) {
+VM::VM() : mLoaded(false), mRunning(false), mVirgo(false), mInFunc(0), mMem(MEM_SIZE), mProc(mMem) {
 
 	Instruction::InitializeOpcodes();
 	mMem.RegisterReadCallback(mem_rlog);
@@ -333,6 +333,12 @@ int VM::Step() {
 			if(mBreakpoints[i]->Evaluate(&mProc))
 				return VM_BREAKPOINT;
 		}
+	}
+	if(err == Instruction::CALL_CALLED) {
+		mInFunc++;
+	} else if (err == Instruction::RET_CALLED) {
+		if(mInFunc > 0)
+			mInFunc--;
 	}
 	return err;
 }

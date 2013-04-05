@@ -207,10 +207,12 @@ void MemWnd::stepInVM_Clicked() {
 void MemWnd::stepOutVM_Clicked() {
 	//Ensure a file is loaded
 	if(mVM.isLoaded()) {
+		//get current call depth
+		unsigned int callDepth = mVM.GetCallDepth();
 		//Execute a step and check for errors
 		int err = mVM.Step();
 		//Loop until a RET is executed
-		while(err != Instruction::RET_CALLED) {
+		while(callDepth != 0 && callDepth <= mVM.GetCallDepth()) {
 			//Even if RET hasn't been hit, the program crashed, time to stop
 			if(err < 0) {
 				DisableRun(err);
@@ -230,28 +232,21 @@ void MemWnd::stepOutVM_Clicked() {
 void MemWnd::stepOverVM_Clicked() {
 	//Ensure a file is loaded
 	if(mVM.isLoaded()) {
+		//Get current call depth
+		unsigned int callDepth = mVM.GetCallDepth();
 		//Execute one step and check for errors
 		int err = mVM.Step();
 		//check if a CALL was executed
-		if(err == Instruction::CALL_CALLED) {
-			//One CALL was executed
-			unsigned int numCall = 1;
-			//Until all calls have been returned from
-			while(numCall) {
-				//Execute another instruction in the search for enough RET
-				err = mVM.Step();
-				//This CALL has to be returned from as well
-				if(err == Instruction::CALL_CALLED) {
-					numCall++;
-				} else if(err == Instruction::RET_CALLED) {
-					numCall--;
-				} else if(err < 0) {
-					//Errors still cause problems
-					DisableRun(err);
-					break;
-				}
+		while(callDepth < mVM.GetCallDepth()) {
+			//Execute another instruction in the search for enough RET
+			err = mVM.Step();
+			if(err < 0) {
+				//Errors still cause problems
+				DisableRun(err);
+				break;
 			}
-		} else if(err < 0) {
+		}
+		if(err < 0) {
 			//This is incase an error happened without a CALL happening
 			DisableRun(err);
 		}

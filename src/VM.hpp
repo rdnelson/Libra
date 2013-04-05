@@ -55,6 +55,7 @@ class VM {
 
 		inline void notifyReadCallbacks() { mMem.notifyReadCallbacks(); }
 		inline void notifyWriteCallbacks() { mMem.notifyWriteCallbacks(); }
+		inline unsigned int GetCallDepth() const { return mInFunc; }
 
 		void SetTimer(QTimer* timer) { mProc.SetTimer(timer); }
 
@@ -79,6 +80,7 @@ class VM {
 		bool mLoaded;
 		bool mRunning;
 		bool mVirgo;
+		unsigned int mInFunc;
 
 		Memory	mMem;
 		Processor	mProc;
