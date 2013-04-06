@@ -18,31 +18,36 @@ GTEST_DIR = ../lib/gtest-1.6.0
 
 # Where to find user code.
 USER_DIR = ../src
+USER_OBJ = ../src/obj/test
+OBJ_DIR = ./obj
 
 # where to find test code
-TEST_DIR = ./
+TEST_DIR = ./tests
 
 # Flags passed to the preprocessor.
-CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST
+CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = TestInstruction
+TESTS = TestInstruction.cpp
+TEST_OBJS = $(TESTS:.cpp=.o)
 
 # All Google Test headers.  Usually you shouldn't change this
 # definition.
 GTEST_HEADERS = $(GTEST_DIR)/include/gtest/*.h \
                 $(GTEST_DIR)/include/gtest/internal/*.h
 
+MKDIR = mkdir -p
+
 # House-keeping build targets.
 
-all : $(TESTS)
+all : bin/libra_test
 
 clean :
-	rm -f $(TESTS) gtest.a gtest_main.a *.o
+	rm -f bin/libra_test $(OBJ_DIR)/*
 
 # Builds gtest.a and gtest_main.a.
 
@@ -54,30 +59,37 @@ GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 # implementation details, the dependencies specified below are
 # conservative and not optimized.  This is fine as Google Test
 # compiles fast and for ordinary users its source rarely changes.
-gtest-all.o : $(GTEST_SRCS_)
+$(OBJ_DIR)/gtest-all.o : $(GTEST_SRCS_)
+	$(MKDIR) $(OBJ_DIR)
 	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
-            $(GTEST_DIR)/src/gtest-all.cc
+            $(GTEST_DIR)/src/gtest-all.cc -o $@
 
-gtest_main.o : $(GTEST_SRCS_)
+$(OBJ_DIR)/gtest_main.o : $(GTEST_SRCS_)
 	$(CXX) $(CPPFLAGS) -I$(GTEST_DIR) $(CXXFLAGS) -c \
-            $(GTEST_DIR)/src/gtest_main.cc
+            $(GTEST_DIR)/src/gtest_main.cc -o $@
 
-gtest.a : gtest-all.o
+$(OBJ_DIR)/gtest.a : $(OBJ_DIR)/gtest-all.o
+	$(MKDIR) $(OBJ_DIR)
 	$(AR) $(ARFLAGS) $@ $^
 
-gtest_main.a : gtest-all.o gtest_main.o
+$(OBJ_DIR)/gtest_main.a : $(OBJ_DIR)/gtest-all.o $(OBJ_DIR)/gtest_main.o
 	$(AR) $(ARFLAGS) $@ $^
 
 # Builds a sample test.  A test should link with either gtest.a or
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-Instruction.o : $(USER_DIR)/Instruction.cpp $(USER_DIR)/Instruction.hpp $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Instruction.cpp
+#Instruction.o : $(USER_DIR)/Instruction.cpp $(USER_DIR)/Instruction.hpp $(GTEST_HEADERS)
+#	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_DIR)/Instruction.cpp
 
-TestInstruction.o : $(TEST_DIR)/TestInstruction.cpp \
+$(OBJ_DIR)/%.o : $(TEST_DIR)/%.cpp \
                      $(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/TestInstruction.cpp
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-TestInstruction : Instruction.o TestInstruction.o gtest_main.a
+$(USER_OBJ)/%.o: $(USER_DIR)/%.cpp $(USER_DIR)/%.hpp
+	$(MKDIR) $(USER_OBJ)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+bin/libra_test : $(USER_OBJ)/Instruction.o $(OBJ_DIR)/$(TEST_OBJS) $(OBJ_DIR)/gtest_main.a $(USER_OBJ)/Prefix.o $(USER_OBJ)/Memory.o
+	$(MKDIR) bin
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -pthread -lpthread $^ -o $@
