@@ -18,14 +18,18 @@ GTEST_DIR = ../lib/gtest-1.6.0
 
 # Where to find user code.
 USER_DIR = ../src
-USER_OBJ = ../src/obj/test
+USER_OBJ_DIR = ../src/obj/test
 OBJ_DIR = ./obj
+USER_OBJS = Instruction \
+	    Prefix \
+	    Memory \
+
 
 # where to find test code
 TEST_DIR = ./tests
 
 # Flags passed to the preprocessor.
-CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 
+CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra
@@ -47,7 +51,7 @@ MKDIR = mkdir -p
 all : bin/libra_test
 
 clean :
-	rm -f bin/libra_test $(OBJ_DIR)/*
+	rm -f bin/libra_test $(OBJ_DIR)/* $(USER_OBJ_DIR)/*
 
 # Builds gtest.a and gtest_main.a.
 
@@ -86,10 +90,10 @@ $(OBJ_DIR)/%.o : $(TEST_DIR)/%.cpp \
                      $(GTEST_HEADERS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-$(USER_OBJ)/%.o: $(USER_DIR)/%.cpp $(USER_DIR)/%.hpp
-	$(MKDIR) $(USER_OBJ)
+$(USER_OBJ_DIR)/%.o: $(USER_DIR)/%.cpp $(USER_DIR)/%.hpp
+	$(MKDIR) $(USER_OBJ_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-bin/libra_test : $(USER_OBJ)/Instruction.o $(OBJ_DIR)/$(TEST_OBJS) $(OBJ_DIR)/gtest_main.a $(USER_OBJ)/Prefix.o $(USER_OBJ)/Memory.o
+bin/libra_test : $(OBJ_DIR)/$(TEST_OBJS) $(OBJ_DIR)/gtest_main.a $(addprefix $(USER_OBJ_DIR)/, $(addsuffix .o, $(USER_OBJS)))
 	$(MKDIR) bin
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -pthread -lpthread $^ -o $@
