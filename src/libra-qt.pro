@@ -5,11 +5,18 @@
 #-------------------------------------------------
 
 QT       += core gui
-CONFIG   += debug static
+CONFIG   += qt thread
+OBJECTS_DIR = obj/release
+TARGET = libra
+
+CONFIG(dbg) {
+	message(Debug Mode)
+	OBJECTS_DIR = obj/debug
+	TARGET = libra-debug
+}
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = libra-qt
 TEMPLATE = app
 
 
