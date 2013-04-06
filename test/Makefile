@@ -27,6 +27,7 @@ USER_OBJS = Instruction \
 
 # where to find test code
 TEST_DIR = ./tests
+BIN_DIR = ./bin
 
 # Flags passed to the preprocessor.
 CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4
@@ -88,6 +89,7 @@ $(OBJ_DIR)/gtest_main.a : $(OBJ_DIR)/gtest-all.o $(OBJ_DIR)/gtest_main.o
 
 $(OBJ_DIR)/%.o : $(TEST_DIR)/%.cpp \
                      $(GTEST_HEADERS)
+	$(MKDIR) $(OBJ_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(USER_OBJ_DIR)/%.o: $(USER_DIR)/%.cpp $(USER_DIR)/%.hpp
@@ -95,5 +97,5 @@ $(USER_OBJ_DIR)/%.o: $(USER_DIR)/%.cpp $(USER_DIR)/%.hpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 bin/libra_test : $(OBJ_DIR)/$(TEST_OBJS) $(OBJ_DIR)/gtest_main.a $(addprefix $(USER_OBJ_DIR)/, $(addsuffix .o, $(USER_OBJS)))
-	$(MKDIR) bin
+	$(MKDIR) $(BIN_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -pthread -lpthread $^ -o $@
