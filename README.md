@@ -1,6 +1,8 @@
 Libra - An educational 8086 emulator
 ====================================
 
+[![Build Status](https://jenkins.rnelson.ca/job/Libra/badge/icon)](https://jenkins.rnelson.ca/job/Libra/)
+
 Libra is an 8086 emulator with a focus on educational features. This
 includes features such as:
 * instruction list
