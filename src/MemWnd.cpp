@@ -190,6 +190,8 @@ void MemWnd::stepInVM_Clicked() {
 		if(err < 0) {
 			//Something bad happened, program can't go any further
 			DisableRun(err);
+		} else if(err == Processor::PROC_HALT) {
+			QMessageBox::information(this, "Halt Encountered", "HLT was encountered, execution is terminated.");
 		}
 
 		//Enable stop (if it isn't already) because the program state can be reinitialized now
@@ -207,52 +209,70 @@ void MemWnd::stepInVM_Clicked() {
 void MemWnd::stepOutVM_Clicked() {
 	//Ensure a file is loaded
 	if(mVM.isLoaded()) {
-		//get current call depth
-		unsigned int callDepth = mVM.GetCallDepth();
-		//Execute a step and check for errors
-		int err = mVM.Step();
-		//Loop until a RET is executed
-		while(callDepth != 0 && callDepth <= mVM.GetCallDepth()) {
-			//Even if RET hasn't been hit, the program crashed, time to stop
-			if(err < 0) {
-				DisableRun(err);
-				break;
-			}
-			//Execute another instruction in the search for a RET
-			err = mVM.Step();
-		}
-		//Enable Stop, cause the program crashed.
-		ui->actionStop->setEnabled(true);
+		//Update the memory control, and clear highlighting
+		UpdateMemView();
 
-		//Update the entire gui
-		UpdateGui();
+		//Disable focus (helps with keyboard input)
+		ui->tableView->setFocusPolicy(Qt::NoFocus);
+
+		//Clear all highlighting except breakpoints
+		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
+			if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
+				for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+					ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::red);
+				}
+			} else {
+				for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+					ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::white);
+				}
+			}
+		}
+
+		ClearRegisterHighlighting();
+
+		//Disable all the run actions
+		DisableRun(0);
+
+		//start the vmworker thread to run the program
+		mVMWorker->StepOut();
+
+		//Enable the stop button
+		ui->actionStop->setEnabled(true);
 	}
 }
 
 void MemWnd::stepOverVM_Clicked() {
 	//Ensure a file is loaded
 	if(mVM.isLoaded()) {
-		//Get current call depth
-		unsigned int callDepth = mVM.GetCallDepth();
-		//Execute one step and check for errors
-		int err = mVM.Step();
-		//check if a CALL was executed
-		while(callDepth < mVM.GetCallDepth()) {
-			//Execute another instruction in the search for enough RET
-			err = mVM.Step();
-			if(err < 0) {
-				//Errors still cause problems
-				DisableRun(err);
-				break;
+		//Update the memory control, and clear highlighting
+		UpdateMemView();
+
+		//Disable focus (helps with keyboard input)
+		ui->tableView->setFocusPolicy(Qt::NoFocus);
+
+		//Clear all highlighting except breakpoints
+		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
+			if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
+				for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+					ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::red);
+				}
+			} else {
+				for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+					ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::white);
+				}
 			}
 		}
-		if(err < 0) {
-			//This is incase an error happened without a CALL happening
-			DisableRun(err);
-		}
 
+		ClearRegisterHighlighting();
+
+		//Disable all the run actions
+		DisableRun(0);
+
+		//start the vmworker thread to run the program
+		mVMWorker->StepOver();
+
+		//Enable the stop button
 		ui->actionStop->setEnabled(true);
-		UpdateGui();
 	}
 }
 
