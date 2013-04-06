@@ -10,6 +10,9 @@ class VMWorker : public QThread
     Q_OBJECT
 public:
     VMWorker(VM* vm);
+    void StepN(unsigned int n);
+    void StepOut();
+    void StepOver();
 
     static const int VM_NOT_LOADED = 0xFF;
 
@@ -29,7 +32,16 @@ signals:
 
 private:
     VM* mVM;
-    bool mPaused;
+    unsigned int mSteps;
+    unsigned int mRunConditions;
+
+    enum {
+        NOT_RUNNING,
+        FULL_RUN,
+        STEP_OUT,
+        STEP_OVER,
+        STEP_N,
+    };
 };
 
 #endif // VMTHREAD_H
