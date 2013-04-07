@@ -129,7 +129,7 @@ int Xor::Execute(Processor* proc) {
 
 	proc->SetFlag(FLAGS_ZF, val == 0);
 	proc->SetFlag(FLAGS_PF, Parity(val));
-	proc->SetFlag(FLAGS_SF, val >= (dst->GetBitmask() == 0xFF ? 0x80 : 0x8000));
+	proc->SetFlag(FLAGS_SF, val >= (dst->GetBitmask() == 0xFF ? 0x80U : 0x8000U));
 
 	dst->SetValue(val);
 

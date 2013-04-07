@@ -60,7 +60,7 @@ int IDiv::Execute(Processor* proc) {
 	unsigned int divisorNeg = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
 	unsigned int dividendNeg = dst->GetBitmask() == 0xFF ? 0x8000 : 0x80000000;
 	unsigned int dividendBm = dst->GetBitmask() == 0xFF ? 0xFFFF : 0xFFFFFFFF;
-	unsigned int rem, val;
+	int rem, val;
 	bool neg = (((dividend & dividendNeg) >> 8) ^ (divisor & divisorNeg)) != 0;
 	//positivize everything
 	if(dividend & dividendNeg) { //if dividend is negative
@@ -68,14 +68,14 @@ int IDiv::Execute(Processor* proc) {
 	}
 	if(divisor & divisorNeg) {
 		divisor = (~divisor + 1) & dst->GetBitmask(); //all operands are positive
-		rem = -(dividend % divisor); //remainder is negative
+		rem = -(int)(dividend % divisor); //remainder is negative
 	} else {
 		rem = (dividend % divisor); //remainder is positive
 	}
 
 	//calc result
 	val = dividend / divisor; //
-	if(val >= divisorNeg) { //operands are positive, so anything this big is overflow
+	if((unsigned int)val >= divisorNeg) { //operands are positive, so anything this big is overflow
 		return IDIV_DIV_ERR;
 	}
 	//invert if necessary
