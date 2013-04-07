@@ -1,2 +1,3 @@
-%SDK_DIR%\bin\SetEnv.cmd
-msbuild msvc10\Libra.sln
+call %SDK_DIR%\bin\SetEnv.cmd
+cd msvc10
+msbuild Libra.sln /nologo /verbosity:m
