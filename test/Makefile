@@ -30,7 +30,7 @@ TEST_DIR = ./tests
 BIN_DIR = ./bin
 
 # Flags passed to the preprocessor.
-CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4
+CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I.
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra
