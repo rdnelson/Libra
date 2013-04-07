@@ -36,9 +36,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\test\TestInstruction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\opcodes\Aaa.cpp">
       <Filter>Under Test\Manual</Filter>
     </ClCompile>
@@ -297,6 +294,24 @@
     <ClCompile Include="..\src\Release_Static\moc_VMWorker.cpp">
       <Filter>Under Test\Generated\Release_Static</Filter>
     </ClCompile>
+    <ClCompile Include="..\test\tests\TestInstruction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\QInstructionList.cpp">
+      <Filter>Under Test\Manual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug\moc_QInstructionList.cpp">
+      <Filter>Under Test\Generated\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug_Static\moc_QInstructionList.cpp">
+      <Filter>Under Test\Generated\Debug_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release_Static\moc_QInstructionList.cpp">
+      <Filter>Under Test\Generated\Release_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release\moc_QInstructionList.cpp">
+      <Filter>Under Test\Generated\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\opcodes\Xor.hpp">
@@ -532,6 +547,9 @@
     </ClInclude>
     <ClInclude Include="..\test\Common.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\QInstructionList.hpp">
+      <Filter>Under Test\Manual</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
