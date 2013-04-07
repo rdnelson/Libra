@@ -26,12 +26,19 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MemWnd),
 	mFile(""),
+	mCurDir(""),
+	mSettings("SCE", "Libra"),
 	COL_LABEL(0),
 	COL_LST(1),
 	COL_INST(2)
 {
 	//Setup the ui object (Qt Mandatory)
 	ui->setupUi(this);
+	mCurDir = mSettings.value("FileOpen/CurrentDirectory").toString();
+	if(!QDir(mCurDir).exists()) {
+		mCurDir = "";
+		mSettings.setValue("FileOpen/CurrentDirectory", mCurDir);
+	}
 
 	//Initialize the keyboard filter
 	QKbdFilter* kbdFilter = new QKbdFilter();
@@ -335,7 +342,7 @@ void MemWnd::loadFile(bool newFile) {
 
 	//Open a file dialog if this is loading a new object file
 	if(newFile) {
-		QString file = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("Flat Binary (*.*);;Virgo Object (*.obj)"));
+		QString file = QFileDialog::getOpenFileName(this, tr("Open File"), mCurDir, tr("Flat Binary (*.*);;Virgo Object (*.obj)"));
 		mFile = file;
 	}
 
@@ -348,6 +355,8 @@ void MemWnd::loadFile(bool newFile) {
 
 	//Sanity check for mFile
 	if(mFile != "") {
+		mCurDir = QFileInfo(mFile).absoluteDir().absolutePath();
+		mSettings.setValue("FileOpen/CurrentDirectory", mCurDir);
 		int err = mVM.LoadVirgoFile(mFile.toStdString().c_str());
 
 		//Ensure the loading succeeded
