@@ -50,7 +50,7 @@ class ImmediateOperand : public Operand {
 		}
 
 		int GetUnresolvedValue() const {
-			return -mSize;
+			return -(int)mSize;
 		}
 
 
