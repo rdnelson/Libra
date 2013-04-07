@@ -35,6 +35,7 @@ public slots:
 	void stopVM_Clicked();
 	void toggleBreakpoint_Clicked();
 	void enableListings_Clicked();
+	void lstInstructions_RightClicked(const QPoint&);
 
 	//VMWorker Slots
 	//trigger on breakpoint
@@ -72,6 +73,7 @@ private:
 	void UpdateInstHighlight();
 	void UpdateInstructions();
 	void ClearRegisterHighlighting();
+	void HighlightBreakpoints();
 	void DisableRun(int err);
 	void EnableRun();
 

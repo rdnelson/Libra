@@ -345,6 +345,21 @@
     <ClCompile Include="..\src\Debug_Static\moc_VMWorker.cpp">
       <Filter>Generated Files\Debug_Static</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\QInstructionList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug_Static\moc_QInstructionList.cpp">
+      <Filter>Generated Files\Debug_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug\moc_QInstructionList.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release_Static\moc_QInstructionList.cpp">
+      <Filter>Generated Files\Release_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release\moc_QInstructionList.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\GeneratedFiles\ui_MemWnd.h">
@@ -578,6 +593,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="..\src\VMWorker.hpp">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QInstructionList.hpp">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
