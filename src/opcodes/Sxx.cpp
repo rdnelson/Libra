@@ -116,11 +116,11 @@ int Sxx::Execute(Processor* proc) {
 		case SAL_SUB_OPCODE:
 		{
 			while(tmpCount--) {
-				cf = dstVal & dstSign;
+				cf = (dstVal & dstSign) != 0;
 				dstVal = (dstVal * 2) & dst->GetBitmask();
 			}
 			if((src->GetValue() & 0x1F) == 1) {
-				proc->SetFlag(FLAGS_OF, dstVal ^ cf ? dstSign : 0x0000);
+				proc->SetFlag(FLAGS_OF, (dstVal ^ (cf ? dstSign : 0x0000)) != 0);
 			}
 			proc->SetFlag(FLAGS_CF, cf);
 			break;
@@ -145,7 +145,7 @@ int Sxx::Execute(Processor* proc) {
 				dstVal = (dstVal / 2) & (dst->GetBitmask() ^ dstSign);
 			}
 			if((src->GetValue() & 0x1F) == 1) {
-				proc->SetFlag(FLAGS_OF, dst->GetValue() & dstSign);
+				proc->SetFlag(FLAGS_OF, (dst->GetValue() & dstSign) != 0);
 			}
 			proc->SetFlag(FLAGS_CF, cf);
 			break;

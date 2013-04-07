@@ -46,10 +46,10 @@ Instruction* Sahf::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 int Sahf::Execute(Processor* proc) {
 
 	unsigned int ah = proc->GetRegister(REG_AH);
-	proc->SetFlag(FLAGS_SF, ah & 0x80);
-	proc->SetFlag(FLAGS_ZF, ah & 0x40);
-	proc->SetFlag(FLAGS_AF, ah & 0x10);
-	proc->SetFlag(FLAGS_PF, ah & 0x04);
-	proc->SetFlag(FLAGS_CF, ah & 0x01);
+	proc->SetFlag(FLAGS_SF, (ah & 0x80) != 0);
+	proc->SetFlag(FLAGS_ZF, (ah & 0x40) != 0);
+	proc->SetFlag(FLAGS_AF, (ah & 0x10) != 0);
+	proc->SetFlag(FLAGS_PF, (ah & 0x04) != 0);
+	proc->SetFlag(FLAGS_CF, (ah & 0x01) != 0);
 	return 0;
 }
