@@ -4,7 +4,7 @@ GTESTDIR=$(LIBDIR)/gtest-1.6.0
 .PHONY: gtest all libra all_notests clean
 
 all: ./test/bin/libra_test
-    ./test/bin/libra_test --gtest_output=xml
+	./test/bin/libra_test --gtest_output=xml
 
 clean:
 	$(MAKE) -C $(GTESTDIR) clean
