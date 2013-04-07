@@ -136,6 +136,15 @@ echo Edit msvc10\Libra.vcxproj.user to fix path if necessary.</Command>
     <ResourceCompile>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_GUI_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir $(ProjectDir)\..\bin
+xcopy %SYSTEMROOT%\System32\msvcp100.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy %SYSTEMROOT%\System32\msvcr100.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y
+xcopy $(QTDIR)\bin\QtCored4.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy $(QTDIR)\bin\QtGuid4.dll $(ProjectDir)\..\bin\ /C /Y
+</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
     <ClCompile>
@@ -181,6 +190,12 @@ echo Edit msvc10\Libra.vcxproj.user to fix path if necessary.</Command>
     <ResourceCompile>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_GUI_LIB;QT_CORE_LIB;QT_HAVE_MMX;QT_HAVE_3DNOW;QT_HAVE_SSE;QT_HAVE_MMXEXT;QT_HAVE_SSE2;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>mkdir $(ProjectDir)\..\bin
+xcopy %SYSTEMROOT%\System32\msvcp100.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy %SYSTEMROOT%\System32\msvcr100.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -226,6 +241,14 @@ echo Edit msvc10\Libra.vcxproj.user to fix path if necessary.</Command>
       <Command>echo Using Qt Dir: $(QTDIR)
 echo Edit msvc10\Libra.vcxproj.user to fix path if necessary.</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>mkdir $(ProjectDir)\..\bin
+xcopy %SYSTEMROOT%\System32\msvcp100.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy %SYSTEMROOT%\System32\msvcr100.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y
+xcopy $(QTDIR)\bin\QtCore4.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy $(QTDIR)\bin\QtGui4.dll $(ProjectDir)\..\bin\ /C /Y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">
     <ClCompile>
@@ -272,8 +295,10 @@ echo Edit msvc10\Libra.vcxproj.user to fix path if necessary.</Command>
 echo Edit msvc10\Libra.vcxproj.user to fix path if necessary.</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>xcopy %SYSTEMROOT%\System32\msvcp100.dll $(TargetDir) /C /Y
-xcopy %SYSTEMROOT%\System32\msvcr100.dll $(TargetDir) /C /Y</Command>
+      <Command>mkdir $(ProjectDir)\..\bin
+xcopy %SYSTEMROOT%\System32\msvcp100.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy %SYSTEMROOT%\System32\msvcr100.dll $(ProjectDir)\..\bin\ /C /Y
+xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
