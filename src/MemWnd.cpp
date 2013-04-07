@@ -42,6 +42,8 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	ui->lstInstructions->setColumnCount(3);
 	ui->lstInstructions->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 	ui->lstInstructions->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+	ui->lstInstructions->setStyleSheet("QTableWidget::item::selected {background-color: #3399FF; color: white;}");
+	ui->lstInstructions->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	//Create a temporary screen, because the processor isn't initialized until a file is loaded
 	Screen scr;
@@ -70,6 +72,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	this->connect(this->ui->actionReload_File, SIGNAL(triggered()), this, SLOT(reloadObjFile_Clicked()));
 	this->connect(this->ui->actionBreakpoint, SIGNAL(triggered()), this, SLOT(toggleBreakpoint_Clicked()));
 	this->connect(this->ui->actionEnable_Listings, SIGNAL(triggered()), this, SLOT(enableListings_Clicked()));
+	this->connect(this->ui->lstInstructions, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(lstInstructions_RightClicked(const QPoint&)));
 
 	//Create the memory view model
 	QMemModel* memModel = new QMemModel(this);
@@ -251,17 +254,7 @@ void MemWnd::stepOverVM_Clicked() {
 		ui->tableView->setFocusPolicy(Qt::NoFocus);
 
 		//Clear all highlighting except breakpoints
-		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
-			if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
-				for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
-					ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::red);
-				}
-			} else {
-				for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
-					ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::white);
-				}
-			}
-		}
+		HighlightBreakpoints();
 
 		ClearRegisterHighlighting();
 
@@ -299,17 +292,40 @@ void MemWnd::toggleBreakpoint_Clicked() {
 	if(bp != 0) {
 		//Remove any existing breakpoints
 		mVM.RemoveBreakpoint(bp->GetIP());
+		HighlightBreakpoints();
 		return;
 	}
 	//Create a new unconditional breakpoint
 	bp = new Breakpoint(mVM.GetInstructionAddr(ui->lstInstructions->currentRow()));
 	mVM.AddBreakpoint(bp);
 	//Highlight the new breakpoint
-	ui->lstInstructions->currentItem()->setBackgroundColor(Qt::red);
+	HighlightBreakpoints();
 }
 
 void MemWnd::enableListings_Clicked() {
 	UpdateInstructions();
+}
+
+void MemWnd::lstInstructions_RightClicked(const QPoint& pt) {
+	int row = ui->lstInstructions->currentRow();
+	if(row != -1) {
+		unsigned int addr = ui->lstInstructions->item(row,0)->data(32).toInt();
+		bool isBreakpoint = mVM.FindBreakpoint(addr) != 0;
+		QPoint globalPos = ui->lstInstructions->mapToGlobal(pt);
+		QMenu context;
+		context.addAction(isBreakpoint ? "Remove Breakpoint" : "Add Breakpoint");
+
+		QAction* selectedItem = context.exec(globalPos);
+		if(selectedItem) {
+			if(isBreakpoint) {
+				mVM.RemoveBreakpoint(addr);
+			} else {
+				mVM.AddBreakpoint(new Breakpoint(addr));
+			}
+			HighlightBreakpoints();
+		}
+	}
+
 }
 /*
  * File loading functions
@@ -586,6 +602,7 @@ void MemWnd::UpdateInstructions() {
 			} else if(j == COL_INST) {
 				ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE(mVM.GetInstructionStr(i).c_str()));
 			}
+			ui->lstInstructions->item(ui->lstInstructions->rowCount() - 1, j)->setData(32, QVariant(mVM.GetInstructionAddr(i)));
 		}
 	}
 	QHeaderView* horz = ui->lstInstructions->horizontalHeader();
@@ -620,6 +637,19 @@ void MemWnd::ClearRegisterHighlighting() {
 	ui->txtFLAGS->setStyleSheet("");
 }
 
+void MemWnd::HighlightBreakpoints() {
+	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
+		if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
+			for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+				ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::red);
+			}
+		} else {
+			for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+				ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::white);
+			}
+		}
+	}
+}
 void MemWnd::DisableRun(int err) {
 
 	//Disable the run actions
