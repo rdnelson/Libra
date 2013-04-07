@@ -54,7 +54,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QTableWidget" name="lstInstructions">
+         <widget class="QInstructionList" name="lstInstructions">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
             <horstretch>0</horstretch>
@@ -965,6 +965,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QInstructionList</class>
+   <extends>QTableWidget</extends>
+   <header>QInstructionList.hpp</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="Resources.qrc"/>
  </resources>

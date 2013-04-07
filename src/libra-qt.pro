@@ -91,6 +91,7 @@ SOURCES +=\
 	peripherals/Timer.cpp \
 	QMemModel.cpp \
 	QKbdFilter.cpp \
+    QInstructionList.cpp \
 	InstTable.cpp
 
 HEADERS  += MemWnd.hpp \
@@ -168,7 +169,8 @@ HEADERS  += MemWnd.hpp \
 	peripherals/Timer.hpp \
 	VirgoInstruction.hpp \
 	QMemModel.hpp \
-	QKbdFilter.hpp
+	QKbdFilter.hpp \
+    QInstructionList.hpp
 
 FORMS    += MemWnd.ui
 
