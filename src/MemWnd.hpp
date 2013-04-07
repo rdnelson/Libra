@@ -5,6 +5,7 @@
 #include <QStandardItemModel>
 #include <QAbstractTextDocumentLayout>
 #include <QKeyEvent>
+#include <QSettings>
 #include "VM.hpp"
 #include "VMWorker.hpp"
 
@@ -79,6 +80,8 @@ private:
 
 	VM mVM;
 	QString mFile;
+	QString mCurDir;
+	QSettings mSettings;
 
 	int COL_LABEL;
 	int COL_LST;
