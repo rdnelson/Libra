@@ -312,6 +312,9 @@
     <ClCompile Include="..\src\Release\moc_QInstructionList.cpp">
       <Filter>Under Test\Generated\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\GeneratedFiles\qrc_Resources.cpp">
+      <Filter>Under Test\Generated</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\opcodes\Xor.hpp">

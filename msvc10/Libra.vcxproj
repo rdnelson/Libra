@@ -84,7 +84,7 @@
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">release_static\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Platform)\$(Configuration)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">$(Platform)\$(Configuration)\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libra-qt</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libra</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">libra</TargetName>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</IgnoreImportLibrary>
@@ -224,7 +224,7 @@ xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y</Command>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreImportLibrary>true</IgnoreImportLibrary>
       <LinkIncremental>false</LinkIncremental>
-      <OutputFile>$(OutDir)\libra-qt.exe</OutputFile>
+      <OutputFile>$(OutDir)\libra.exe</OutputFile>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
