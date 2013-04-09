@@ -13,7 +13,6 @@ debug:
 	$(MAKE) -f ./Makefile
 	$(RM) ./Makefile
 	$(MKDIR) ../bin
-	$(RM) ../bin/*
 	$(CP) librad ../bin/
 
 release: | debug
@@ -21,7 +20,6 @@ release: | debug
 	$(MAKE) -f ./Makefile
 	$(RM) ./Makefile
 	$(MKDIR) ../bin
-	$(RM) ../bin/*
 	$(CP) libra ../bin/
 
 clean:
