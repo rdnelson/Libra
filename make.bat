@@ -1,5 +1,9 @@
-call %SDK_DIR%\bin\SetEnv.cmd
+mkdir bin
+del /Q bin\*
+call %SDK_DIR%\bin\SetEnv.cmd /Debug
 cd msvc10
-msbuild Libra.sln /nologo /verbosity:m
+msbuild Libra.sln /nologo /verbosity:m /p:Configuration=Debug
+call %SDK_DIR%\bin\SetEnv.cmd /Release
+msbuild Libra.sln /nologo /verbosity:m /p:Configuration=Release
 cd ..
 bin\LibraTest.exe --gtest_output=xml

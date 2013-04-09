@@ -100,7 +100,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>gtest.lib;gtest_main.lib;$(QTDIR)\lib\qtmain.lib;$(QTDIR)\lib\QtGui.lib;$(QTDIR)\lib\QtCore.lib;$(QTDIR)\plugins\imageformats\qico.lib;winmm.lib;imm32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtest.lib;gtest_main.lib;$(QTDIR)\lib\qtmain.lib;$(QTDIR)\lib\QtGui4.lib;$(QTDIR)\lib\QtCore4.lib;winmm.lib;imm32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+
       <AdditionalLibraryDirectories>$(ProjectDir)\Win32\Release\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

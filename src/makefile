@@ -13,7 +13,7 @@ debug:
 	$(MAKE) -f ./Makefile
 	$(RM) ./Makefile
 	$(MKDIR) ../bin
-	$(CP) libra-debug ../bin/
+	$(CP) librad ../bin/
 
 release: | debug
 	$(QMAKE) $(QPROJ)
