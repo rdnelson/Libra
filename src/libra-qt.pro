@@ -12,7 +12,7 @@ TARGET = libra
 CONFIG(dbg) {
 	message(Debug Mode)
 	OBJECTS_DIR = obj/debug
-	TARGET = libra-debug
+	TARGET = librad
 }
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
