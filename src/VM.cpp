@@ -84,6 +84,7 @@ int VM::LoadVirgoFile(const char* filename) {
 
 	mLoaded = false;
 	mInstructions.clear();
+	mLabels.clear();
 	mMem.Clear();
 
 	std::ifstream fin;
