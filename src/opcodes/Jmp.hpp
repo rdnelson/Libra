@@ -12,13 +12,13 @@
 
 #pragma once
 
-#include "../Instruction.hpp"
+#include "../Instruction8086.hpp"
 
-class Jmp : public Instruction {
+class Jmp : public Instruction8086 {
 
 	public:
 		static Instruction* CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
-		int Execute(Processor* proc);
+		int Execute();
 
 		enum eValidOpcodes {
 			JMP_REL8	= 0xEB,

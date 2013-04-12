@@ -13,17 +13,17 @@
 
 #include "CLSTX.hpp"
 
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 
 #include <cstdio>
 
-CLSTX::CLSTX(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+CLSTX::CLSTX(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* CLSTX::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
-	proc += 0;
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
@@ -62,28 +62,28 @@ Instruction* CLSTX::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* p
 
 }
 
-int CLSTX::Execute(Processor* proc) {
+int CLSTX::Execute() {
 	switch(mOpcode) {
 		case CLC:
-			proc->SetFlag(FLAGS_CF, 0);
+			mProc->SetFlag(Processor8086::FLAGS_CF, 0);
 			break;
 		case CLD:
-			proc->SetFlag(FLAGS_DF, 0);
+			mProc->SetFlag(Processor8086::FLAGS_DF, 0);
 			break;
 		case CLI:
-			proc->SetFlag(FLAGS_IF, 0);
+			mProc->SetFlag(Processor8086::FLAGS_IF, 0);
 			break;
 		case CMC:
-			proc->SetFlag(FLAGS_CF, !proc->GetFlag(FLAGS_CF));
+			mProc->SetFlag(Processor8086::FLAGS_CF, !mProc->GetFlag(Processor8086::FLAGS_CF));
 			break;
 		case STC:
-			proc->SetFlag(FLAGS_CF, 1);
+			mProc->SetFlag(Processor8086::FLAGS_CF, 1);
 			break;
 		case STD:
-			proc->SetFlag(FLAGS_DF, 1);
+			mProc->SetFlag(Processor8086::FLAGS_DF, 1);
 			break;
 		case STI:
-			proc->SetFlag(FLAGS_IF, 1);
+			mProc->SetFlag(Processor8086::FLAGS_IF, 1);
 			break;
 		default:
 			return INVALID_ARGS;

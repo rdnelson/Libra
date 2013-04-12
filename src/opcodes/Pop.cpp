@@ -19,16 +19,18 @@
 #include <cstdio>
 #include <string>
 
-Pop::Pop(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Pop::Pop(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newPop = 0;
+	Instruction8086* newPop = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -40,10 +42,11 @@ Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			if((unsigned int)((*(opLoc + 1) & 0x38) >> 3) != POP_SUB_OPCODE)
 				return newPop;
 
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, 2);
 			snprintf(buf, 65, "POP %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen());
 			newPop = new Pop(pre, buf, inst, (unsigned char)*opLoc);
+			newPop->SetProc(mProc);
 			newPop->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -56,11 +59,12 @@ Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case POP_REG_SI:
 		case POP_REG_DI:
 		{
-			Operand* dst = new RegisterOperand((eRegisters)(*opLoc - POP_REG_AX + REG_AX),
-				       proc);
+			Operand* dst = new RegisterOperand((Processor8086::eRegisters)(*opLoc - POP_REG_AX + Processor8086::REG_AX),
+				       mProc);
 			snprintf(buf, 65, "POP %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newPop = new Pop(pre, buf, inst, (unsigned char)*opLoc);
+			newPop->SetProc(mProc);
 			newPop->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -68,27 +72,29 @@ Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case POP_DS:
 		case POP_ES:
 		{
-			eRegisters reg = REG_DS;
+			Processor8086::eRegisters reg = Processor8086::REG_DS;
 			if(*opLoc == POP_DS)
-				reg = REG_DS;
+				reg = Processor8086::REG_DS;
 			else if(*opLoc == POP_SS)
-				reg = REG_SS;
+				reg = Processor8086::REG_SS;
 			else if(*opLoc == POP_ES)
-				reg = REG_ES;
+				reg = Processor8086::REG_ES;
 
-			Operand* dst = new RegisterOperand(reg, proc);
+			Operand* dst = new RegisterOperand(reg, mProc);
 			snprintf(buf, 65, "POP %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newPop = new Pop(pre, buf, inst, (unsigned char)*opLoc);
+			newPop->SetProc(mProc);
 			newPop->SetOperand(Operand::DST, dst);
 			break;
 		}
 		case POPF:
 		{
-			Operand* dst = new RegisterOperand(REG_FLAGS, proc);
+			Operand* dst = new RegisterOperand(Processor8086::REG_FLAGS, mProc);
 			snprintf(buf, 65, "POPF");
 			GETINST(preSize + 1);
 			newPop = new Pop(pre, buf, inst, (unsigned char)*opLoc);
+			newPop->SetProc(mProc);
 			newPop->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -96,6 +102,7 @@ Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			snprintf(buf, 65, "POPA");
 			GETINST(preSize + 1);
 			newPop = new Pop(pre, buf, inst, (unsigned char)*opLoc);
+			newPop->SetProc(mProc);
 			break;
 
 	}
@@ -103,17 +110,17 @@ Instruction* Pop::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Pop::Execute(Processor* proc) {
+int Pop::Execute() {
 
 	if(mOpcode == POPA) {
-		proc->PopRegister(REG_DI);
-		proc->PopRegister(REG_SI);
-		proc->PopRegister(REG_BP);
-		proc->PopSize(2);
-		proc->PopRegister(REG_BX);
-		proc->PopRegister(REG_DX);
-		proc->PopRegister(REG_CX);
-		proc->PopRegister(REG_AX);
+		mProc->PopRegister(Processor8086::REG_DI);
+		mProc->PopRegister(Processor8086::REG_SI);
+		mProc->PopRegister(Processor8086::REG_BP);
+		mProc->PopSize(2);
+		mProc->PopRegister(Processor8086::REG_BX);
+		mProc->PopRegister(Processor8086::REG_DX);
+		mProc->PopRegister(Processor8086::REG_CX);
+		mProc->PopRegister(Processor8086::REG_AX);
 
 	} else {
 
@@ -122,7 +129,7 @@ int Pop::Execute(Processor* proc) {
 			return INVALID_ARGS;
 		}
 
-		dst->SetValue(proc->PopValue());
+		dst->SetValue(mProc->PopValue());
 	}
 	return 0;
 }

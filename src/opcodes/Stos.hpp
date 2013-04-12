@@ -12,12 +12,12 @@
 
 #pragma once
 
-#include "../Instruction.hpp"
+#include "../Instruction8086.hpp"
 
-class Stos : public Instruction {
+class Stos : public Instruction8086 {
 	public:
 		static Instruction* CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
-		int Execute(Processor* proc);
+		int Execute();
 
 		enum eValidOpcodes {
 			STOSB		= 0xAA,

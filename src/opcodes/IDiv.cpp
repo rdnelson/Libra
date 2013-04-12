@@ -12,12 +12,12 @@
 
 #include "IDiv.hpp"
 
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ModrmOperand.hpp"
 
 #include <cstdio>
 
-IDiv::IDiv(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+IDiv::IDiv(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* IDiv::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
@@ -25,27 +25,30 @@ Instruction* IDiv::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 	char buf[65];
 	std::string inst;
 	Prefix* pre = Prefix::GetPrefix(memLoc);
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	if(pre) {
 		opLoc += preLen = pre->GetLength();
 	}
 
-	Instruction* newIDiv = 0;
+	Instruction8086* newIDiv = 0;
 
 	if((*opLoc == IDIV_MOD8 || *opLoc == IDIV_MOD16) &&
 			((unsigned int)((*(opLoc + 1) & 0x38) >> 3) == IDIV_SUB_OPCODE)) {
 		unsigned int size = *opLoc == IDIV_MOD8 ? 1 : 2;
-		Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+		Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 		snprintf(buf, 65, "IDIV %s", dst->GetDisasm().c_str());
 		GETINST(preLen + 2 + dst->GetBytecodeLen());
 		newIDiv = new IDiv(pre, buf, inst, (int)*opLoc);
+		newIDiv->SetProc(mProc);
 		newIDiv->SetOperand(Operand::DST, dst);
 	}
 	return newIDiv;
 
 }
 
-int IDiv::Execute(Processor* proc) {
+int IDiv::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0)
 		return INVALID_ARGS;
@@ -54,8 +57,8 @@ int IDiv::Execute(Processor* proc) {
 		return IDIV_BY_ZERO;
 	}
 
-	unsigned int dividend = proc->GetRegister(REG_AX) + (mOpcode == IDIV_MOD8 ? 0 :
-	       	proc->GetRegister(REG_DX) << 0x10);
+	unsigned int dividend = mProc->GetRegister(Processor8086::REG_AX) + (mOpcode == IDIV_MOD8 ? 0 :
+	       	mProc->GetRegister(Processor8086::REG_DX) << 0x10);
 	unsigned int divisor = dst->GetValue();
 	unsigned int divisorNeg = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
 	unsigned int dividendNeg = dst->GetBitmask() == 0xFF ? 0x8000 : 0x80000000;
@@ -84,8 +87,8 @@ int IDiv::Execute(Processor* proc) {
 
 	val &= dst->GetBitmask();
 
-	proc->SetRegister(mOpcode == IDIV_MOD8 ? REG_AL : REG_AX, val);
-	proc->SetRegister(mOpcode == IDIV_MOD8 ? REG_AH : REG_DX, rem);
+	mProc->SetRegister(mOpcode == IDIV_MOD8 ? Processor8086::REG_AL : Processor8086::REG_AX, val);
+	mProc->SetRegister(mOpcode == IDIV_MOD8 ? Processor8086::REG_AH : Processor8086::REG_DX, rem);
 
 	return 0;
 }

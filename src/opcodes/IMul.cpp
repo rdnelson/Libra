@@ -12,13 +12,13 @@
 
 #include "IMul.hpp"
 
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ModrmOperand.hpp"
 #include "../ImmediateOperand.hpp"
 
 #include <cstdio>
 
-IMul::IMul(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+IMul::IMul(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* IMul::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
@@ -27,12 +27,14 @@ Instruction* IMul::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 	bool twoByte = false;
 	std::string inst;
 	Prefix* pre = Prefix::GetPrefix(memLoc);
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	if(pre) {
 		opLoc += preLen = pre->GetLength();
 	}
 
-	Instruction* newIMul = 0;
+	Instruction8086* newIMul = 0;
 
 	if(*opLoc == TWO_BYTE_OPCODE) {
 		opLoc++;
@@ -49,10 +51,11 @@ Instruction* IMul::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			}
 
 			unsigned int size = *opLoc == IMUL_MOD8 ? 1 : 2;
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 			snprintf(buf, 65, "IMUL %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 2 + dst->GetBytecodeLen());
 			newIMul = new IMul(pre, buf, inst, (int)*opLoc);
+			newIMul->SetProc(mProc);
 			newIMul->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -61,11 +64,12 @@ Instruction* IMul::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			if(!twoByte) {
 				return 0;
 			}
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, 2);
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::REG, 2);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, 2);
 			snprintf(buf, 65, "IMUL %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 			newIMul = new IMul(pre, buf, inst, (int)*opLoc);
+			newIMul->SetProc(mProc);
 			newIMul->SetOperand(Operand::DST, dst);
 			newIMul->SetOperand(Operand::SRC, src);
 			break;
@@ -73,8 +77,8 @@ Instruction* IMul::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		case IMUL_R16_MOD16_IMM8:
 		case IMUL_R16_MOD16_IMM16:
 		{
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, 2);
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::REG, 2);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, 2);
 			unsigned int val = (int)*(opLoc + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 			unsigned int size = *opLoc == IMUL_R16_MOD16_IMM8 ? 1 : 2;
 			if(size == 2) {
@@ -85,6 +89,7 @@ Instruction* IMul::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			GETINST(preLen + 2 + dst->GetBytecodeLen() +
 					src->GetBytecodeLen() + op3->GetBytecodeLen());
 			newIMul = new IMul(pre, buf, inst, (int)*opLoc);
+			newIMul->SetProc(mProc);
 			newIMul->SetOperand(Operand::DST, dst);
 			newIMul->SetOperand(Operand::SRC, src);
 			newIMul->SetOperand(Operand::OP3, op3);
@@ -95,7 +100,7 @@ Instruction* IMul::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 
 }
 
-int IMul::Execute(Processor* proc) {
+int IMul::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0)
 		return INVALID_ARGS;
@@ -104,7 +109,7 @@ int IMul::Execute(Processor* proc) {
 		case IMUL_MOD8:
 		case IMUL_MOD16:
 		{
-			unsigned int al = proc->GetRegister(mOpcode == IMUL_MOD8 ? REG_AL : REG_AX);
+			unsigned int al = mProc->GetRegister(mOpcode == IMUL_MOD8 ? Processor8086::REG_AL : Processor8086::REG_AX);
 			unsigned int val = dst->GetValue();
 			unsigned int bitMask = dst->GetBitmask();
 			unsigned int signMask = bitMask == 0xFF ? 0x80 : 0x8000;
@@ -120,14 +125,14 @@ int IMul::Execute(Processor* proc) {
 
 			val *= al;
 			if(val > bitMask) { 
-				proc->SetFlag(FLAGS_CF, 1);
-				proc->SetFlag(FLAGS_OF, 1);
+				mProc->SetFlag(Processor8086::FLAGS_CF, 1);
+				mProc->SetFlag(Processor8086::FLAGS_OF, 1);
 			}
 			if(sign)
 				val *= -1;
-			proc->SetRegister(REG_AX, val & 0xFFFF);
+			mProc->SetRegister(Processor8086::REG_AX, val & 0xFFFF);
 			if(bitMask == 0xFFFF) {
-				proc->SetRegister(REG_DX, (val & 0xFFFF0000) >> 0x10);
+				mProc->SetRegister(Processor8086::REG_DX, (val & 0xFFFF0000) >> 0x10);
 			}
 			break;
 		}
@@ -144,11 +149,11 @@ int IMul::Execute(Processor* proc) {
 			}
 			reg *= mod;
 			if(reg != (reg & 0xFFFF)) {
-				proc->SetFlag(FLAGS_CF, 1);
-				proc->SetFlag(FLAGS_OF, 1);
+				mProc->SetFlag(Processor8086::FLAGS_CF, 1);
+				mProc->SetFlag(Processor8086::FLAGS_OF, 1);
 			} else {
-				proc->SetFlag(FLAGS_CF, 0);
-				proc->SetFlag(FLAGS_OF, 0);
+				mProc->SetFlag(Processor8086::FLAGS_CF, 0);
+				mProc->SetFlag(Processor8086::FLAGS_OF, 0);
 			}
 			if(sign)
 				reg *= -1;
@@ -172,11 +177,11 @@ int IMul::Execute(Processor* proc) {
 			}
 			mod *= val;
 			if(mod != (mod & 0xFFFF)) {
-				proc->SetFlag(FLAGS_CF, 1);
-				proc->SetFlag(FLAGS_OF, 1);
+				mProc->SetFlag(Processor8086::FLAGS_CF, 1);
+				mProc->SetFlag(Processor8086::FLAGS_OF, 1);
 			} else {
-				proc->SetFlag(FLAGS_CF, 0);
-				proc->SetFlag(FLAGS_OF, 0);
+				mProc->SetFlag(Processor8086::FLAGS_CF, 0);
+				mProc->SetFlag(Processor8086::FLAGS_OF, 0);
 			}
 			if(sign)
 				mod *= -1;

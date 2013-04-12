@@ -10,7 +10,7 @@
 |
 \*-------------------------------------*/
 
-#include "Instruction.hpp"
+#include "Instruction8086.hpp"
 #include "opcodes/AllOpcodes.hpp"
 
 #include <string>
@@ -26,29 +26,29 @@
 
 #define VARIANT_R(bc) { for(int i = 0; i < 8; i++) { AllInstructions[bc + i] = opName; } }
 #else
-#define VARIANT(bc) { if(bc < 0x100) { AllInstructions[bc][0] = opName; } }
+#define VARIANT(bc) { if(bc < 0x100) { AllInstructions8086[bc][0] = opName; } }
 
-#define VARIANT_S(bc, sc) { if(bc < 0x100 && sc < 0x8) { AllInstructions[bc][0] = Instruction::CreateSubcodeInstruction; AllInstructions[bc][sc + 1] = opName; } }
+#define VARIANT_S(bc, sc) { if(bc < 0x100 && sc < 0x8) { AllInstructions8086[bc][0] = Instruction8086::CreateSubcodeInstruction; AllInstructions8086[bc][sc + 1] = opName; } }
 
-#define VARIANT_R(bc) { if(bc + 8 < 0x100) { for(int i = 0; i < 8; i++) { AllInstructions[bc + i][0] = opName; } } }
+#define VARIANT_R(bc) { if(bc + 8 < 0x100) { for(int i = 0; i < 8; i++) { AllInstructions8086[bc + i][0] = opName; } } }
 #endif
 
 #define END_MNEMONIC }
 
 #define PREFIX(op, bc) InstTable::PrefixMap[#op] = bc
 
-void Instruction::InitializeOpcodes() {
+void Instruction8086::InitializeOpcodes() {
 
 	MNEMONIC(Aaa);
 	VARIANT		(0x37);
 	END_MNEMONIC;
 
 	MNEMONIC(Aad);
-	VARIANT		(0xD50A);
+	VARIANT		(0xD5);
 	END_MNEMONIC;
 
 	MNEMONIC(Aam);
-	VARIANT		(0xD40A);
+	VARIANT		(0xD4);
 	END_MNEMONIC;
 
 	MNEMONIC(Aas);

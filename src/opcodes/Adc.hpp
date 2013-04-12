@@ -12,15 +12,15 @@
 
 #pragma once
 
-#include "../Instruction.hpp"
+#include "../Instruction8086.hpp"
 
-class Processor;
+class Processor8086;
 
-class Adc: public Instruction {
+class Adc: public Instruction8086 {
 
 	public:
 		static Instruction* CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
-		int Execute(Processor* proc);
+		int Execute();
 
 		enum eValidOpcodes {
 			ADC_AL_BYTE	= 0x14,

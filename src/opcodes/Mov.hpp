@@ -12,17 +12,17 @@
 
 #pragma once 
 
-#include "../Instruction.hpp"
+#include "../Instruction8086.hpp"
 #include "../Prefix.hpp"
 #include <string>
 
 
-class Mov : public Instruction {
+class Mov : public Instruction8086 {
 
 	public:
 		Mov(Prefix* proc, std::string, std::string, int);
 		static Instruction* CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
-		int Execute(Processor* proc);
+		int Execute();
 
 		enum eValidOpcodes {
 			MOV_MOD8_REG8		= 0x88,

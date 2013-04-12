@@ -19,16 +19,18 @@
 #include <cstdio>
 #include <string>
 
-Push::Push(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Push::Push(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newPush = 0;
+	Instruction8086* newPush = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -39,10 +41,11 @@ Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		{
 			if((unsigned int)((*(opLoc + 1) & 0x38) >> 3) != PUSH_SUB_OPCODE)
 				return newPush;
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, 2);
 			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen());
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
+			newPush->SetProc(mProc);
 			newPush->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -55,11 +58,12 @@ Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		case PUSH_REG_SI:
 		case PUSH_REG_DI:
 		{
-			Operand* dst = new RegisterOperand((eRegisters)(*opLoc - PUSH_REG_AX + REG_AX),
-				       proc);
+			Operand* dst = new RegisterOperand((Processor8086::eRegisters)(*opLoc - PUSH_REG_AX + Processor8086::REG_AX),
+				       mProc);
 			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
+			newPush->SetProc(mProc);
 			newPush->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -79,6 +83,7 @@ Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + size);
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
+			newPush->SetProc(mProc);
 			newPush->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -87,29 +92,31 @@ Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		case PUSH_DS:
 		case PUSH_ES:
 		{
-			eRegisters reg = REG_CS;
+			Processor8086::eRegisters reg = Processor8086::REG_CS;
 			if(*opLoc == PUSH_CS)
-				reg = REG_CS;
+				reg = Processor8086::REG_CS;
 			else if(*opLoc == PUSH_DS)
-				reg = REG_DS;
+				reg = Processor8086::REG_DS;
 			else if(*opLoc == PUSH_SS)
-				reg = REG_SS;
+				reg = Processor8086::REG_SS;
 			else if(*opLoc == PUSH_ES)
-				reg = REG_ES;
+				reg = Processor8086::REG_ES;
 
-			Operand* dst = new RegisterOperand(reg, proc);
+			Operand* dst = new RegisterOperand(reg, mProc);
 			snprintf(buf, 65, "PUSH %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
+			newPush->SetProc(mProc);
 			newPush->SetOperand(Operand::DST, dst);
 			break;
 		}
 		case PUSHF:
 		{
-			Operand* dst = new RegisterOperand(REG_FLAGS, proc);
+			Operand* dst = new RegisterOperand(Processor8086::REG_FLAGS, mProc);
 			snprintf(buf, 65, "PUSHF");
 			GETINST(preSize + 1);
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
+			newPush->SetProc(mProc);
 			newPush->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -118,24 +125,25 @@ Instruction* Push::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			snprintf(buf, 65, "PUSHA");
 			GETINST(preSize + 1);
 			newPush = new Push(pre, buf, inst, (unsigned char)*opLoc);
+			newPush->SetProc(mProc);
 		}
 	}
 	return newPush;
 
 }
 
-int Push::Execute(Processor* proc) {
+int Push::Execute() {
 
 	if(mOpcode == PUSHA) {
-		unsigned int sp = proc->GetRegister(REG_SP);
-		proc->PushRegister(REG_AX);
-		proc->PushRegister(REG_CX);
-		proc->PushRegister(REG_DX);
-		proc->PushRegister(REG_BX);
-		proc->PushValue(sp);
-		proc->PushRegister(REG_BP);
-		proc->PushRegister(REG_SI);
-		proc->PushRegister(REG_DI);
+		unsigned int sp = mProc->GetRegister(Processor8086::REG_SP);
+		mProc->PushRegister(Processor8086::REG_AX);
+		mProc->PushRegister(Processor8086::REG_CX);
+		mProc->PushRegister(Processor8086::REG_DX);
+		mProc->PushRegister(Processor8086::REG_BX);
+		mProc->PushValue(sp);
+		mProc->PushRegister(Processor8086::REG_BP);
+		mProc->PushRegister(Processor8086::REG_SI);
+		mProc->PushRegister(Processor8086::REG_DI);
 
 	} else {
 
@@ -143,7 +151,7 @@ int Push::Execute(Processor* proc) {
 		if(!dst) {
 			return INVALID_ARGS;
 		}
-		proc->PushValue(dst->GetValue());
+		mProc->PushValue(dst->GetValue());
 	}
 	return 0;
 }

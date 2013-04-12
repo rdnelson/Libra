@@ -15,6 +15,10 @@
 #include <cstring>
 #include <cstdio>
 
+#ifdef WIN32
+#define snprintf sprintf_s
+#endif
+
 class Register {
 
 	public:

@@ -12,7 +12,7 @@
 
 #include "Add.hpp"
 #include "../Prefix.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
 #include "../ModrmOperand.hpp"
@@ -30,6 +30,8 @@ Add::Add(Prefix* pre, std::string text, std::string inst, int op)
 }
 
 Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Memory::MemoryOffset opLoc = memLoc;
 	int prefixLen = 0;
@@ -39,7 +41,7 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 	Prefix* prefix = 0;
 
-	Instruction* newAdd = 0;
+	Instruction8086* newAdd = 0;
 
 	//Build a prefix if possible
 	prefix = Prefix::GetPrefix(memLoc);
@@ -60,8 +62,9 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 2);
 
 			newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+			newAdd->SetProc(mProc);
 			newAdd->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset()));
-			newAdd->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
+			newAdd->SetOperand(Operand::DST, new RegisterOperand(Processor8086::REG_AL, mProc));
 
 			break;
 		case ADD_AX_WORD:
@@ -73,8 +76,9 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 3);
 
 			newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+			newAdd->SetProc(mProc);
 			newAdd->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2, (opLoc + 1).getOffset()));
-			newAdd->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
+			newAdd->SetOperand(Operand::DST, new RegisterOperand(Processor8086::REG_AX, mProc));
 
 			break;
 
@@ -88,7 +92,7 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				unsigned int immSize = (*opLoc == GRP1_ADD_MOD_IMM8) ? 1 : 2;
 
 				Operand* dst = ModrmOperand::GetModrmOperand(
-							proc, opLoc, ModrmOperand::MOD, immSize);
+							mProc, opLoc, ModrmOperand::MOD, immSize);
 
 				tInt1 = (int)*(opLoc+2+dst->GetBytecodeLen());
 				if(immSize == 2) {
@@ -106,6 +110,7 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_ADD_MOD_SIMM8 ? 1 : 0));
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+				newAdd->SetProc(mProc);
 				newAdd->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize, (opLoc + 2 + dst->GetBytecodeLen()).getOffset()));
 				newAdd->SetOperand(Operand::DST, dst);
 			}
@@ -117,12 +122,13 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				unsigned int size = *opLoc == ADD_MOD_REG8 ? 1 : 2;
 				modrm = *(opLoc + 1);
 				Operand* dst = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::MOD, size);
+						mProc, opLoc, ModrmOperand::MOD, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::REG, size);
+						mProc, opLoc, ModrmOperand::REG, size);
 				snprintf(buf, 65, "ADD %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+				newAdd->SetProc(mProc);
 				newAdd->SetOperand(Operand::SRC, src);
 				newAdd->SetOperand(Operand::DST, dst);
 				
@@ -136,12 +142,13 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				modrm = *(opLoc + 1);
 				Operand* dst = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::REG, size);
+						mProc, opLoc, ModrmOperand::REG, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::MOD, size);
+						mProc, opLoc, ModrmOperand::MOD, size);
 				snprintf(buf, 65, "ADD %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newAdd = new Add(prefix, buf, inst, (unsigned char)*opLoc);
+				newAdd->SetProc(mProc);
 				newAdd->SetOperand(Operand::SRC, src);
 				newAdd->SetOperand(Operand::DST, dst);
 				
@@ -158,7 +165,7 @@ Instruction* Add::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Add::Execute(Processor* proc) {
+int Add::Execute() {
 
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
@@ -171,15 +178,15 @@ int Add::Execute(Processor* proc) {
 	unsigned int srcVal = src->GetValue();
 	unsigned int newVal = dstVal + srcVal;
 	unsigned int sign = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
-	proc->SetFlag(FLAGS_CF, newVal > dst->GetBitmask());
+	mProc->SetFlag(Processor8086::FLAGS_CF, newVal > dst->GetBitmask());
 	newVal &= dst->GetBitmask();
 
-	proc->SetFlag(FLAGS_OF, OverflowAdd(dstVal, srcVal, sign == 0x80 ? 1 : 2));
-	proc->SetFlag(FLAGS_SF, newVal >= sign);
-	proc->SetFlag(FLAGS_ZF, newVal == 0x00);
-	proc->SetFlag(FLAGS_AF, AdjustAdd(dstVal, srcVal));
+	mProc->SetFlag(Processor8086::FLAGS_OF, OverflowAdd(dstVal, srcVal, sign == 0x80 ? 1 : 2));
+	mProc->SetFlag(Processor8086::FLAGS_SF, newVal >= sign);
+	mProc->SetFlag(Processor8086::FLAGS_ZF, newVal == 0x00);
+	mProc->SetFlag(Processor8086::FLAGS_AF, AdjustAdd(dstVal, srcVal));
 
-	proc->SetFlag(FLAGS_PF, Parity(newVal));
+	mProc->SetFlag(Processor8086::FLAGS_PF, Parity(newVal));
 
 	dst->SetValue(newVal);
 

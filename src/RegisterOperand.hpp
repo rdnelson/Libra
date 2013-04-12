@@ -13,13 +13,13 @@
 #pragma once
 
 #include "Operand.hpp"
-#include "Processor.hpp"
+#include "Processor8086.hpp"
 
 
 class RegisterOperand : public Operand {
 
 	public:
-		RegisterOperand(eRegisters reg, Processor* proc);
+		RegisterOperand(Processor8086::eRegisters reg, Processor8086* proc);
 
 		unsigned int GetValue();
 		void SetValue(unsigned int val);
@@ -30,7 +30,7 @@ class RegisterOperand : public Operand {
 		const std::string GetDisasm();
 
 	private:
-		eRegisters mReg;
+		Processor8086::eRegisters mReg;
 		Processor* mProc;
 		unsigned int mSection;
 

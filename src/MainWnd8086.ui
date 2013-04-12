@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MemWnd</class>
- <widget class="QMainWindow" name="MemWnd">
+ <class>MainWnd8086</class>
+ <widget class="QMainWindow" name="MainWnd8086">
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
@@ -23,7 +23,7 @@
    <enum>Qt::ClickFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>MemWnd</string>
+   <string>MainWnd8086</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">

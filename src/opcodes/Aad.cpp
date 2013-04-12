@@ -11,21 +11,23 @@
 \*-------------------------------------*/
 
 #include "Aad.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ImmediateOperand.hpp"
 
 #include <cstdio>
 
-Aad::Aad(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Aad::Aad(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
-Instruction* Aad::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
+Instruction* Aad::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newAad = 0;
+	Instruction8086* newAad = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -40,6 +42,7 @@ Instruction* Aad::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 		snprintf(buf, 65, "AAD %s", dst->GetDisasm().c_str());
 
 		newAad = new Aad(pre, buf, inst, (int)*opLoc);
+		newAad->SetProc(mProc);
 		newAad->SetOperand(Operand::DST, dst);
 	}
 
@@ -47,18 +50,18 @@ Instruction* Aad::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 
 }
 
-int Aad::Execute(Processor* proc) {
+int Aad::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0) {
 		return INVALID_ARGS;
 	}
 
-	unsigned int al = proc->GetRegister(REG_AL);
-	unsigned int ah = proc->GetRegister(REG_AH);
-	proc->SetRegisterHigh(REG_AX, 0);
-	proc->SetRegisterLow(REG_AX, al = (al + (ah * dst->GetValue())) & 0xFF);
-	proc->SetFlag(FLAGS_SF, al >= 0x80);
-	proc->SetFlag(FLAGS_ZF, al == 0);
-	proc->SetFlag(FLAGS_PF, Parity(al));
+	unsigned int al = mProc->GetRegister(Processor8086::REG_AL);
+	unsigned int ah = mProc->GetRegister(Processor8086::REG_AH);
+	mProc->SetRegisterHigh(Processor8086::REG_AX, 0);
+	mProc->SetRegisterLow(Processor8086::REG_AX, al = (al + (ah * dst->GetValue())) & 0xFF);
+	mProc->SetFlag(Processor8086::FLAGS_SF, al >= 0x80);
+	mProc->SetFlag(Processor8086::FLAGS_ZF, al == 0);
+	mProc->SetFlag(Processor8086::FLAGS_PF, Parity(al));
 	return 0;
 }

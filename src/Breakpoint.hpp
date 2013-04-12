@@ -20,11 +20,11 @@ class Breakpoint {
 		Breakpoint();
 		Breakpoint(unsigned int IP);
 
-		void AddRegisterWatch(eRegisters reg, unsigned int val);
-		void AddRegisterChanged(eRegisters reg);
+		void AddRegisterWatch(unsigned int reg, unsigned int val);
+		void AddRegisterChanged(unsigned int reg);
 
-		void AddFlagsWatch(eFlags flag, bool value);
-		void AddFlagsChanged(eFlags flag);
+		void AddFlagsWatch(unsigned int flag, bool value);
+		void AddFlagsChanged(unsigned int flag);
 
 		void AddMemWatch(unsigned int addr, unsigned int val, unsigned int size);
 		void AddMemChanged(unsigned int addr, unsigned int size);
@@ -46,8 +46,8 @@ class Breakpoint {
 
 		struct Condition {
 			union {
-				eRegisters reg;
-				eFlags flag;
+				unsigned int reg;
+				unsigned int flag;
 				unsigned int addr;
 			} source;
 

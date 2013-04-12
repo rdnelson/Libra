@@ -15,7 +15,7 @@
 #include "Memory.hpp"
 #include "Operand.hpp"
 
-class Processor;
+class Processor8086;
 
 class ModrmOperand : public Operand {
 
@@ -31,7 +31,7 @@ class ModrmOperand : public Operand {
 		unsigned int GetValue(unsigned int size);
 		int GetUnresolvedValue() const;
 
-		static Operand* GetModrmOperand(Processor* proc, Memory::MemoryOffset& inst, eModRm modrm, unsigned int size);
+		static Operand* GetModrmOperand(Processor8086* proc, Memory::MemoryOffset& inst, eModRm modrm, unsigned int size);
 
 		unsigned int GetBitmask();
 		unsigned int GetBytecodeLen();
@@ -43,12 +43,12 @@ class ModrmOperand : public Operand {
 
 	protected:
 		//Pass it the location of the opcode
-		ModrmOperand(Processor* proc, const Memory::MemoryOffset& addr, unsigned int size, unsigned int bytelen);
+		ModrmOperand(Processor8086* proc, const Memory::MemoryOffset& addr, unsigned int size, unsigned int bytelen);
 
-		static Operand* GetRegister(Processor* proc, unsigned int val, unsigned int size);
-		static Operand* GetSegRegister(Processor* proc, unsigned int val);
+		static Operand* GetRegister(Processor8086* proc, unsigned int val, unsigned int size);
+		static Operand* GetSegRegister(Processor8086* proc, unsigned int val);
 		Memory::MemoryOffset mAddr;
 		unsigned int mSize;
-		Processor* mProc;
+		Processor8086* mProc;
 		unsigned int mByteLen;
 };

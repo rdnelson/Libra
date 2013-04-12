@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "Memory.hpp"
-#include "Processor.hpp"
+#include "Processor8086.hpp"
 #include "IPeripheral.hpp"
 #include "Breakpoint.hpp"
 
@@ -83,7 +83,7 @@ class VM {
 		unsigned int mInFunc;
 
 		Memory	mMem;
-		Processor	mProc;
+		Processor8086	mProc;
 
 		std::vector<Instruction*> mInstructions;
 		std::vector<Breakpoint*> mBreakpoints;

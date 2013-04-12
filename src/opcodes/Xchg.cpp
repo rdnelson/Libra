@@ -19,16 +19,18 @@
 #include <cstdio>
 #include <string>
 
-Xchg::Xchg(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Xchg::Xchg(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* Xchg::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newXchg = 0;
+	Instruction8086* newXchg = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -44,12 +46,13 @@ Instruction* Xchg::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		case XCHG_REG_SI:
 		case XCHG_REG_DI:
 		{
-			Operand* src = new RegisterOperand(REG_AX, proc);
-			Operand* dst = new RegisterOperand((eRegisters)(*opLoc - XCHG_REG_AX + REG_AX),
-				       proc);
+			Operand* src = new RegisterOperand(Processor8086::REG_AX, mProc);
+			Operand* dst = new RegisterOperand((Processor8086::eRegisters)(*opLoc - XCHG_REG_AX + Processor8086::REG_AX),
+				       mProc);
 			snprintf(buf, 65, "XCHG AX, %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1);
 			newXchg = new Xchg(pre, buf, inst, (unsigned char)*opLoc);
+			newXchg->SetProc(mProc);
 			newXchg->SetOperand(Operand::DST, dst);
 			newXchg->SetOperand(Operand::SRC, src);
 			break;
@@ -58,11 +61,12 @@ Instruction* Xchg::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		case XCHG_MOD16_REG16:
 		{
 			unsigned int size = ((*opLoc == XCHG_MOD8_REG8) ? 1 : 2);
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::REG, size);
 			snprintf(buf, 65, "XCHG %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2);
 			newXchg = new Xchg(pre, buf, inst, (unsigned char)*opLoc);
+			newXchg->SetProc(mProc);
 			newXchg->SetOperand(Operand::DST, dst);
 			newXchg->SetOperand(Operand::SRC, src);
 			break;
@@ -73,7 +77,7 @@ Instruction* Xchg::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 
 }
 
-int Xchg::Execute(Processor*) {
+int Xchg::Execute() {
 
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];

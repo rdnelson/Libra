@@ -12,21 +12,23 @@
 
 #include "Ret.hpp"
 #include "../ImmediateOperand.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 
 #include <cstdio>
 
-Ret::Ret(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Ret::Ret(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
-Instruction* Ret::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
+Instruction* Ret::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
 
-	Instruction* newRet = 0;
+	Instruction8086* newRet = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -38,6 +40,7 @@ Instruction* Ret::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 			GETINST(preSize + 1);
 			snprintf(buf, 65, "RET");
 			newRet = new Ret(pre, buf, inst, (unsigned int)*opLoc);
+			newRet->SetProc(mProc);
 			break;
 		case RET_NEAR_POP:
 		case RET_FAR_POP:
@@ -47,6 +50,7 @@ Instruction* Ret::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 			snprintf(buf, 65, "RET %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 			newRet = new Ret(pre, buf, inst, (unsigned int)*opLoc);
+			newRet->SetProc(mProc);
 			newRet->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -54,35 +58,35 @@ Instruction* Ret::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 	return newRet;
 }
 
-int Ret::Execute(Processor* proc) {
+int Ret::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 
 
 	switch(mOpcode) {
 		case RET_NEAR:
-			proc->PopRegister(REG_IP);
+			mProc->PopRegister(Processor8086::REG_IP);
 			return RET_CALLED;
 			break;
 		case RET_FAR:
-			proc->PopRegister(REG_IP);
-			proc->PopRegister(REG_CS);
+			mProc->PopRegister(Processor8086::REG_IP);
+			mProc->PopRegister(Processor8086::REG_CS);
 			return RET_CALLED;
 			break;
 		case RET_NEAR_POP:
 			if(dst == 0) {
 				return INVALID_ARGS;
 			}
-			proc->PopRegister(REG_IP);
-			proc->PopSize(dst->GetValue());
+			mProc->PopRegister(Processor8086::REG_IP);
+			mProc->PopSize(dst->GetValue());
 			return RET_CALLED;
 			break;
 		case RET_FAR_POP:
 			if(dst == 0) {
 				return INVALID_ARGS;
 			}
-			proc->PopRegister(REG_IP);
-			proc->PopRegister(REG_CS);
-			proc->PopSize(dst->GetValue());
+			mProc->PopRegister(Processor8086::REG_IP);
+			mProc->PopRegister(Processor8086::REG_CS);
+			mProc->PopSize(dst->GetValue());
 			return RET_CALLED;
 			break;
 	}

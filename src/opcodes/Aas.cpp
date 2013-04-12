@@ -11,22 +11,23 @@
 \*-------------------------------------*/
 
 #include "Aas.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ImmediateOperand.hpp"
 
 #include <cstdio>
 
-Aas::Aas(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Aas::Aas(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* Aas::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
-	proc += 0;
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newAas = 0;
+	Instruction8086* newAas = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -38,24 +39,25 @@ Instruction* Aas::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		snprintf(buf, 65, "AAS");
 
 		newAas = new Aas(pre, buf, inst, (int)*opLoc);
+		newAas->SetProc(mProc);
 	}
 
 	return newAas;
 
 }
 
-int Aas::Execute(Processor* proc) {
-	unsigned int val = proc->GetRegister(REG_AX);
-	if((val & 0xF) > 9 || proc->GetFlag(FLAGS_AF)) {
-		proc->SetRegister(REG_AX, val - 6);
-		proc->SetRegister(REG_AH, proc->GetRegister(REG_AH) - 1);
-		proc->SetFlag(FLAGS_AF, 1);
-		proc->SetFlag(FLAGS_CF, 1);
-		proc->SetRegister(REG_AL, proc->GetRegister(REG_AL) & 0xF);
+int Aas::Execute() {
+	unsigned int val = mProc->GetRegister(Processor8086::REG_AX);
+	if((val & 0xF) > 9 || mProc->GetFlag(Processor8086::FLAGS_AF)) {
+		mProc->SetRegister(Processor8086::REG_AX, val - 6);
+		mProc->SetRegister(Processor8086::REG_AH, mProc->GetRegister(Processor8086::REG_AH) - 1);
+		mProc->SetFlag(Processor8086::FLAGS_AF, 1);
+		mProc->SetFlag(Processor8086::FLAGS_CF, 1);
+		mProc->SetRegister(Processor8086::REG_AL, mProc->GetRegister(Processor8086::REG_AL) & 0xF);
 	} else {
-		proc->SetFlag(FLAGS_AF, 0);
-		proc->SetFlag(FLAGS_CF, 0);
-		proc->SetRegister(REG_AL, val & 0xF);
+		mProc->SetFlag(Processor8086::FLAGS_AF, 0);
+		mProc->SetFlag(Processor8086::FLAGS_CF, 0);
+		mProc->SetRegister(Processor8086::REG_AL, val & 0xF);
 	}
 	return 0;
 }

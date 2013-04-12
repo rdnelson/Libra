@@ -14,7 +14,7 @@
 #include "../ModrmOperand.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 
 And::And(Prefix* pre, std::string text, std::string inst, int op) {
 	mPrefix = pre;
@@ -29,10 +29,12 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	char buf[65];
 	std::string inst;
 	unsigned char modrm = 0;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newAnd = 0;
+	Instruction8086* newAnd = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -52,9 +54,10 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(preSize + 1 + size);
 
 			Operand* src = new ImmediateOperand(val, size, (opLoc + 1).getOffset());
-			Operand* dst = new RegisterOperand(*opLoc == AND_AL_IMM8 ? REG_AL : REG_AX, proc);
+			Operand* dst = new RegisterOperand(*opLoc == AND_AL_IMM8 ? Processor8086::REG_AL : Processor8086::REG_AX, mProc);
 
 			newAnd = new And(pre, buf, inst, (unsigned char)*opLoc);
+			newAnd->SetProc(mProc);
 			newAnd->SetOperand(Operand::SRC, src);
 			newAnd->SetOperand(Operand::DST, dst);
 			break;
@@ -67,7 +70,7 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		{
 			unsigned int size = (*opLoc == AND_MOD8_IMM8 ? 1 : 2);
 
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 
 			unsigned int val = (int)*(opLoc + 2 + dst->GetBytecodeLen());
 			if(size == 2) {
@@ -82,6 +85,7 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 			GETINST(preSize + 2 + (*opLoc == AND_MOD16_IMM8 ? 1 : size) + dst->GetBytecodeLen());
 			newAnd = new And(pre, buf, inst, (unsigned char)*opLoc);
+			newAnd->SetProc(mProc);
 			newAnd->SetOperand(Operand::SRC, src);
 			newAnd->SetOperand(Operand::DST, dst);
 		}
@@ -91,11 +95,12 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case AND_MOD16_REG16:
 		{
 			unsigned int size = (*opLoc == AND_MOD8_REG8 ? 1 : 2);
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::REG, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 			newAnd = new And(pre, buf, inst, (unsigned char)*opLoc);
+			newAnd->SetProc(mProc);
 			newAnd->SetOperand(Operand::SRC, src);
 			newAnd->SetOperand(Operand::DST, dst);
 			break;
@@ -105,11 +110,12 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		{
 			unsigned int size = (*opLoc == AND_REG8_MOD8 ? 1 : 2);
 
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::REG, size);
 
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 			newAnd = new And(pre, buf, inst, (unsigned char)*opLoc);
+			newAnd->SetProc(mProc);
 			newAnd->SetOperand(Operand::SRC, src);
 			newAnd->SetOperand(Operand::DST, dst);
 			break;
@@ -122,7 +128,7 @@ Instruction* And::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int And::Execute(Processor* proc) {
+int And::Execute() {
 
 	if(mOperands[Operand::SRC] == 0 || mOperands[Operand::DST] == 0)
 		return INVALID_ARGS;
@@ -136,11 +142,11 @@ int And::Execute(Processor* proc) {
 	parity ^= parity >> 4;
 	parity &= 0x0f;
 
-	proc->SetFlag(FLAGS_CF, false);
-	proc->SetFlag(FLAGS_OF, false);
-	proc->SetFlag(FLAGS_PF, (0x6996 >> parity) & 1);
-	proc->SetFlag(FLAGS_ZF, val == 0);
-	proc->SetFlag(FLAGS_SF, val >= sign);
+	mProc->SetFlag(Processor8086::FLAGS_CF, false);
+	mProc->SetFlag(Processor8086::FLAGS_OF, false);
+	mProc->SetFlag(Processor8086::FLAGS_PF, (0x6996 >> parity) & 1);
+	mProc->SetFlag(Processor8086::FLAGS_ZF, val == 0);
+	mProc->SetFlag(Processor8086::FLAGS_SF, val >= sign);
 	mOperands[Operand::DST]->SetValue(val);
 
 	return 0;

@@ -12,14 +12,14 @@
 
 #include "Rot.hpp"
 
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ModrmOperand.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
 
 #include <cstdio>
 
-Rot::Rot(Prefix* pre, std::string text, std::string inst, int op, int modrm) : Instruction(pre,text,inst,op)
+Rot::Rot(Prefix* pre, std::string text, std::string inst, int op, int modrm) : Instruction8086(pre,text,inst,op)
 {
 	mPrefix = pre;
 	mText = text;
@@ -30,11 +30,13 @@ Rot::Rot(Prefix* pre, std::string text, std::string inst, int op, int modrm) : I
 }
 
 Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Memory::MemoryOffset& opLoc = memLoc;
 	char buf[65];
 	std::string inst;
-	Instruction* newRot = 0;
+	Instruction8086* newRot = 0;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
@@ -51,7 +53,7 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			{
 				unsigned int size = (*opLoc == ROT_MOD8_1 ? 1 : 2);
 				Operand* dst = ModrmOperand::GetModrmOperand
-					(proc, opLoc, ModrmOperand::MOD, size);
+					(mProc, opLoc, ModrmOperand::MOD, size);
 
 				snprintf(buf,65, "%s %s, 1",
 					modrm == ROL_MODRM ? "ROL" :
@@ -63,6 +65,7 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				GETINST(preSize + 2 + dst->GetBytecodeLen() + 0);
 
 				newRot = new Rot(pre, buf, inst, (unsigned char)*opLoc, modrm);
+				newRot->SetProc(mProc);
 				newRot->SetOperand(Operand::SRC, src);
 				newRot->SetOperand(Operand::DST, dst);
 				break;
@@ -72,7 +75,7 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			{
 				unsigned int size = (*opLoc == ROT_MOD8_CL ? 1 : 2);
 				Operand* dst = ModrmOperand::GetModrmOperand
-					(proc, opLoc, ModrmOperand::MOD, size);
+					(mProc, opLoc, ModrmOperand::MOD, size);
 
 				snprintf(buf,65, "%s %s, CL",
 					modrm == ROL_MODRM ? "ROL" :
@@ -80,10 +83,11 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 						(modrm == RCL_MODRM ? "RCL" : "RCR")),
 					dst->GetDisasm().c_str());
 
-				Operand* src = new RegisterOperand(REG_CL, proc);
+				Operand* src = new RegisterOperand(Processor8086::REG_CL, mProc);
 				GETINST(preSize + 2 + dst->GetBytecodeLen());
 
 				newRot = new Rot(pre, buf, inst, (unsigned char)*opLoc, modrm);
+				newRot->SetProc(mProc);
 				newRot->SetOperand(Operand::SRC, src);
 				newRot->SetOperand(Operand::DST, dst);
 				break;
@@ -93,7 +97,7 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			{
 				unsigned int size = (*opLoc == ROT_MOD8_IMM8 ? 1 : 2);
 				Operand* dst = ModrmOperand::GetModrmOperand
-					(proc, opLoc, ModrmOperand::MOD, size);
+					(mProc, opLoc, ModrmOperand::MOD, size);
 				unsigned int val = int(*(opLoc + 2 + dst->GetBytecodeLen())) & 0xFF;
 
 				snprintf(buf,65, "%s %s, %d",
@@ -106,6 +110,7 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				GETINST(preSize + 2 + dst->GetBytecodeLen() + 1);
 
 				newRot = new Rot(pre, buf, inst, (unsigned char)*opLoc, modrm);
+				newRot->SetProc(mProc);
 				newRot->SetOperand(Operand::SRC, src);
 				newRot->SetOperand(Operand::DST, dst);
 				break;
@@ -115,7 +120,7 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	return newRot;
 }
 
-int Rot::Execute(Processor* proc) {
+int Rot::Execute() {
 
 	unsigned int dstVal = mOperands[Operand::DST]->GetValue();
 	unsigned int srcVal = mOperands[Operand::SRC]->GetValue();
@@ -123,9 +128,9 @@ int Rot::Execute(Processor* proc) {
 	unsigned int sign =  bitMask == 0xFF ? 0x80 : 0x8000;
 	unsigned int size = mOperands[Operand::DST]->GetBitmask() == 0xFF ? 8 : 16;
 	unsigned int count;
-	bool CF = proc->GetFlag(FLAGS_CF);
+	bool CF = mProc->GetFlag(Processor8086::FLAGS_CF);
 	bool tempCF = 0;
-	bool OF = proc->GetFlag(FLAGS_OF);
+	bool OF = mProc->GetFlag(Processor8086::FLAGS_OF);
 
 	switch(mModrm) {
 	case(RCL_MODRM):
@@ -169,8 +174,8 @@ int Rot::Execute(Processor* proc) {
 		break;
 	}
 
-	proc->SetFlag(FLAGS_CF, CF);
-	proc->SetFlag(FLAGS_OF, OF);
+	mProc->SetFlag(Processor8086::FLAGS_CF, CF);
+	mProc->SetFlag(Processor8086::FLAGS_OF, OF);
 	mOperands[Operand::DST]->SetValue(dstVal & bitMask);
 	return 0;
 }

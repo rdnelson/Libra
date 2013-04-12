@@ -15,11 +15,11 @@
 #include "../ModrmOperand.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 
 #include <cstdio>
 
-Sxx::Sxx(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Sxx::Sxx(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
@@ -28,6 +28,8 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	unsigned char subCode;
 	std::string inst;
 	Prefix* pre = Prefix::GetPrefix(memLoc);
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Sxx* newSxx = 0;
 
@@ -45,7 +47,7 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case SXX_MOD16_1:
 		{
 			unsigned int size = *opLoc == SXX_MOD8_1 ? 1 : 2;
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 			snprintf(buf,65, "%s %s, 1",
 					subCode == SAL_SUB_OPCODE ? "SAL" :
 						(subCode == SAR_SUB_OPCODE ? "SAR" : "SHR"),
@@ -53,6 +55,7 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 			GETINST(preLen + 2 + dst->GetBytecodeLen());
 			newSxx = new Sxx(pre, buf, inst, (int)*opLoc);
+			newSxx->SetProc(mProc);
 			newSxx->SetOperand(Operand::DST, dst);
 			newSxx->SetOperand(Operand::SRC, new ImmediateOperand(1, 1, 0x10000));
 			newSxx->mType = subCode;
@@ -62,7 +65,7 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case SXX_MOD16_CL:
 		{
 			unsigned int size = *opLoc == SXX_MOD8_CL ? 1 : 2;
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 			snprintf(buf,65, "%s %s, CL",
 					subCode == SAL_SUB_OPCODE ? "SAL" :
 						(subCode == SAR_SUB_OPCODE ? "SAR" : "SHR"),
@@ -70,8 +73,9 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 			GETINST(preLen + 2 + dst->GetBytecodeLen());
 			newSxx = new Sxx(pre, buf, inst, (int)*opLoc);
+			newSxx->SetProc(mProc);
 			newSxx->SetOperand(Operand::DST, dst);
-			newSxx->SetOperand(Operand::SRC, new RegisterOperand(REG_CL, proc));
+			newSxx->SetOperand(Operand::SRC, new RegisterOperand(Processor8086::REG_CL, mProc));
 			newSxx->mType = subCode;
 			break;
 		}
@@ -79,7 +83,7 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case SXX_MOD16_IMM8:
 		{
 			unsigned int size = *opLoc == SXX_MOD8_IMM8 ? 1 : 2;
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 			unsigned int val = *(opLoc + 2 + dst->GetBytecodeLen());
 			Operand* src = new ImmediateOperand(val, 1, (opLoc + 2 + dst->GetBytecodeLen()).getOffset());
 			snprintf(buf,65, "%s %s, %s",
@@ -90,6 +94,7 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 			GETINST(preLen + 3 + dst->GetBytecodeLen());
 			newSxx = new Sxx(pre, buf, inst, (int)*opLoc);
+			newSxx->SetProc(mProc);
 			newSxx->SetOperand(Operand::DST, dst);
 			newSxx->SetOperand(Operand::SRC, src);
 			newSxx->mType = subCode;
@@ -100,7 +105,7 @@ Instruction* Sxx::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	return newSxx;
 }
 
-int Sxx::Execute(Processor* proc) {
+int Sxx::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
 
@@ -120,9 +125,9 @@ int Sxx::Execute(Processor* proc) {
 				dstVal = (dstVal * 2) & dst->GetBitmask();
 			}
 			if((src->GetValue() & 0x1F) == 1) {
-				proc->SetFlag(FLAGS_OF, (dstVal ^ (cf ? dstSign : 0x0000)) != 0);
+				mProc->SetFlag(Processor8086::FLAGS_OF, (dstVal ^ (cf ? dstSign : 0x0000)) != 0);
 			}
-			proc->SetFlag(FLAGS_CF, cf);
+			mProc->SetFlag(Processor8086::FLAGS_CF, cf);
 			break;
 		}
 		case SAR_SUB_OPCODE:
@@ -132,9 +137,9 @@ int Sxx::Execute(Processor* proc) {
 				dstVal = (dstVal / 2) | ((dstVal & dstSign) == dstSign ? dstSign : 0);
 			}
 			if((src->GetValue() & 0x1F) == 1) {
-				proc->SetFlag(FLAGS_OF, 0);
+				mProc->SetFlag(Processor8086::FLAGS_OF, 0);
 			}
-			proc->SetFlag(FLAGS_CF, cf);
+			mProc->SetFlag(Processor8086::FLAGS_CF, cf);
 			break;
 		}
 		case SHR_SUB_OPCODE:
@@ -145,18 +150,18 @@ int Sxx::Execute(Processor* proc) {
 				dstVal = (dstVal / 2) & (dst->GetBitmask() ^ dstSign);
 			}
 			if((src->GetValue() & 0x1F) == 1) {
-				proc->SetFlag(FLAGS_OF, (dst->GetValue() & dstSign) != 0);
+				mProc->SetFlag(Processor8086::FLAGS_OF, (dst->GetValue() & dstSign) != 0);
 			}
-			proc->SetFlag(FLAGS_CF, cf);
+			mProc->SetFlag(Processor8086::FLAGS_CF, cf);
 			break;
 		}
 	}
 
 	dst->SetValue(dstVal);
 	if((src->GetValue() & 0x1F) != 0) {
-		proc->SetFlag(FLAGS_ZF, dstVal == 0);
-		proc->SetFlag(FLAGS_SF, (dstVal & dstSign) != 0);
-		proc->SetFlag(FLAGS_PF, Parity(dstVal));
+		mProc->SetFlag(Processor8086::FLAGS_ZF, dstVal == 0);
+		mProc->SetFlag(Processor8086::FLAGS_SF, (dstVal & dstSign) != 0);
+		mProc->SetFlag(Processor8086::FLAGS_PF, Parity(dstVal));
 	}
 
 	return 0;

@@ -12,7 +12,7 @@
 
 #include "Sub.hpp"
 #include "../Prefix.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
 #include "../ModrmOperand.hpp"
@@ -32,6 +32,8 @@ Sub::Sub(Prefix* pre, std::string text, std::string inst, int op)
 }
 
 Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Memory::MemoryOffset opLoc = memLoc;
 	int prefixLen = 0;
@@ -41,7 +43,7 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 	Prefix* prefix = 0;
 
-	Instruction* newSub = 0;
+	Instruction8086* newSub = 0;
 
 	//Build a prefix if possible
 	prefix = Prefix::GetPrefix(memLoc);
@@ -62,8 +64,9 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 2);
 
 			newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
+			newSub->SetProc(mProc);
 			newSub->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset()));
-			newSub->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
+			newSub->SetOperand(Operand::DST, new RegisterOperand(Processor8086::REG_AL, mProc));
 
 			break;
 		case SUB_AX_IMM16:
@@ -75,8 +78,9 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 3);
 
 			newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
+			newSub->SetProc(mProc);
 			newSub->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2, (opLoc + 1).getOffset()));
-			newSub->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
+			newSub->SetOperand(Operand::DST, new RegisterOperand(Processor8086::REG_AX, mProc));
 
 			break;
 
@@ -88,7 +92,7 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				unsigned int immSize = (*opLoc == GRP1_SUB_MOD8_IMM8) ? 1 : 2;
 
 				Operand* dst = ModrmOperand::GetModrmOperand(
-							proc, opLoc, ModrmOperand::MOD, immSize);
+							mProc, opLoc, ModrmOperand::MOD, immSize);
 
 				tInt1 = (int)*(opLoc+2+dst->GetBytecodeLen());
 				if(immSize == 2) {
@@ -106,6 +110,7 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_SUB_MOD16_IMM8 ? 1 : 0));
 				newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
+				newSub->SetProc(mProc);
 				newSub->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize, (opLoc + 2 + dst->GetBytecodeLen()).getOffset()));
 				newSub->SetOperand(Operand::DST, dst);
 			}
@@ -117,12 +122,13 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				unsigned int size = (*opLoc == GRP2_SUB_MOD8_REG8) ? 1 : 2;
 				modrm = *(opLoc + 1);
 				Operand* dst = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::MOD, size);
+						mProc, opLoc, ModrmOperand::MOD, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::REG, size);
+						mProc, opLoc, ModrmOperand::REG, size);
 				sprintf(buf, "SUB %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
+				newSub->SetProc(mProc);
 				newSub->SetOperand(Operand::SRC, src);
 				newSub->SetOperand(Operand::DST, dst);
 
@@ -136,12 +142,13 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				modrm = *(opLoc + 1);
 				Operand* dst = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::REG, size);
+						mProc, opLoc, ModrmOperand::REG, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::MOD, size);
+						mProc, opLoc, ModrmOperand::MOD, size);
 				sprintf(buf, "SUB %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newSub = new Sub(prefix, buf, inst, (unsigned char)*opLoc);
+				newSub->SetProc(mProc);
 				newSub->SetOperand(Operand::SRC, src);
 				newSub->SetOperand(Operand::DST, dst);
 
@@ -158,7 +165,7 @@ Instruction* Sub::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Sub::Execute(Processor* proc) {
+int Sub::Execute() {
 
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
@@ -167,7 +174,7 @@ int Sub::Execute(Processor* proc) {
 		return INVALID_ARGS;
 	}
 
-	dst->SetValue(Cmp::compare(proc, dst, src));
+	dst->SetValue(Cmp::compare(mProc, dst, src));
 
 	return 0;
 }

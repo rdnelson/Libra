@@ -12,12 +12,12 @@
 
 #pragma once
 
-#include "../Instruction.hpp"
+#include "../Instruction8086.hpp"
 
-class Lahf : public Instruction {
+class Lahf : public Instruction8086 {
 	public:
 		static Instruction* CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
-		int Execute(Processor* proc);
+		int Execute();
 
 		enum eValidOpcodes {
 			LAHF = 0x9F

@@ -24,11 +24,11 @@ SOURCES +=\
         MemWnd.cpp \
 	VM.cpp \
 	RegisterOperand.cpp \
-	Processor.cpp \
+	Processor8086.cpp \
 	Prefix.cpp \
 	ModrmOperand.cpp \
 	main.cpp \
-	Instruction.cpp \
+	Instruction8086.cpp \
 	AddressOperand.cpp \
 	VMWorker.cpp \
 	Breakpoint.cpp \
@@ -92,18 +92,19 @@ SOURCES +=\
 	QMemModel.cpp \
 	QKbdFilter.cpp \
     QInstructionList.cpp \
-	InstTable.cpp
+	InstTable8086.cpp
 
 HEADERS  += MemWnd.hpp \
 	VM.hpp \
 	RegisterOperand.hpp \
 	Register.hpp \
 	Processor.hpp \
+    Processor8086.hpp \
 	Prefix.hpp \
 	IPeripheral.hpp \
 	Operand.hpp \
 	ModrmOperand.hpp \
-	Instruction.hpp \
+	Instruction8086.hpp \
 	ImmediateOperand.hpp \
 	AddressOperand.hpp \
 	Breakpoint.hpp \

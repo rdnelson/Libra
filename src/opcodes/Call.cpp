@@ -12,7 +12,7 @@
 
 #include "Call.hpp"
 
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ModrmOperand.hpp"
 #include "../ImmediateOperand.hpp"
 
@@ -31,10 +31,12 @@ Instruction* Call::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newCall = 0;
+	Instruction8086* newCall = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -59,6 +61,7 @@ Instruction* Call::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			GETINST(preSize + 1 + dst->GetBytecodeLen());
 
 			newCall = new Call(pre, buf, inst, (unsigned int)*opLoc);
+			newCall->SetProc(mProc);
 			newCall->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -69,12 +72,13 @@ Instruction* Call::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 			if(digit != CALL_MOD_CONST && digit != CALL_IND_CONST)
 				break;
 
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, 2);
 
 			snprintf(buf, 65, "CALL %s", dst->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen());
 
 			newCall = new Call(pre, buf, inst, (unsigned int)*opLoc);
+			newCall->SetProc(mProc);
 			newCall->SetOperand(Operand::DST, dst);
 			((Call*)newCall)->mType = digit;
 			break;
@@ -83,7 +87,7 @@ Instruction* Call::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 	return newCall;
 }
 
-int Call::Execute(Processor* proc) {
+int Call::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0) {
 		return INVALID_ARGS;
@@ -92,32 +96,32 @@ int Call::Execute(Processor* proc) {
 	switch(mOpcode) {
 
 		case CALL_REL16:
-			proc->PushRegister(REG_IP);
+			mProc->PushRegister(Processor8086::REG_IP);
 			if(dst->GetValue() >= 0x8000) {
-				proc->SetRegister(REG_IP, proc->GetRegister(REG_IP) - (0x10000 - dst->GetValue()));
+				mProc->SetRegister(Processor8086::REG_IP, mProc->GetRegister(Processor8086::REG_IP) - (0x10000 - dst->GetValue()));
 			} else {
-				proc->SetRegister(REG_IP, proc->GetRegister(REG_IP) + dst->GetValue());
+				mProc->SetRegister(Processor8086::REG_IP, mProc->GetRegister(Processor8086::REG_IP) + dst->GetValue());
 			}
 			break;
 		case CALL_ABS16_16:
-			proc->PushRegister(REG_IP);
-			proc->SetRegister(REG_IP, dst->GetValue());
+			mProc->PushRegister(Processor8086::REG_IP);
+			mProc->SetRegister(Processor8086::REG_IP, dst->GetValue());
 			break;
 		case CALL_MOD16:
 		{
 		//case CALL_IND16_16:
 
 			if(mType == CALL_IND_CONST) {
-				proc->PushRegister(REG_CS);
-				proc->PushRegister(REG_IP);
+				mProc->PushRegister(Processor8086::REG_CS);
+				mProc->PushRegister(Processor8086::REG_IP);
 				unsigned int newIP = dst->GetValue(4);
 				newIP = (newIP & 0xFFFF) + ((newIP & 0xFFFF0000) >> 0xC);
-				proc->SetRegister(REG_IP, newIP & 0xFFFF);
-				proc->SetRegister(REG_CS, (newIP & 0xFFFF0000) >> 0x10);
+				mProc->SetRegister(Processor8086::REG_IP, newIP & 0xFFFF);
+				mProc->SetRegister(Processor8086::REG_CS, (newIP & 0xFFFF0000) >> 0x10);
 			} else if(mType == CALL_MOD_CONST) {
-				proc->PushRegister(REG_IP);
+				mProc->PushRegister(Processor8086::REG_IP);
 				unsigned int newIP = dst->GetValue();
-				proc->SetRegister(REG_IP, newIP);
+				mProc->SetRegister(Processor8086::REG_IP, newIP);
 			}
 			break;
 		}

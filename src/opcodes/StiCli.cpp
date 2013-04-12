@@ -11,22 +11,24 @@
 \*-------------------------------------*/
 
 #include "StiCli.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
 
 #include <cstdio>
 
-StiCli::StiCli(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+StiCli::StiCli(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
-Instruction* StiCli::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
+Instruction* StiCli::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newStiCli = 0;
+	Instruction8086* newStiCli = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -38,6 +40,7 @@ Instruction* StiCli::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*)
 			GETINST(preSize + 1);
 			snprintf(buf, 65, "STI");
 			newStiCli = new StiCli(pre, buf, inst, (int)*opLoc);
+			newStiCli->SetProc(mProc);
 			break;
 		}
 		case CLI:
@@ -45,6 +48,7 @@ Instruction* StiCli::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*)
 			GETINST(preSize + 1);
 			snprintf(buf, 65, "CLI");
 			newStiCli = new StiCli(pre, buf, inst, (int)*opLoc);
+			newStiCli->SetProc(mProc);
 			break;
 		}
 	}
@@ -53,12 +57,12 @@ Instruction* StiCli::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*)
 
 }
 
-int StiCli::Execute(Processor* proc) {
+int StiCli::Execute() {
 
 	if(mOpcode == STI) {
-		proc->SetFlag(FLAGS_IF, true);
+		mProc->SetFlag(Processor8086::FLAGS_IF, true);
 	} else if(mOpcode == CLI) {
-		proc->SetFlag(FLAGS_IF, false);
+		mProc->SetFlag(Processor8086::FLAGS_IF, false);
 	}
 	return 0;
 }

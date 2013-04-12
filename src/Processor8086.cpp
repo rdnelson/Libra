@@ -1,6 +1,6 @@
 /*-------------------------------------*\
 |
-|  File Name: Processor.cpp
+|  File Name: Processor8086.cpp
 |
 |  Creation Date: 26-09-2012
 |
@@ -10,26 +10,27 @@
 |
 \*-------------------------------------*/
 
-#include "Processor.hpp"
+#include "Processor8086.hpp"
 #include "peripherals/AllPeripherals.hpp"
 #include "IPeripheral.hpp"
+#include "Instruction8086.hpp"
 
 #include <iostream>
 #include <cstring>
 #include <cstdio>
 
-Processor::Processor(Memory& mem): mMem(mem), mNextInst(0), mLastPort(0xFFFFFFFF), mLastDevice(0), mInterrupt(-1), mHalt(false) {
-
+Processor8086::Processor8086(Memory& mem): Processor(mem), mLastPort(0xFFFFFFFF), mLastDevice(0) {
+	mModel = MODEL_8086;
 }
 
-Processor::~Processor() {
+Processor8086::~Processor8086() {
 	for(size_t i = 0; i < mDevices.size(); i++) {
 		delete mDevices[i];
 	}
 }
 
 //Allows the starting address to be changed
-int Processor::Initialize(unsigned int startAddr) {
+int Processor8086::Initialize(unsigned int startAddr) {
 
 
 	if(startAddr >= 0x10000) {
@@ -56,17 +57,17 @@ int Processor::Initialize(unsigned int startAddr) {
 
 	//Fetch first instruction
 	Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
-	mNextInst = Instruction::ReadInstruction(curMem, this);
+	mNextInst = Instruction8086::ReadInstruction(curMem, this);
 
 	return PROC_SUCCESS;
 
 }
 
-void Processor::Stop() {
+void Processor8086::Stop() {
 	Initialize(mStartAddr);
 }
 
-void Processor::_InitializeDevices() {
+void Processor8086::_InitializeDevices() {
 
 	for(size_t i = 0; i < mDevices.size(); i++) {
 		delete mDevices[i];
@@ -76,12 +77,12 @@ void Processor::_InitializeDevices() {
 	mLastDevice = 0;
 
 	mDevices.push_back(new Screen());
-	mDevices.push_back(new Keyboard(const_cast<Processor*>(this)));
-	mDevices.push_back(new Timer(const_cast<Processor*>(this)));
+	mDevices.push_back(new Keyboard(const_cast<Processor8086*>(this)));
+	mDevices.push_back(new Timer(const_cast<Processor8086*>(this)));
 }
 
 //Execute a single instruction
-int Processor::Step() {
+int Processor8086::Step() {
 	int retVal = PROC_SUCCESS;
 
 	for(size_t i = 0; i < mDevices.size(); i++) {
@@ -96,7 +97,7 @@ int Processor::Step() {
 		PushRegister(REG_IP);
 		SetRegister(REG_IP, GetMemory(mInterrupt << 2, 2));
 		Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
-		mNextInst = Instruction::ReadInstruction(curMem, this);
+		mNextInst = Instruction8086::ReadInstruction(curMem, this);
 		mInterrupt = -1;
 		mHalt = false;
 		return PROC_SUCCESS;
@@ -119,14 +120,14 @@ int Processor::Step() {
 
 #endif
 		//Execute
-		if((retVal = mNextInst->Execute(this)) < 0) {
+		if((retVal = mNextInst->Execute()) < 0) {
 			delete mNextInst;
 			return PROC_ERR_INST;
 		}
 		delete mNextInst;
 
 		Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
-		mNextInst = Instruction::ReadInstruction(curMem, this);
+		mNextInst = Instruction8086::ReadInstruction(curMem, this);
 
 	} else {
 		return PROC_ERR_INV_INST;
@@ -136,11 +137,11 @@ int Processor::Step() {
 
 }
 
-bool Processor::GetFlag(eFlags flag) const {
+bool Processor8086::GetFlag(unsigned int flag) const {
 	return (GetRegister(REG_FLAGS) & (1 << flag)) != 0;
 }
 
-void Processor::SetFlag(eFlags flag, bool val) {
+void Processor8086::SetFlag(unsigned int flag, bool val) {
 	if(val)
 		SetRegister(REG_FLAGS, GetRegister(REG_FLAGS) | (1 << flag));
 	else
@@ -148,7 +149,7 @@ void Processor::SetFlag(eFlags flag, bool val) {
 }
 
 
-unsigned int Processor::GetRegister(eRegisters reg) const {
+unsigned int Processor8086::GetRegister(unsigned int reg) const {
 	if(reg == NumRegisters || reg == HighRegisters || reg == LowRegisters) {
 		return 0;
 	}
@@ -157,15 +158,15 @@ unsigned int Processor::GetRegister(eRegisters reg) const {
 		return mRegisters[reg].GetValue();
 	}
 	else if(reg < LowRegisters) {
-		return GetRegisterLow((eRegisters)(reg - NumRegisters - 1));
+		return GetRegisterLow((unsigned int)(reg - NumRegisters - 1));
 	}
 	else if(reg < HighRegisters) {
-		return GetRegisterHigh((eRegisters)(reg - LowRegisters - 1));
+		return GetRegisterHigh((unsigned int)(reg - LowRegisters - 1));
 	}
 	return 0;
 }
 
-const char* Processor::GetRegisterHex(eRegisters reg) const {
+const char* Processor8086::GetRegisterHex(unsigned int reg) const {
     if(reg == NumRegisters || reg == HighRegisters || reg == LowRegisters) {
         return 0;
     }
@@ -175,7 +176,7 @@ const char* Processor::GetRegisterHex(eRegisters reg) const {
     return 0;
 }
 
-void Processor::SetRegister(eRegisters reg, unsigned int val) {
+void Processor8086::SetRegister(unsigned int reg, unsigned int val) {
 	if(reg == NumRegisters) {
 		return;
 	}
@@ -183,14 +184,14 @@ void Processor::SetRegister(eRegisters reg, unsigned int val) {
 	if(reg < NumRegisters) {
 		mRegisters[reg].SetValue(val);
 	} else if(reg < LowRegisters) {
-		SetRegisterLow((eRegisters)(reg - NumRegisters - 1), val);
+		SetRegisterLow((unsigned int)(reg - NumRegisters - 1), val);
 	} else if(reg < HighRegisters) {
-		SetRegisterHigh((eRegisters)(reg - LowRegisters - 1), val);
+		SetRegisterHigh((unsigned int)(reg - LowRegisters - 1), val);
 	}
 
 }
 
-unsigned int Processor::GetRegisterLow(eRegisters reg) const {
+unsigned int Processor8086::GetRegisterLow(unsigned int reg) const {
 	if(reg == NumRegisters) {
 		return 0;
 	}
@@ -198,7 +199,7 @@ unsigned int Processor::GetRegisterLow(eRegisters reg) const {
 	return mRegisters[reg].GetValue() & 0xFF;
 }
 
-unsigned int Processor::GetRegisterHigh(eRegisters reg) const {
+unsigned int Processor8086::GetRegisterHigh(unsigned int reg) const {
 	if(reg == NumRegisters) {
 		return 0;
 	}
@@ -206,71 +207,71 @@ unsigned int Processor::GetRegisterHigh(eRegisters reg) const {
 	return (mRegisters[reg].GetValue() & 0xFF00) >> 8;
 };
 
-void Processor::SetRegisterLow(eRegisters reg, unsigned int val) {
+void Processor8086::SetRegisterLow(unsigned int reg, unsigned int val) {
 	if(reg == NumRegisters)
 		return;
 
 	mRegisters[reg].SetValue((mRegisters[reg].GetValue() & 0xFF00) | (val & 0xFF));
 }
 
-void Processor::SetRegisterHigh(eRegisters reg, unsigned int val) {
+void Processor8086::SetRegisterHigh(unsigned int reg, unsigned int val) {
 	if(reg == NumRegisters)
 		return;
 
 	mRegisters[reg].SetValue((mRegisters[reg].GetValue() & 0xFF) | ((val & 0xFF) << 8));
 }
 
-unsigned int Processor::GetMemory(Memory::MemoryOffset& addr, unsigned int size) {
+unsigned int Processor8086::GetMemory(Memory::MemoryOffset& addr, unsigned int size) {
 	unsigned int temp = 0;
 	addr.read(&temp, size);
 	return temp;
 }
 
-unsigned int Processor::GetMemory(size_t addr, unsigned int size) {
+unsigned int Processor8086::GetMemory(size_t addr, unsigned int size) {
 	Memory::MemoryOffset tmpMem = mMem.getOffset(addr);
 	return GetMemory(tmpMem, size);
 }
 
 
-void Processor::SetMemory(Memory::MemoryOffset& addr, unsigned int size, unsigned int val) {
+void Processor8086::SetMemory(Memory::MemoryOffset& addr, unsigned int size, unsigned int val) {
 	addr.write(&val, size);
 }
 
-void Processor::SetMemory(size_t addr, unsigned int size, unsigned int val) {
+void Processor8086::SetMemory(size_t addr, unsigned int size, unsigned int val) {
 	Memory::MemoryOffset tmpMem = mMem.getOffset(addr);
 	SetMemory(tmpMem, size, val);
 }
 
-void Processor::PushRegister(eRegisters reg) {
+void Processor8086::PushRegister(unsigned int reg) {
 	SetRegister(REG_SP, (GetRegister(REG_SP) - 2) & 0xFFFF);
 	Memory::MemoryOffset tmpMem = mMem.getOffset(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4));
 	SetMemory(tmpMem, 2, GetRegister(reg));
 }
 
-void Processor::PushValue(unsigned int val) {
+void Processor8086::PushValue(unsigned int val) {
 	SetRegister(REG_SP, (GetRegister(REG_SP) - 2) & 0xFFFF);
 	Memory::MemoryOffset tmpMem = mMem.getOffset(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4));
 	SetMemory(tmpMem, 2, val & 0xFFFF);
 }
 
-void Processor::PopRegister(eRegisters reg) {
+void Processor8086::PopRegister(unsigned int reg) {
 	Memory::MemoryOffset tmpMem = mMem.getOffset(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4));
 	SetRegister(reg, GetMemory(tmpMem, 2));
 	SetRegister(REG_SP, (GetRegister(REG_SP) + 2) & 0xFFFF);
 }
 
-void Processor::PopSize(unsigned int size) {
+void Processor8086::PopSize(unsigned int size) {
 	SetRegister(REG_SP, (GetRegister(REG_SP) + size) & 0xFFFF);
 }
 
-unsigned int Processor::PopValue() {
+unsigned int Processor8086::PopValue() {
 	Memory::MemoryOffset tmpMem = mMem.getOffset(GetRegister(REG_SP) + (GetRegister(REG_SS) << 4));
 	unsigned int val = GetMemory(tmpMem, 2) & 0xFFFF;
 	SetRegister(REG_SP, (GetRegister(REG_SP) + 2) & 0xFFFF);
 	return val;
 }
 
-void Processor::Outb(unsigned int port, unsigned char data) {
+void Processor8086::Outb(unsigned int port, unsigned char data) {
 	if(mLastPort == port && mLastDevice) {
 		mLastDevice->Put8(port, data);
 		return;
@@ -284,7 +285,7 @@ void Processor::Outb(unsigned int port, unsigned char data) {
 	}
 }
 
-void Processor::Outw(unsigned int port, unsigned short data) {
+void Processor8086::Outw(unsigned int port, unsigned short data) {
 	if(mLastPort == port && mLastDevice) {
 		mLastDevice->Put16(port, data);
 		return;
@@ -298,7 +299,7 @@ void Processor::Outw(unsigned int port, unsigned short data) {
 	}
 }
 
-unsigned char Processor::Inb(unsigned int port) {
+unsigned char Processor8086::Inb(unsigned int port) {
 	if(mLastPort == port && mLastDevice) {
 		return mLastDevice->Get8(port);
 	}
@@ -313,7 +314,7 @@ unsigned char Processor::Inb(unsigned int port) {
 	return 0x00;
 }
 
-unsigned short Processor::Inw(unsigned int port) {
+unsigned short Processor8086::Inw(unsigned int port) {
 	if(mLastPort == port && mLastDevice) {
 		return mLastDevice->Get16(port);
 	}
@@ -327,7 +328,7 @@ unsigned short Processor::Inw(unsigned int port) {
 	}
 	return 0x00;
 }
-void Processor::ProcDump() {
+void Processor8086::ProcDump() {
 
 	std::cout << "++++++++++++++++++++++++ BEGIN DUMP ++++++++++++++++++++++++" << std::endl; 
 
@@ -368,7 +369,7 @@ void Processor::ProcDump() {
 
 }
 
-void Processor::MemDump() {
+void Processor8086::MemDump() {
 	std::cout << "++++++++++++++++++++++ BEGIN MEM DUMP ++++++++++++++++++++++" << std::endl;
 	std::cout << std::hex;
 	int lastSame = 0;
@@ -407,13 +408,13 @@ void Processor::MemDump() {
 	std::cout << "++++++++++++++++++++++  END MEM DUMP  ++++++++++++++++++++++" << std::endl;
 }
 
-void Processor::DeviceDump() {
+void Processor8086::DeviceDump() {
 	for(unsigned int i = 0; i < mDevices.size(); i++) {
 		mDevices[i]->Dump();
 	}
 }
 
-void Processor::SetInterrupt(unsigned char n) {
+void Processor8086::SetInterrupt(unsigned char n) {
 
 	mInterrupt = n;
 }

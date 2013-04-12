@@ -108,9 +108,6 @@
     <ClCompile Include="..\src\Instruction.cpp">
       <Filter>Under Test\Manual</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\InstTable.cpp">
-      <Filter>Under Test\Manual</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\opcodes\Int.cpp">
       <Filter>Under Test\Manual</Filter>
     </ClCompile>
@@ -144,9 +141,6 @@
     <ClCompile Include="..\src\Memory.cpp">
       <Filter>Under Test\Manual</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\MemWnd.cpp">
-      <Filter>Under Test\Manual</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ModrmOperand.cpp">
       <Filter>Under Test\Manual</Filter>
     </ClCompile>
@@ -178,9 +172,6 @@
       <Filter>Under Test\Manual</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Prefix.cpp">
-      <Filter>Under Test\Manual</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Processor.cpp">
       <Filter>Under Test\Manual</Filter>
     </ClCompile>
     <ClCompile Include="..\src\opcodes\Push.cpp">
@@ -246,9 +237,6 @@
     <ClCompile Include="..\src\opcodes\Xor.cpp">
       <Filter>Under Test\Manual</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Debug\moc_MemWnd.cpp">
-      <Filter>Under Test\Generated\Debug</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Debug\moc_QKbdFilter.cpp">
       <Filter>Under Test\Generated\Debug</Filter>
     </ClCompile>
@@ -257,9 +245,6 @@
     </ClCompile>
     <ClCompile Include="..\src\Debug\moc_VMWorker.cpp">
       <Filter>Under Test\Generated\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug_Static\moc_MemWnd.cpp">
-      <Filter>Under Test\Generated\Debug_Static</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Debug_Static\moc_QKbdFilter.cpp">
       <Filter>Under Test\Generated\Debug_Static</Filter>
@@ -270,9 +255,6 @@
     <ClCompile Include="..\src\Debug_Static\moc_VMWorker.cpp">
       <Filter>Under Test\Generated\Debug_Static</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Release\moc_MemWnd.cpp">
-      <Filter>Under Test\Generated\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Release\moc_QKbdFilter.cpp">
       <Filter>Under Test\Generated\Release</Filter>
     </ClCompile>
@@ -282,9 +264,6 @@
     <ClCompile Include="..\src\Release\moc_VMWorker.cpp">
       <Filter>Under Test\Generated\Release</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Release_Static\moc_MemWnd.cpp">
-      <Filter>Under Test\Generated\Release_Static</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Release_Static\moc_QKbdFilter.cpp">
       <Filter>Under Test\Generated\Release_Static</Filter>
     </ClCompile>
@@ -293,9 +272,6 @@
     </ClCompile>
     <ClCompile Include="..\src\Release_Static\moc_VMWorker.cpp">
       <Filter>Under Test\Generated\Release_Static</Filter>
-    </ClCompile>
-    <ClCompile Include="..\test\tests\TestInstruction.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\QInstructionList.cpp">
       <Filter>Under Test\Manual</Filter>
@@ -314,6 +290,33 @@
     </ClCompile>
     <ClCompile Include="..\src\GeneratedFiles\qrc_Resources.cpp">
       <Filter>Under Test\Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug\moc_MainWnd8086.cpp">
+      <Filter>Under Test\Generated\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug_Static\moc_MainWnd8086.cpp">
+      <Filter>Under Test\Generated\Debug_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release\moc_MainWnd8086.cpp">
+      <Filter>Under Test\Generated\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release_Static\moc_MainWnd8086.cpp">
+      <Filter>Under Test\Generated\Release_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\MainWnd8086.cpp">
+      <Filter>Under Test\Manual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Instruction8086.cpp">
+      <Filter>Under Test\Manual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstTable8086.cpp">
+      <Filter>Under Test\Manual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Processor8086.cpp">
+      <Filter>Under Test\Manual</Filter>
+    </ClCompile>
+    <ClCompile Include="..\test\tests\TestInstruction8086.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -542,22 +545,23 @@
     <ClInclude Include="..\src\opcodes\Xlat.hpp">
       <Filter>Under Test\Manual</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\GeneratedFiles\ui_MemWnd.h">
-      <Filter>Under Test\Generated</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\MemWnd.hpp">
-      <Filter>Under Test\Manual</Filter>
-    </ClInclude>
     <ClInclude Include="..\test\Common.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\QInstructionList.hpp">
       <Filter>Under Test\Manual</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\src\MemWnd.ui">
+    <ClInclude Include="..\src\GeneratedFiles\ui_MainWnd8086.h">
+      <Filter>Under Test\Generated</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\MainWnd8086.hpp">
       <Filter>Under Test\Manual</Filter>
-    </CustomBuild>
+    </ClInclude>
+    <ClInclude Include="..\src\Instruction8086.hpp">
+      <Filter>Under Test\Manual</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Processor8086.hpp">
+      <Filter>Under Test\Manual</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

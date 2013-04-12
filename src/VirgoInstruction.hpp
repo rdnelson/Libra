@@ -12,14 +12,15 @@
 
 #pragma once
 
-#include "Instruction.hpp"
+#include "Instruction8086.hpp"
+#include "Prefix.hpp"
 
-class VirgoInstruction : public Instruction {
+class VirgoInstruction : public Instruction8086 {
 	public:
 		VirgoInstruction(Prefix* pre, std::string text, std::string inst, int op) :
-			Instruction(pre,text,inst,op) {}
+			Instruction8086(pre,text,inst,op) {}
 
-		int Execute(Processor*) {
+		int Execute() {
 			return 0;
 		}
 };

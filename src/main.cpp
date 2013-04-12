@@ -11,7 +11,7 @@
 \*-------------------------------------*/
 
 #include <QApplication>
-#include "MemWnd.hpp"
+#include "MainWnd8086.hpp"
 
 #ifdef QICO_NEEDED
 #include <QtPlugin>
@@ -21,11 +21,11 @@ Q_IMPORT_PLUGIN(qico)
 int main(int argc, char* argv[]) {
 
 	QApplication a(argc, argv);
-	MemWnd* w = 0;
+	MainWnd8086* w = 0;
 	if(argc > 1) {
-		w = new MemWnd(argv[argc - 1]);
+		w = new MainWnd8086(argv[argc - 1]);
 	} else {
-		w = new MemWnd();
+		w = new MainWnd8086();
 	}
 	w->show();
 

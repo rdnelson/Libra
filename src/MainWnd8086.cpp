@@ -1,5 +1,6 @@
-#include "MemWnd.hpp"
-#include "ui_MemWnd.h"
+#include "MainWnd8086.hpp"
+#include "Operand.hpp"
+#include "ui_MainWnd8086.h"
 #include "QFileDialog"
 #include "QScrollBar"
 #include "QFontMetrics"
@@ -9,7 +10,7 @@
 #include "QMessageBox"
 #include "VMWorker.hpp"
 #include "QThread"
-#include "Instruction.hpp"
+#include "Instruction8086.hpp"
 #include "QMemModel.hpp"
 #include "Breakpoint.hpp"
 #include "peripherals/Screen.hpp"
@@ -22,9 +23,9 @@
 
 #define TABLE(a) (new QTableWidgetItem(a))
 
-MemWnd::MemWnd(const char* const file, QWidget *parent) :
+MainWnd8086::MainWnd8086(const char* const file, QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::MemWnd),
+	ui(new Ui::MainWnd8086),
 	mFile(""),
 	mCurDir(""),
 	mSettings("SCE", "Libra"),
@@ -130,7 +131,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	}
 }
 
-MemWnd::~MemWnd()
+MainWnd8086::~MainWnd8086()
 {
 	mVMWorker->terminate();
 	delete mVMWorker;
@@ -141,7 +142,7 @@ MemWnd::~MemWnd()
  * GUI Action Handler Section
  */
 
-void MemWnd::appQuit_Clicked() {
+void MainWnd8086::appQuit_Clicked() {
 
 	emit vmPause();
 	//Give the VM 1 second to shut down, if it fails, quit anyways.
@@ -149,15 +150,15 @@ void MemWnd::appQuit_Clicked() {
 	qApp->exit();
 }
 
-void MemWnd::loadObjFile_Clicked() {
+void MainWnd8086::loadObjFile_Clicked() {
 	loadFile(true);
 }
 
-void MemWnd::reloadObjFile_Clicked() {
+void MainWnd8086::reloadObjFile_Clicked() {
 	loadFile(false);
 }
 
-void MemWnd::runVM_Clicked() {
+void MainWnd8086::runVM_Clicked() {
 	//Ensure a file is loaded
 	if(mVM.isLoaded()){
 		//Update the memory control, and clear highlighting
@@ -192,7 +193,7 @@ void MemWnd::runVM_Clicked() {
 	}
 }
 
-void MemWnd::stepInVM_Clicked() {
+void MainWnd8086::stepInVM_Clicked() {
 	//Ensure program is loaded
 	if(mVM.isLoaded()) {
 		//Step once, and check for errors
@@ -216,7 +217,7 @@ void MemWnd::stepInVM_Clicked() {
 	}
 }
 
-void MemWnd::stepOutVM_Clicked() {
+void MainWnd8086::stepOutVM_Clicked() {
 	//Ensure a file is loaded
 	if(mVM.isLoaded()) {
 		//Update the memory control, and clear highlighting
@@ -251,7 +252,7 @@ void MemWnd::stepOutVM_Clicked() {
 	}
 }
 
-void MemWnd::stepOverVM_Clicked() {
+void MainWnd8086::stepOverVM_Clicked() {
 	//Ensure a file is loaded
 	if(mVM.isLoaded()) {
 		//Update the memory control, and clear highlighting
@@ -276,14 +277,14 @@ void MemWnd::stepOverVM_Clicked() {
 	}
 }
 
-void MemWnd::pauseVM_Clicked() {
+void MainWnd8086::pauseVM_Clicked() {
 	if(mVM.isLoaded()) {
 		emit vmPause();
 		UpdateGui();
 	}
 }
 
-void MemWnd::stopVM_Clicked() {
+void MainWnd8086::stopVM_Clicked() {
 	if(mVM.isLoaded()) {
 		emit vmPause();
 		mVMWorker->wait(200);
@@ -293,7 +294,7 @@ void MemWnd::stopVM_Clicked() {
 	ui->actionStop->setEnabled(false);
 }
 
-void MemWnd::toggleBreakpoint_Clicked() {
+void MainWnd8086::toggleBreakpoint_Clicked() {
 	//Check if a breakpoint already exists on this line
 	Breakpoint* bp = mVM.FindBreakpoint(mVM.GetInstructionAddr(ui->lstInstructions->currentRow()));
 	if(bp != 0) {
@@ -309,11 +310,11 @@ void MemWnd::toggleBreakpoint_Clicked() {
 	HighlightBreakpoints();
 }
 
-void MemWnd::enableListings_Clicked() {
+void MainWnd8086::enableListings_Clicked() {
 	UpdateInstructions();
 }
 
-void MemWnd::lstInstructions_RightClicked(const QPoint& pt) {
+void MainWnd8086::lstInstructions_RightClicked(const QPoint& pt) {
 	int row = ui->lstInstructions->currentRow();
 	if(row != -1) {
 		unsigned int addr = ui->lstInstructions->item(row,0)->data(32).toInt();
@@ -338,7 +339,7 @@ void MemWnd::lstInstructions_RightClicked(const QPoint& pt) {
  * File loading functions
  */
 
-void MemWnd::loadFile(bool newFile) {
+void MainWnd8086::loadFile(bool newFile) {
 
 	//Open a file dialog if this is loading a new object file
 	if(newFile) {
@@ -390,43 +391,43 @@ void MemWnd::loadFile(bool newFile) {
  */
 
 //Breakpoint Hit
-void MemWnd::workerBreakpoint() {
+void MainWnd8086::workerBreakpoint() {
 
 	EnableRun();
 	UpdateGui();
 
 }
 //Program execution complete
-void MemWnd::workerRunDone() {
+void MainWnd8086::workerRunDone() {
 	this->setWindowTitle("VM Stopped");
 	ui->tableView->setFocusPolicy(Qt::WheelFocus);
 	UpdateGui();
 }
 //Program execution error
-void MemWnd::workerRunError(int err) {
+void MainWnd8086::workerRunError(int err) {
 	UpdateGui();
 	DisableRun(err);
 }
 //Program paused
-void MemWnd::workerPaused() {
+void MainWnd8086::workerPaused() {
 	UpdateGui();
 	ui->tableView->setFocusPolicy(Qt::WheelFocus);
 	EnableRun();
 }
 //Program step complete
-void MemWnd::workerStepDone() {
+void MainWnd8086::workerStepDone() {
 	UpdateScreen();
 	mVM.notifyReadCallbacks();
 	mVM.notifyWriteCallbacks();
 }
 //Program's processor returned an info code
-void MemWnd::workerProcReturn(int err) {
+void MainWnd8086::workerProcReturn(int err) {
 	if(err == Instruction::PERIPH_WRITE) {
 		UpdateScreen();
 	}
 }
 //Program's processor halted
-void MemWnd::workerStopped() {
+void MainWnd8086::workerStopped() {
 	QMessageBox::information(this, "Halt Encountered", "HLT was encountered, execution is terminated.");
 	workerPaused();
 }
@@ -435,34 +436,34 @@ void MemWnd::workerStopped() {
  * GUI Update Function Section
  */
 
-void MemWnd::UpdateGui() {
+void MainWnd8086::UpdateGui() {
 
 	UpdateScreen();
 
 	//Update all of the register and flag boxes
-	ui->txtAX->setText(mVM.GetProc().GetRegisterHex(REG_AX));
-	ui->txtBX->setText(mVM.GetProc().GetRegisterHex(REG_BX));
-	ui->txtCX->setText(mVM.GetProc().GetRegisterHex(REG_CX));
-	ui->txtDX->setText(mVM.GetProc().GetRegisterHex(REG_DX));
-	ui->txtSI->setText(mVM.GetProc().GetRegisterHex(REG_SI));
-	ui->txtDI->setText(mVM.GetProc().GetRegisterHex(REG_DI));
-	ui->txtBP->setText(mVM.GetProc().GetRegisterHex(REG_BP));
-	ui->txtSP->setText(mVM.GetProc().GetRegisterHex(REG_SP));
-	ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
+	ui->txtAX->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_AX));
+	ui->txtBX->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_BX));
+	ui->txtCX->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_CX));
+	ui->txtDX->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_DX));
+	ui->txtSI->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_SI));
+	ui->txtDI->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_DI));
+	ui->txtBP->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_BP));
+	ui->txtSP->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_SP));
+	ui->txtIP->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_IP));
 	ClearRegisterHighlighting();
-	ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS));
-	ui->chkAdjust->setChecked(mVM.GetProc().GetFlag(FLAGS_AF));
-	ui->chkOverflow->setChecked(mVM.GetProc().GetFlag(FLAGS_OF));
-	ui->chkCarry->setChecked(mVM.GetProc().GetFlag(FLAGS_CF));
-	ui->chkParity->setChecked(mVM.GetProc().GetFlag(FLAGS_PF));
-	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
-	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
-	ui->chkInterrupt->setChecked(mVM.GetProc().GetFlag(FLAGS_IF));
+	ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(Processor8086::REG_FLAGS));
+	ui->chkAdjust->setChecked(mVM.GetProc().GetFlag(Processor8086::FLAGS_AF));
+	ui->chkOverflow->setChecked(mVM.GetProc().GetFlag(Processor8086::FLAGS_OF));
+	ui->chkCarry->setChecked(mVM.GetProc().GetFlag(Processor8086::FLAGS_CF));
+	ui->chkParity->setChecked(mVM.GetProc().GetFlag(Processor8086::FLAGS_PF));
+	ui->chkZero->setChecked(mVM.GetProc().GetFlag(Processor8086::FLAGS_ZF));
+	ui->chkSign->setChecked(mVM.GetProc().GetFlag(Processor8086::FLAGS_SF));
+	ui->chkInterrupt->setChecked(mVM.GetProc().GetFlag(Processor8086::FLAGS_IF));
 
 	UpdateMemView();
 
 	//Update the instruction listing highlight state
-	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
+	unsigned int ip = mVM.GetProc().GetRegister(Processor8086::REG_IP);
 	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 		for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
 			if(mVM.GetInstructionAddr(i) == ip) {
@@ -481,7 +482,7 @@ void MemWnd::UpdateGui() {
 	UpdateInstHighlight();
 }
 
-void MemWnd::UpdateScreen() {
+void MainWnd8086::UpdateScreen() {
 	//Search for the screen
 	unsigned int numDevices = mVM.GetDevices().size();
 	for(unsigned int i = 0; i < numDevices; i++) {
@@ -493,7 +494,7 @@ void MemWnd::UpdateScreen() {
 	}
 }
 
-void MemWnd::UpdateMemView(unsigned int ip, unsigned int len) {
+void MainWnd8086::UpdateMemView(unsigned int ip, unsigned int len) {
 	QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
 	if(qMemModel) {
 		//Remove execution highlighting
@@ -506,8 +507,10 @@ void MemWnd::UpdateMemView(unsigned int ip, unsigned int len) {
 	}
 }
 
-void MemWnd::UpdateInstHighlight() {
-	const Instruction* inst = mVM.GetProc().GetNextInstruction();
+void MainWnd8086::UpdateInstHighlight() {
+	if(mVM.GetProc().GetModel() != Processor::MODEL_8086)
+		return;
+	const Instruction8086* inst = (Instruction8086*)mVM.GetProc().GetNextInstruction();
 	Operand* op = 0;
 	QColor color = Qt::white;
 	if(!inst) {
@@ -551,36 +554,36 @@ void MemWnd::UpdateInstHighlight() {
 				//Register, highlight the register box
 				val -= 0x10000;
 				switch(val) {
-				case REG_AX:
-				case REG_AL:
-				case REG_AH:
+				case Processor8086::REG_AX:
+				case Processor8086::REG_AL:
+				case Processor8086::REG_AH:
 					ui->txtAX->setStyleSheet("QLineEdit {background: " + color.name() + "}");
 					break;
-				case REG_BX:
-				case REG_BL:
-				case REG_BH:
+				case Processor8086::REG_BX:
+				case Processor8086::REG_BL:
+				case Processor8086::REG_BH:
 					ui->txtBX->setStyleSheet("QLineEdit {background: " + color.name() + "}");
 					break;
-				case REG_CX:
-				case REG_CL:
-				case REG_CH:
+				case Processor8086::REG_CX:
+				case Processor8086::REG_CL:
+				case Processor8086::REG_CH:
 					ui->txtCX->setStyleSheet("QLineEdit {background: " + color.name() + "}");
 					break;
-				case REG_DX:
-				case REG_DL:
-				case REG_DH:
+				case Processor8086::REG_DX:
+				case Processor8086::REG_DL:
+				case Processor8086::REG_DH:
 					ui->txtDX->setStyleSheet("QLineEdit {background: " + color.name() + "}");
 					break;
-				case REG_SP:
+				case Processor8086::REG_SP:
 					ui->txtSP->setStyleSheet("QLineEdit {background: " + color.name() + "}");
 					break;
-				case REG_BP:
+				case Processor8086::REG_BP:
 					ui->txtBP->setStyleSheet("QLineEdit {background: " + color.name() + "}");
 					break;
-				case REG_SI:
+				case Processor8086::REG_SI:
 					ui->txtSI->setStyleSheet("QLineEdit {background: " + color.name() + "}");
 					break;
-				case REG_DI:
+				case Processor8086::REG_DI:
 					ui->txtDI->setStyleSheet("QLineEdit {background: " + color.name() + "}");
 					break;
 				}
@@ -590,7 +593,7 @@ void MemWnd::UpdateInstHighlight() {
 	}
 }
 
-void MemWnd::UpdateInstructions() {
+void MainWnd8086::UpdateInstructions() {
 	ui->lstInstructions->clear();
 	ui->lstInstructions->setRowCount(0);
 	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
@@ -633,7 +636,7 @@ void MemWnd::UpdateInstructions() {
 	}
 }
 
-void MemWnd::ClearRegisterHighlighting() {
+void MainWnd8086::ClearRegisterHighlighting() {
 	ui->txtAX->setStyleSheet("");
 	ui->txtBX->setStyleSheet("");
 	ui->txtCX->setStyleSheet("");
@@ -646,7 +649,7 @@ void MemWnd::ClearRegisterHighlighting() {
 	ui->txtFLAGS->setStyleSheet("");
 }
 
-void MemWnd::HighlightBreakpoints() {
+void MainWnd8086::HighlightBreakpoints() {
 	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
 		if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
 			for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
@@ -659,7 +662,7 @@ void MemWnd::HighlightBreakpoints() {
 		}
 	}
 }
-void MemWnd::DisableRun(int err) {
+void MainWnd8086::DisableRun(int err) {
 
 	//Disable the run actions
 	ui->actionRun->setEnabled(false);
@@ -681,7 +684,7 @@ void MemWnd::DisableRun(int err) {
 	ui->actionPause->setEnabled(true);
 }
 
-void MemWnd::EnableRun() {
+void MainWnd8086::EnableRun() {
 	//Enable all the run commands
 	ui->actionRun->setEnabled(true);
 	ui->actionStep_Into->setEnabled(true);
@@ -699,7 +702,7 @@ void MemWnd::EnableRun() {
 #define ENTER_KEY_NL 0x0A
 #define ENTER_KEY_CR 0x0D
 
-void MemWnd::KeyEvent(QKeyEvent* evt) {
+void MainWnd8086::KeyEvent(QKeyEvent* evt) {
 	//Search for a keyboard
 	unsigned int numDevices = mVM.GetDevices().size();
 	for(unsigned int i = 0; i < numDevices; i++) {
@@ -717,7 +720,7 @@ void MemWnd::KeyEvent(QKeyEvent* evt) {
 	}
 }
 
-void MemWnd::TimerEvent() {
+void MainWnd8086::TimerEvent() {
 	//Search for the timer
 	size_t numDevices = mVM.GetDevices().size();
 	for(size_t i = 0; i < numDevices; i++) {
@@ -729,6 +732,6 @@ void MemWnd::TimerEvent() {
 	}
 }
 
-void MemWnd::UpdateScreenTick() {
+void MainWnd8086::UpdateScreenTick() {
 	UpdateScreen();
 }

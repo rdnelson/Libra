@@ -14,7 +14,7 @@
 #include "../ModrmOperand.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 
 #include <cstdio>
 
@@ -30,10 +30,12 @@ Instruction* Test::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newTest = 0;
+	Instruction8086* newTest = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -54,10 +56,11 @@ Instruction* Test::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 
 
 			Operand* src = new ImmediateOperand(val, size, (opLoc + 1).getOffset());
-			Operand* dst = new RegisterOperand(*opLoc == TEST_AL_IMM8 ? REG_AL : REG_AX, proc);
+			Operand* dst = new RegisterOperand(*opLoc == TEST_AL_IMM8 ? Processor8086::REG_AL : Processor8086::REG_AX, mProc);
 
 			snprintf(buf, 65, "TEST %s, %s", size == 1 ? "AL" : "AH", src->GetDisasm().c_str());
 			newTest = new Test(pre, buf, inst, (unsigned char)*opLoc);
+			newTest->SetProc(mProc);
 			newTest->SetOperand(Operand::SRC, src);
 			newTest->SetOperand(Operand::DST, dst);
 			break;
@@ -77,11 +80,12 @@ Instruction* Test::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 
 
 			Operand* src = new ImmediateOperand(val, size, (opLoc + 1).getOffset());
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 
 			snprintf(buf, 65, "TEST %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2 + size + dst->GetBytecodeLen());
 			newTest = new Test(pre, buf, inst, (unsigned char)*opLoc);
+			newTest->SetProc(mProc);
 			newTest->SetOperand(Operand::SRC, src);
 			newTest->SetOperand(Operand::DST, dst);
 			break;
@@ -91,12 +95,13 @@ Instruction* Test::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 		{
 			unsigned int size = (*opLoc == TEST_MOD8_REG8 ? 1 : 2);
 			
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::REG, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 
 			snprintf(buf, 65, "TEST %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 			newTest = new Test(pre, buf, inst, (unsigned char)*opLoc);
+			newTest->SetProc(mProc);
 			newTest->SetOperand(Operand::SRC, src);
 			newTest->SetOperand(Operand::DST, dst);
 			break;
@@ -108,7 +113,7 @@ Instruction* Test::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pr
 
 }
 
-int Test::Execute(Processor* proc) {
+int Test::Execute() {
 
 	if(mOperands[Operand::SRC] == 0 || mOperands[Operand::DST] == 0)
 		return INVALID_ARGS;
@@ -116,11 +121,11 @@ int Test::Execute(Processor* proc) {
 	unsigned int val = mOperands[Operand::SRC]->GetValue() & mOperands[Operand::DST]->GetValue();
 	unsigned int sign = mOperands[Operand::DST]->GetBitmask() == 0xFF ? 0x80 : 0x8000;
 
-	proc->SetFlag(FLAGS_CF, false);
-	proc->SetFlag(FLAGS_OF, false);
-	proc->SetFlag(FLAGS_PF, Parity(val));
-	proc->SetFlag(FLAGS_ZF, val == 0);
-	proc->SetFlag(FLAGS_SF, val >= sign);
+	mProc->SetFlag(Processor8086::FLAGS_CF, false);
+	mProc->SetFlag(Processor8086::FLAGS_OF, false);
+	mProc->SetFlag(Processor8086::FLAGS_PF, Parity(val));
+	mProc->SetFlag(Processor8086::FLAGS_ZF, val == 0);
+	mProc->SetFlag(Processor8086::FLAGS_SF, val >= sign);
 
 	return 0;
 }

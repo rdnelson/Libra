@@ -38,7 +38,7 @@ void mem_wlog(size_t offset, size_t size) {
 
 VM::VM() : mLoaded(false), mRunning(false), mVirgo(false), mInFunc(0), mMem(MEM_SIZE), mProc(mMem) {
 
-	Instruction::InitializeOpcodes();
+	Instruction8086::InitializeOpcodes();
 	mMem.RegisterReadCallback(mem_rlog);
 	mMem.RegisterWriteCallback(mem_wlog);
 }
@@ -246,7 +246,7 @@ void VM::Disassemble() {
 			unsigned int tmpIP = 0;
 			Instruction* tmpInst = 0;
 			Memory::MemoryOffset curMem = mMem.getOffset(tmpIP);
-			while((tmpInst = Instruction::ReadInstruction(curMem, &mProc )) != 0) {
+			while((tmpInst = Instruction8086::ReadInstruction(curMem, &mProc )) != 0) {
 				mInstructions.push_back(tmpInst);
 				tmpIP += tmpInst->GetLength() % MEM_SIZE;
 				curMem = curMem.getNewOffset(tmpIP);
@@ -285,15 +285,15 @@ unsigned int VM::GetInstructionLen(unsigned int index) const {
 
 std::string VM::GetInstructionText(unsigned int index) const {
 	if(mLoaded && index < mInstructions.size()) {
-		return mInstructions[index]->GetInstruction();
+		return mInstructions[index]->GetText();
 	}
 	return "";
 }
 
 unsigned int VM::CalcInstructionLen() {
 	if(mLoaded) {
-		Memory::MemoryOffset curMem = mMem.getOffset(mProc.GetRegister(REG_IP));
-		Instruction* inst = Instruction::ReadInstruction(curMem, &mProc);
+		Memory::MemoryOffset curMem = mMem.getOffset(mProc.GetIP());
+		Instruction* inst = Instruction8086::ReadInstruction(curMem, &mProc);
 		if(inst != NULL) {
 			unsigned int len = inst->GetLength();
 			delete inst;

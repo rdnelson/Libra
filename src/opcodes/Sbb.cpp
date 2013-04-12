@@ -12,7 +12,7 @@
 
 #include "Sbb.hpp"
 #include "../Prefix.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
 #include "../ModrmOperand.hpp"
@@ -32,6 +32,8 @@ Sbb::Sbb(Prefix* pre, std::string text, std::string inst, int op)
 }
 
 Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Memory::MemoryOffset opLoc = memLoc;
 	int prefixLen = 0;
@@ -41,7 +43,7 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 	Prefix* prefix = 0;
 
-	Instruction* newSbb = 0;
+	Instruction8086* newSbb = 0;
 
 	//Build a prefix if possible
 	prefix = Prefix::GetPrefix(memLoc);
@@ -63,8 +65,9 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 2);
 
 			newSbb = new Sbb(prefix, buf, inst, (unsigned char)*opLoc);
+			newSbb->SetProc(mProc);
 			newSbb->SetOperand(Operand::SRC, new ImmediateOperand(*(opLoc + 1), 1, (opLoc + 1).getOffset()));
-			newSbb->SetOperand(Operand::DST, new RegisterOperand(REG_AL, proc));
+			newSbb->SetOperand(Operand::DST, new RegisterOperand(Processor8086::REG_AL, mProc));
 
 			break;
 		case SBB_AX_IMM16:
@@ -76,8 +79,9 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(prefixLen + 3);
 
 			newSbb = new Sbb(prefix, buf, inst, (unsigned char)*opLoc);
+			newSbb->SetProc(mProc);
 			newSbb->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, 2, (opLoc + 1).getOffset()));
-			newSbb->SetOperand(Operand::DST, new RegisterOperand(REG_AX, proc));
+			newSbb->SetOperand(Operand::DST, new RegisterOperand(Processor8086::REG_AX, mProc));
 
 			break;
 
@@ -89,7 +93,7 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				unsigned int immSize = (*opLoc == GRP1_SBB_MOD8_IMM8) ? 1 : 2;
 
 				Operand* dst = ModrmOperand::GetModrmOperand(
-							proc, opLoc, ModrmOperand::MOD, immSize);
+							mProc, opLoc, ModrmOperand::MOD, immSize);
 
 				tInt1 = (int)*(opLoc+2+dst->GetBytecodeLen());
 				if(immSize == 2) {
@@ -107,6 +111,7 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				GETINST(prefixLen + 2 + immSize + dst->GetBytecodeLen() - (*opLoc == GRP1_SBB_MOD16_IMM8 ? 1 : 0));
 				newSbb = new Sbb(prefix, buf, inst, (unsigned char)*opLoc);
+				newSbb->SetProc(mProc);
 				newSbb->SetOperand(Operand::SRC, new ImmediateOperand(tInt1, immSize, (opLoc + 2 + dst->GetBytecodeLen()).getOffset()));
 				newSbb->SetOperand(Operand::DST, dst);
 			}
@@ -118,12 +123,13 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 				unsigned int size = (*opLoc == SBB_MOD8_REG8) ? 1 : 2;
 				modrm = *(opLoc + 1);
 				Operand* dst = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::MOD, size);
+						mProc, opLoc, ModrmOperand::MOD, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::REG, size);
+						mProc, opLoc, ModrmOperand::REG, size);
 				sprintf(buf, "SBB %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newSbb = new Sbb(prefix, buf, inst, (unsigned char)*opLoc);
+				newSbb->SetProc(mProc);
 				newSbb->SetOperand(Operand::SRC, src);
 				newSbb->SetOperand(Operand::DST, dst);
 
@@ -137,12 +143,13 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 				modrm = *(opLoc + 1);
 				Operand* dst = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::REG, size);
+						mProc, opLoc, ModrmOperand::REG, size);
 				Operand* src = ModrmOperand::GetModrmOperand(
-						proc, opLoc, ModrmOperand::MOD, size);
+						mProc, opLoc, ModrmOperand::MOD, size);
 				sprintf(buf, "SBB %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 				GETINST(prefixLen + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 				newSbb = new Sbb(prefix, buf, inst, (unsigned char)*opLoc);
+				newSbb->SetProc(mProc);
 				newSbb->SetOperand(Operand::SRC, src);
 				newSbb->SetOperand(Operand::DST, dst);
 
@@ -159,17 +166,17 @@ Instruction* Sbb::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Sbb::Execute(Processor* proc) {
+int Sbb::Execute() {
 
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
-	src->SetValue(src->GetValue() + proc->GetFlag(FLAGS_CF) ? 1 : 0);
+	src->SetValue(src->GetValue() + mProc->GetFlag(Processor8086::FLAGS_CF) ? 1 : 0);
 
 	if(!dst || !src) {
 		return INVALID_ARGS;
 	}
 
-	dst->SetValue(Cmp::compare(proc, dst, src));
+	dst->SetValue(Cmp::compare((Processor8086*)mProc, dst, src));
 
 	return 0;
 }

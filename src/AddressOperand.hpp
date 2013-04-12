@@ -17,10 +17,10 @@
 class AddressOperand : public ModrmOperand {
 
 	public:
-		static Operand* GetAddressOperand(Processor* proc, Memory::MemoryOffset& addr, unsigned int size);
+		static Operand* GetAddressOperand(Processor8086* proc, Memory::MemoryOffset& addr, unsigned int size);
 
 	private:
-		AddressOperand(Processor* proc, Memory::MemoryOffset& addr, unsigned int size, unsigned int bytelen);
+		AddressOperand(Processor8086* proc, Memory::MemoryOffset& addr, unsigned int size, unsigned int bytelen);
 
 
 };

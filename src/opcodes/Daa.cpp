@@ -11,20 +11,22 @@
 \*-------------------------------------*/
 
 #include "Daa.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 
 #include <cstdio>
 
-Daa::Daa(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Daa::Daa(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
-Instruction* Daa::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
+Instruction* Daa::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newDaa = 0;
+	Instruction8086* newDaa = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -36,28 +38,29 @@ Instruction* Daa::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 		snprintf(buf, 65, "DAA");
 
 		newDaa = new Daa(pre, buf, inst, (int)*opLoc);
+		newDaa->SetProc(mProc);
 	}
 
 	return newDaa;
 
 }
 
-int Daa::Execute(Processor* proc) {
-	unsigned int al = proc->GetRegister(REG_AL);
-	bool cf = proc->GetFlag(FLAGS_CF);
-	proc->SetFlag(FLAGS_CF, 0);
-	if((al & 0xF) > 9 || proc->GetFlag(FLAGS_AF)) {
-		proc->SetRegister(REG_AL, (al + 6) & 0xFF);
-		proc->SetFlag(FLAGS_AF, 1);
-		proc->SetFlag(FLAGS_CF, (cf || (al + 6 > 0xFF)) ? 1 : 0);
+int Daa::Execute() {
+	unsigned int al = mProc->GetRegister(Processor8086::REG_AL);
+	bool cf = mProc->GetFlag(Processor8086::FLAGS_CF);
+	mProc->SetFlag(Processor8086::FLAGS_CF, 0);
+	if((al & 0xF) > 9 || mProc->GetFlag(Processor8086::FLAGS_AF)) {
+		mProc->SetRegister(Processor8086::REG_AL, (al + 6) & 0xFF);
+		mProc->SetFlag(Processor8086::FLAGS_AF, 1);
+		mProc->SetFlag(Processor8086::FLAGS_CF, (cf || (al + 6 > 0xFF)) ? 1 : 0);
 	} else {
-		proc->SetFlag(FLAGS_AF, 0);
+		mProc->SetFlag(Processor8086::FLAGS_AF, 0);
 	}
 	if(al > 0x99 || cf) {
-		proc->SetRegister(REG_AL, proc->GetRegister(REG_AL) + 0x60);
-		proc->SetFlag(FLAGS_CF, 1);
+		mProc->SetRegister(Processor8086::REG_AL, mProc->GetRegister(Processor8086::REG_AL) + 0x60);
+		mProc->SetFlag(Processor8086::FLAGS_CF, 1);
 	} else {
-		proc->SetFlag(FLAGS_CF, 0);
+		mProc->SetFlag(Processor8086::FLAGS_CF, 0);
 	}
 	return 0;
 }

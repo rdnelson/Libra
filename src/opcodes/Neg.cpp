@@ -12,21 +12,23 @@
 
 #include "Neg.hpp"
 
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ModrmOperand.hpp"
 
 #include <cstdio>
 
-Neg::Neg(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op)
+Neg::Neg(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op)
 {}
 
 Instruction* Neg::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Memory::MemoryOffset opLoc = memLoc;
 	int preLen = 0;
 	char buf[65];
 	std::string inst;
-	Instruction* newNeg = 0;
+	Instruction8086* newNeg = 0;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 
@@ -42,10 +44,11 @@ Instruction* Neg::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			if(modrm == 3) {
 				unsigned int size = (*opLoc == NEG_MOD8 ? 1 : 2);
 				Operand* dst = ModrmOperand::GetModrmOperand
-					(proc, opLoc, ModrmOperand::MOD, size);
+					(mProc, opLoc, ModrmOperand::MOD, size);
 				snprintf(buf, 65, "NEG %s", dst->GetDisasm().c_str());
 				GETINST(preLen + 2 + dst->GetBytecodeLen());
 				newNeg = new Neg(pre, buf, inst, (int)*opLoc);
+				newNeg->SetProc(mProc);
 				newNeg->SetOperand(Operand::DST, dst);
 				break;
 			}
@@ -55,7 +58,7 @@ Instruction* Neg::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Neg::Execute(Processor* proc) {
+int Neg::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 
 	if(!dst) {
@@ -63,16 +66,16 @@ int Neg::Execute(Processor* proc) {
 	}
 	unsigned int dstVal = dst->GetValue();
 	unsigned int sign = dst->GetBitmask() == 0xFF ? 0x80 : 0x8000;
-	proc->SetFlag(FLAGS_CF, dstVal != 0);
-	proc->SetFlag(FLAGS_OF, dstVal == 0x80); //only overflow is -128 -> -128
+	mProc->SetFlag(Processor8086::FLAGS_CF, dstVal != 0);
+	mProc->SetFlag(Processor8086::FLAGS_OF, dstVal == 0x80); //only overflow is -128 -> -128
 	
 	dst->SetValue((~dstVal + 1) & dst->GetBitmask());
 	dstVal = dst->GetValue();
 
-	proc->SetFlag(FLAGS_SF, dstVal >= sign);
-	proc->SetFlag(FLAGS_ZF, dstVal == 0x00);
-	proc->SetFlag(FLAGS_PF, Parity(dstVal));
-	proc->SetFlag(FLAGS_AF, AdjustSub(dstVal, dstVal*2));
+	mProc->SetFlag(Processor8086::FLAGS_SF, dstVal >= sign);
+	mProc->SetFlag(Processor8086::FLAGS_ZF, dstVal == 0x00);
+	mProc->SetFlag(Processor8086::FLAGS_PF, Parity(dstVal));
+	mProc->SetFlag(Processor8086::FLAGS_AF, AdjustSub(dstVal, dstVal*2));
 
 	return 0;
 }

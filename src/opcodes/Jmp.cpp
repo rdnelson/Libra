@@ -12,13 +12,13 @@
 
 #include "Jmp.hpp"
 
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ModrmOperand.hpp"
 #include "../ImmediateOperand.hpp"
 
 #include <cstdio>
 
-Jmp::Jmp(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Jmp::Jmp(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* Jmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
@@ -26,12 +26,14 @@ Instruction* Jmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	std::string inst;
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preLen = 0;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	if(pre) {
 		opLoc += preLen = pre->GetLength();
 	}
 
-	Instruction* newJmp = 0;
+	Instruction8086* newJmp = 0;
 
 	switch(*opLoc) {
 		case JMP_REL8:
@@ -46,6 +48,7 @@ Instruction* Jmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			snprintf(buf, 65, "JMP %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 1 + size);
 			newJmp = new Jmp(pre, buf, inst, (int)*opLoc);
+			newJmp->SetProc(mProc);
 			newJmp->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -54,10 +57,11 @@ Instruction* Jmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		if(((unsigned int)((*(opLoc + 1) & 0x38) >> 3) == JMP_SUB_OPCODE) ||
 				((unsigned int)((*(opLoc + 1) & 0x38) >> 3) == JMP_SUB_SEG_OPCODE))
 		{
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, 2);
 			snprintf(buf, 65, "JMP %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 3 + dst->GetBytecodeLen());
 			newJmp = new Jmp(pre,buf, inst, (int)*opLoc);
+			newJmp->SetProc(mProc);
 			newJmp->SetOperand(Operand::DST, dst);
 			((Jmp*)newJmp)->mType = (*(opLoc + 1) & 0x38) >> 3;
 		}
@@ -72,6 +76,7 @@ Instruction* Jmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			snprintf(buf, 65, "JMP %s", dst->GetDisasm().c_str());
 			GETINST(preLen + 4);
 			newJmp = new Jmp(pre, buf, inst, (int)*opLoc);
+			newJmp->SetProc(mProc);
 			newJmp->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -82,27 +87,27 @@ Instruction* Jmp::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Jmp::Execute(Processor* proc) {
+int Jmp::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 	if(dst == 0) {
 		return INVALID_ARGS;
 	}
 
-	unsigned int ip = proc->GetRegister(REG_IP);
+	unsigned int ip = mProc->GetRegister(Processor8086::REG_IP);
 	switch(mOpcode) {
 		case JMP_REL8:
 			if(dst->GetValue() >= 0x80)
 				ip -= (~dst->GetValue() + 1) & 0xFF;
 			else
 				ip += dst->GetValue();
-			proc->SetRegister(REG_IP, ip & 0xFFFF);
+			mProc->SetRegister(Processor8086::REG_IP, ip & 0xFFFF);
 			break;
 		case JMP_REL16:
 			if(dst->GetValue() >= 0x8000)
 				ip -= (~dst->GetValue() + 1) & 0xFFFF;
 			else
 				ip += dst->GetValue();
-			proc->SetRegister(REG_IP, ip & 0xFFFF);
+			mProc->SetRegister(Processor8086::REG_IP, ip & 0xFFFF);
 			break;
 		case JMP_MOD16:
 		//case JMP_MOD16_16
@@ -110,11 +115,11 @@ int Jmp::Execute(Processor* proc) {
 			if(mType == JMP_SUB_SEG_OPCODE || mOpcode == JMP_PTR16_16) {		
 				ip = (dst->GetValue(4) & 0xFFFF) + 
 						(((dst->GetValue(4) & 0xFFFF0000) >> 0x0C) & 0xFFFF);
-				proc->SetRegister(REG_IP, ip & 0xFFFF);
-				proc->SetRegister(REG_CS, (ip & 0xFFFF0000) >> 0x10);
+				mProc->SetRegister(Processor8086::REG_IP, ip & 0xFFFF);
+				mProc->SetRegister(Processor8086::REG_CS, (ip & 0xFFFF0000) >> 0x10);
 			} else if(mType == JMP_SUB_OPCODE) {
 				ip = dst->GetValue();
-				proc->SetRegister(REG_IP, ip);
+				mProc->SetRegister(Processor8086::REG_IP, ip);
 			}
 			break;
 	}

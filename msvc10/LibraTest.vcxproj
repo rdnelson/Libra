@@ -70,7 +70,7 @@
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(ProjectDir)\..\lib\gtest-1.6.0\msvc\Libra\Release\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)include;$(ProjectDir)\..\lib\gtest-1.6.0\include\;$(ProjectDir)\..\src\</IncludePath>
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(ProjectDir)\..\lib\gtest-1.6.0\msvc\Libra\Debug\</LibraryPath>
   </PropertyGroup>
@@ -80,7 +80,7 @@
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(ProjectDir)\..\lib\gtest-1.6.0\msvc\Libra\Release_static\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)include;$(ProjectDir)\..\lib\gtest-1.6.0\include\;$(ProjectDir)\..\src\</IncludePath>
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(ProjectDir)\..\lib\gtest-1.6.0\msvc\Libra\Debug_static\</LibraryPath>
   </PropertyGroup>
@@ -101,7 +101,6 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>gtest.lib;gtest_main.lib;$(QTDIR)\lib\qtmain.lib;$(QTDIR)\lib\QtGui4.lib;$(QTDIR)\lib\QtCore4.lib;winmm.lib;imm32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-
       <AdditionalLibraryDirectories>$(ProjectDir)\Win32\Release\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -113,20 +112,23 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include;$(QTDIR)\include\ActiveQt;release;.;..\..\..\Qt\4.8.4\mkspecs\default;..\src\GeneratedFiles;..\test\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
       <AdditionalDependencies>gtestd.lib;gtest_maind.lib;$(QTDIR)\lib\qtmaind.lib;$(QTDIR)\lib\QtGuid4.lib;$(QTDIR)\lib\QtCored4.lib;winmm.lib;imm32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)\Win32\Debug\</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
       <Command>xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y</Command>
@@ -160,20 +162,22 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;QICO_NEEDED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include;$(QTDIR)\include\ActiveQt;release;.;..\..\..\Qt\4.8.4\mkspecs\default;..\src\GeneratedFiles;..\test\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
       <AdditionalDependencies>gtestd.lib;gtest_maind.lib;$(QTDIR)\lib\qtmaind.lib;$(QTDIR)\lib\QtGuid.lib;$(QTDIR)\lib\QtCored.lib;$(QTDIR)\plugins\imageformats\qicod.lib;winmm.lib;imm32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)\Win32\Debug_Static\</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
       <Command>xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y</Command>
@@ -182,10 +186,10 @@
   <ItemGroup>
     <ClCompile Include="..\src\AddressOperand.cpp" />
     <ClCompile Include="..\src\Breakpoint.cpp" />
-    <ClCompile Include="..\src\Debug\moc_MemWnd.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    <ClCompile Include="..\src\Debug\moc_MainWnd8086.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\Debug\moc_QInstructionList.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -207,10 +211,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\src\Debug_Static\moc_MemWnd.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    <ClCompile Include="..\src\Debug_Static\moc_MainWnd8086.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\Debug_Static\moc_QInstructionList.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
@@ -234,9 +238,10 @@
     </ClCompile>
     <ClCompile Include="..\src\GeneratedFiles\qrc_Resources.cpp" />
     <ClCompile Include="..\src\Instruction.cpp" />
-    <ClCompile Include="..\src\InstTable.cpp" />
+    <ClCompile Include="..\src\Instruction8086.cpp" />
+    <ClCompile Include="..\src\InstTable8086.cpp" />
+    <ClCompile Include="..\src\MainWnd8086.cpp" />
     <ClCompile Include="..\src\Memory.cpp" />
-    <ClCompile Include="..\src\MemWnd.cpp" />
     <ClCompile Include="..\src\ModrmOperand.cpp" />
     <ClCompile Include="..\src\opcodes\Aaa.cpp" />
     <ClCompile Include="..\src\opcodes\Aad.cpp" />
@@ -295,15 +300,15 @@
     <ClCompile Include="..\src\peripherals\Screen.cpp" />
     <ClCompile Include="..\src\peripherals\Timer.cpp" />
     <ClCompile Include="..\src\Prefix.cpp" />
-    <ClCompile Include="..\src\Processor.cpp" />
+    <ClCompile Include="..\src\Processor8086.cpp" />
     <ClCompile Include="..\src\QInstructionList.cpp" />
     <ClCompile Include="..\src\QKbdFilter.cpp" />
     <ClCompile Include="..\src\QMemModel.cpp" />
     <ClCompile Include="..\src\RegisterOperand.cpp" />
-    <ClCompile Include="..\src\Release\moc_MemWnd.cpp">
+    <ClCompile Include="..\src\Release\moc_MainWnd8086.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\Release\moc_QInstructionList.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
@@ -325,10 +330,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\src\Release_Static\moc_MemWnd.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    <ClCompile Include="..\src\Release_Static\moc_MainWnd8086.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\src\Release_Static\moc_QInstructionList.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -352,34 +357,18 @@
     </ClCompile>
     <ClCompile Include="..\src\VM.cpp" />
     <ClCompile Include="..\src\VMWorker.cpp" />
-    <ClCompile Include="..\test\tests\TestInstruction.cpp" />
+    <ClCompile Include="..\test\tests\TestInstruction8086.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\AddressOperand.hpp" />
     <ClInclude Include="..\src\Breakpoint.hpp" />
-    <ClInclude Include="..\src\GeneratedFiles\ui_MemWnd.h" />
+    <ClInclude Include="..\src\GeneratedFiles\ui_MainWnd8086.h" />
     <ClInclude Include="..\src\ImmediateOperand.hpp" />
     <ClInclude Include="..\src\Instruction.hpp" />
+    <ClInclude Include="..\src\Instruction8086.hpp" />
     <ClInclude Include="..\src\IPeripheral.hpp" />
+    <ClInclude Include="..\src\MainWnd8086.hpp" />
     <ClInclude Include="..\src\Memory.hpp" />
-    <ClInclude Include="..\src\MemWnd.hpp">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\..\src\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQICO_NEEDED -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -D_CRT_SECURE_NO_WARNINGS -DNDEBUG  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I.\release" "-I." "-I.\..\..\..\Qt\4.8.4\mkspecs\default" "-I.\..\src\GeneratedFiles"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\..\src\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQICO_NEEDED -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -D_CRT_SECURE_NO_WARNINGS -DNDEBUG  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I.\release" "-I." "-I.\..\..\..\Qt\4.8.4\mkspecs\default" "-I.\..\src\GeneratedFiles"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\..\src\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQICO_NEEDED -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -D_CRT_SECURE_NO_WARNINGS -DNDEBUG  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I.\release" "-I." "-I.\..\..\..\Qt\4.8.4\mkspecs\default" "-I.\..\src\GeneratedFiles"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\..\src\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQICO_NEEDED -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -D_CRT_SECURE_NO_WARNINGS -DNDEBUG  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I.\release" "-I." "-I.\..\..\..\Qt\4.8.4\mkspecs\default" "-I.\..\src\GeneratedFiles"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing MemWnd.hpp...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing MemWnd.hpp...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">Moc%27ing MemWnd.hpp...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">Moc%27ing MemWnd.hpp...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\src\$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\src\$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">..\src\$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">..\src\$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-    </ClInclude>
     <ClInclude Include="..\src\ModrmOperand.hpp" />
     <ClInclude Include="..\src\opcodes\Aaa.hpp" />
     <ClInclude Include="..\src\opcodes\Aad.hpp" />
@@ -442,6 +431,7 @@
     <ClInclude Include="..\src\peripherals\Timer.hpp" />
     <ClInclude Include="..\src\Prefix.hpp" />
     <ClInclude Include="..\src\Processor.hpp" />
+    <ClInclude Include="..\src\Processor8086.hpp" />
     <ClInclude Include="..\src\QInstructionList.hpp" />
     <ClInclude Include="..\src\QKbdFilter.hpp" />
     <ClInclude Include="..\src\QMemModel.hpp" />
@@ -451,27 +441,6 @@
     <ClInclude Include="..\src\VM.hpp" />
     <ClInclude Include="..\src\VMWorker.hpp" />
     <ClInclude Include="..\test\Common.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\src\MemWnd.ui">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o "..\src\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o "..\src\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">"$(QTDIR)\bin\uic.exe" -o "..\src\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">"$(QTDIR)\bin\uic.exe" -o "..\src\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">Uic%27ing %(Identity)...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\src\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\src\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">..\src\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">..\src\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -11,22 +11,24 @@
 \*-------------------------------------*/
 
 #include "Lxs.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../ModrmOperand.hpp"
 
 #include <cstdio>
 
-Lxs::Lxs(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Lxs::Lxs(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
 Instruction* Lxs::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newLxs = 0;
+	Instruction8086* newLxs = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -34,12 +36,13 @@ Instruction* Lxs::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 	if(*opLoc == LDS || *opLoc == LES) {
 
-		Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, 2);
-		Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
+		Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::REG, 2);
+		Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, 2);
 		GETINST(preSize + 2 + src->GetBytecodeLen());
 		snprintf(buf, 65, "LDS %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 
 		newLxs = new Lxs(pre, buf, inst, (int)*opLoc);
+		newLxs->SetProc(mProc);
 		newLxs->SetOperand(Operand::SRC, src);
 		newLxs->SetOperand(Operand::DST, dst);
 	} 
@@ -49,7 +52,7 @@ Instruction* Lxs::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Lxs::Execute(Processor* proc) {
+int Lxs::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 	Operand* src = mOperands[Operand::SRC];
 
@@ -62,9 +65,9 @@ int Lxs::Execute(Processor* proc) {
 	dst->SetValue(val & 0xFFFF);
 
 	if(mOpcode == LDS) {
-		proc->SetRegister(REG_DS, (val & 0xFFFF0000) >> 0x10);
+		mProc->SetRegister(Processor8086::REG_DS, (val & 0xFFFF0000) >> 0x10);
 	} else if(mOpcode == LES) {
-		proc->SetRegister(REG_ES, (val & 0xFFFF0000) >> 0x10);
+		mProc->SetRegister(Processor8086::REG_ES, (val & 0xFFFF0000) >> 0x10);
 	} else {
 		return INVALID_ARGS;
 	}

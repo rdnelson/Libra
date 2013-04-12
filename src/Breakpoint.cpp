@@ -16,7 +16,7 @@ Breakpoint::Breakpoint() : mIP(0xFFFFFFFF), mUseIP(false) {}
 
 Breakpoint::Breakpoint(unsigned int IP) : mIP(IP & 0xFFFF), mUseIP(true) {}
 
-void Breakpoint::AddRegisterWatch(eRegisters reg, unsigned int val) {
+void Breakpoint::AddRegisterWatch(unsigned int reg, unsigned int val) {
 
 	Condition c;
 
@@ -29,7 +29,7 @@ void Breakpoint::AddRegisterWatch(eRegisters reg, unsigned int val) {
 
 }
 
-void Breakpoint::AddRegisterChanged(eRegisters reg) {
+void Breakpoint::AddRegisterChanged(unsigned int reg) {
 
 	Condition c;
 
@@ -40,7 +40,7 @@ void Breakpoint::AddRegisterChanged(eRegisters reg) {
 	mConditions.push_back(c);
 }
 
-void Breakpoint::AddFlagsWatch(eFlags flag, bool value) {
+void Breakpoint::AddFlagsWatch(unsigned int flag, bool value) {
 
 	Condition c;
 
@@ -52,7 +52,7 @@ void Breakpoint::AddFlagsWatch(eFlags flag, bool value) {
 	mConditions.push_back(c);
 }
 
-void Breakpoint::AddFlagsChanged(eFlags flag) {
+void Breakpoint::AddFlagsChanged(unsigned int flag) {
 
 	Condition c;
 
@@ -93,7 +93,7 @@ bool Breakpoint::Evaluate(Processor* proc) {
 
 	if(mUseIP) {
 		//Line must match for any other conditions to matter
-		if(proc->GetRegister(REG_IP) != mIP) {
+		if(proc->GetIP() != mIP) {
 			return false;
 		}
 	}

@@ -4,7 +4,7 @@
 |
 |  Creation Date: 25-09-2012
 |
-|  Last Modified: Thu, Oct 18, 2012  7:54:57 PM
+|  Last Modified: Fri, Apr 12, 2012  13:41:00 PM
 |
 |  Created By: Robert Nelson
 |
@@ -14,63 +14,29 @@
 
 #include <vector>
 
-#include "Instruction.hpp"
+//#include "Instruction.hpp"
 #include "Memory.hpp"
 #include "Register.hpp"
 #include "IPeripheral.hpp"
 
 class QTimer;
+class Instruction;
 
-enum eRegisters {
-	REG_AX,
-	REG_CX,
-	REG_DX,
-	REG_BX,
-	REG_SP,
-	REG_BP,
-	REG_SI,
-	REG_DI,
-	REG_CS,
-	REG_DS,
-	REG_SS,
-	REG_ES,
-	REG_IP,
-	REG_FLAGS,
-	NumRegisters,
-	REG_AL,
-	REG_CL,
-	REG_DL,
-	REG_BL,
-	LowRegisters,
-	REG_AH,
-	REG_CH,
-	REG_DH,
-	REG_BH,
-	HighRegisters,
-    AllRegisters=HighRegisters
-};
-
-enum eFlags {
-	FLAGS_CF = 0,
-	FLAGS_PF = 2,
-	FLAGS_AF = 4,
-	FLAGS_ZF = 6,
-	FLAGS_SF = 7,
-	FLAGS_TF = 8,
-	FLAGS_IF = 9,
-	FLAGS_DF = 10,
-	FLAGS_OF = 11
-};
 
 
 class Processor {
-
+	
 	public:
-		int Initialize(unsigned int startAddr = 0x0000);
-		Processor(Memory& mem);
-		~Processor();
-		int Step();
-		void Stop();
+		enum eModel {
+			MODEL_INVALID,
+			MODEL_8086,
+			NUM_MODELS
+		};
+		Processor(Memory& mem) : mMem(mem), mNextInst(0), mStartAddr(0), mModel(MODEL_INVALID), mInterrupt(0), mHalt(false) {}
+		eModel GetModel() const { return mModel; }
+		virtual int Initialize(unsigned int startAddr) = 0;
+		virtual int Step() = 0;
+		virtual void Stop() = 0;
 
 		static const int PROC_SUCCESS		=  0;
 		static const int PROC_HALT		=  1000;
@@ -78,72 +44,64 @@ class Processor {
 		static const int PROC_ERR_INV_INST 	= -2;
 		static const int PROC_ERR_INST		= -3;
 
-		bool GetFlag(eFlags flag) const;
-		void SetFlag(eFlags flag, bool val);
+		virtual bool GetFlag(unsigned int flag) const = 0;
+		virtual void SetFlag(unsigned int flag, bool val) = 0;
 
-		virtual unsigned int GetRegister(eRegisters reg) const;
-		virtual void SetRegister(eRegisters reg, unsigned int val);
+		virtual unsigned int GetRegister(unsigned int reg) const = 0;
+		virtual void SetRegister(unsigned int reg, unsigned int val) = 0;
 
-		unsigned int GetRegisterLow(eRegisters reg) const;
-		void SetRegisterLow(eRegisters reg, unsigned int val);
+		virtual unsigned int GetRegisterLow(unsigned int reg) const = 0;
+		virtual void SetRegisterLow(unsigned int reg, unsigned int val) = 0;
 
-		unsigned int GetRegisterHigh(eRegisters reg) const;
-		void SetRegisterHigh(eRegisters reg, unsigned int val);
+		virtual unsigned int GetRegisterHigh(unsigned int reg) const = 0;
+		virtual void SetRegisterHigh(unsigned int reg, unsigned int val) = 0;
 
-		virtual unsigned int GetMemory(Memory::MemoryOffset& addr, unsigned int size);
-		virtual unsigned int GetMemory(size_t offset, unsigned int size);
+		virtual unsigned int GetMemory(Memory::MemoryOffset& addr, unsigned int size) = 0;
+		virtual unsigned int GetMemory(size_t offset, unsigned int size) = 0;
 
-		virtual void SetMemory(Memory::MemoryOffset& addr, unsigned int size, unsigned int val);
-		virtual void SetMemory(size_t offset, unsigned int size, unsigned int val);
+		virtual void SetMemory(Memory::MemoryOffset& addr, unsigned int size, unsigned int val) = 0;
+		virtual void SetMemory(size_t offset, unsigned int size, unsigned int val) = 0;
 
-		void SetInterrupt(unsigned char n);
-		void Halt() { mHalt = true; }
+		virtual unsigned int GetIP() const = 0;
+		virtual bool InterruptsEnabled() const = 0;
 
-		void PushRegister(eRegisters reg);
-		void PushValue(unsigned int val);
+		virtual void SetInterrupt(unsigned char n) = 0;
+		virtual void Halt() = 0;
 
-		void PopRegister(eRegisters reg);
-		void PopSize(unsigned int size);
-		unsigned int PopValue();
+		virtual void PushRegister(unsigned int reg) = 0;
+		virtual void PushValue(unsigned int val) = 0;
 
-		void Outb(unsigned int port, unsigned char data);
-		void Outw(unsigned int port, unsigned short data);
+		virtual void PopRegister(unsigned int reg) = 0;
+		virtual void PopSize(unsigned int size) = 0;
+		virtual unsigned int PopValue() = 0;
 
-		unsigned char Inb(unsigned int port);
-		unsigned short Inw(unsigned int port);
+		virtual void Outb(unsigned int port, unsigned char data) = 0;
+		virtual void Outw(unsigned int port, unsigned short data) = 0;
+
+		virtual unsigned char Inb(unsigned int port) = 0;
+		virtual unsigned short Inw(unsigned int port) = 0;
 
 		const std::vector<IPeripheral*> & GetDevices() { return mDevices; }
-		const char* GetRegisterHex(eRegisters reg) const;
+		virtual const char* GetRegisterHex(unsigned int reg) const = 0;
 		const Instruction* GetNextInstruction() const { return mNextInst; }
 
 		void SetTimer(QTimer* timer) { mTimer = timer; }
 
-		void ProcDump();
-		void MemDump();
-		void DeviceDump();
+		virtual void ProcDump() = 0;
+		virtual void MemDump() = 0;
+		virtual void DeviceDump() = 0;
 
-
-
-	private:
-
-		int Execute(Instruction* inst);
-
-		void _InitializeDevices();
-
-		Register	mRegisters[NumRegisters];
+	protected:
 		Memory&	mMem;
 		Instruction* mNextInst;
 
 		std::vector<IPeripheral*> mDevices;
 
-		//Last Accessed port# and it's associated device
-		unsigned int mLastPort;
-		IPeripheral* mLastDevice;
-
 		unsigned int mStartAddr;
+
+		eModel mModel;
 
 		int mInterrupt;
 		bool mHalt;
 		QTimer* mTimer;
-
 };

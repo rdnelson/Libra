@@ -11,8 +11,8 @@
 \*-------------------------------------*/
 
 #include "Jcc.hpp"
-#include "../Processor.hpp"
-#include "../Instruction.hpp"
+#include "../Processor8086.hpp"
+#include "../Instruction8086.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../Prefix.hpp"
 
@@ -45,16 +45,18 @@ Jcc::Jcc(Prefix* pre, std::string text, std::string inst, int op) {
 	mValid = true;
 }
 
-Instruction* Jcc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
+Instruction* Jcc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
 	unsigned int opcodeOffset = 0;
 
-	Instruction* newJcc = 0;
+	Instruction8086* newJcc = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -94,6 +96,7 @@ Instruction* Jcc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 			src = new ImmediateOperand(val, opcodeOffset == TWO_BYTE_OFFSET ? 2 : 1, (opLoc + 1).getOffset());
 			snprintf(buf, 65, "%s %s", _GetStr(*opLoc - opcodeOffset), src->GetDisasm().c_str());
 			newJcc = new Jcc(pre, buf, inst, (unsigned char)*opLoc - opcodeOffset);
+			newJcc->SetProc(mProc);
 			newJcc->SetOperand(Operand::SRC, src);
 			break;
 
@@ -105,7 +108,7 @@ Instruction* Jcc::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 	return newJcc;
 }
 
-int Jcc::Execute(Processor* proc) {
+int Jcc::Execute() {
 	Operand* src = mOperands[Operand::SRC];
 
 	if(!src) {
@@ -116,69 +119,69 @@ int Jcc::Execute(Processor* proc) {
 
 	switch(mOpcode) {
 		case JA:
-			jmp = !proc->GetFlag(FLAGS_CF) && !proc->GetFlag(FLAGS_ZF);
+			jmp = !mProc->GetFlag(Processor8086::FLAGS_CF) && !mProc->GetFlag(Processor8086::FLAGS_ZF);
 			break;
 		case JAE:
-			jmp = !proc->GetFlag(FLAGS_CF);
+			jmp = !mProc->GetFlag(Processor8086::FLAGS_CF);
 			break;
 		case JB:
-			jmp = proc->GetFlag(FLAGS_CF);
+			jmp = mProc->GetFlag(Processor8086::FLAGS_CF);
 			break;
 		case JBE:
-			jmp = proc->GetFlag(FLAGS_CF) && proc->GetFlag(FLAGS_ZF);
+			jmp = mProc->GetFlag(Processor8086::FLAGS_CF) && mProc->GetFlag(Processor8086::FLAGS_ZF);
 			break;
 		case JCXZ:
-			jmp = proc->GetRegister(REG_CX) == 0;
+			jmp = mProc->GetRegister(Processor8086::REG_CX) == 0;
 			break;
 		case JE:
-			jmp = proc->GetFlag(FLAGS_ZF);
+			jmp = mProc->GetFlag(Processor8086::FLAGS_ZF);
 			break;
 		case JG:
-			jmp = !proc->GetFlag(FLAGS_ZF) && proc->GetFlag(FLAGS_SF) == proc->GetFlag(FLAGS_OF);
+			jmp = !mProc->GetFlag(Processor8086::FLAGS_ZF) && mProc->GetFlag(Processor8086::FLAGS_SF) == mProc->GetFlag(Processor8086::FLAGS_OF);
 			break;
 		case JGE:
-			jmp = proc->GetFlag(FLAGS_SF) == proc->GetFlag(FLAGS_OF);
+			jmp = mProc->GetFlag(Processor8086::FLAGS_SF) == mProc->GetFlag(Processor8086::FLAGS_OF);
 			break;
 		case JL:
-			jmp = proc->GetFlag(FLAGS_SF) != proc->GetFlag(FLAGS_OF);
+			jmp = mProc->GetFlag(Processor8086::FLAGS_SF) != mProc->GetFlag(Processor8086::FLAGS_OF);
 			break;
 		case JLE:
-			jmp = proc->GetFlag(FLAGS_SF) != proc->GetFlag(FLAGS_OF) && proc->GetFlag(FLAGS_ZF);
+			jmp = mProc->GetFlag(Processor8086::FLAGS_SF) != mProc->GetFlag(Processor8086::FLAGS_OF) && mProc->GetFlag(Processor8086::FLAGS_ZF);
 			break;
 		case JNE:
-			jmp = !proc->GetFlag(FLAGS_ZF);
+			jmp = !mProc->GetFlag(Processor8086::FLAGS_ZF);
 			break;
 		case JNO:
-			jmp = !proc->GetFlag(FLAGS_OF);
+			jmp = !mProc->GetFlag(Processor8086::FLAGS_OF);
 			break;
 		case JNP:
-			jmp = !proc->GetFlag(FLAGS_PF);
+			jmp = !mProc->GetFlag(Processor8086::FLAGS_PF);
 			break;
 		case JNS:
-			jmp = !proc->GetFlag(FLAGS_SF);
+			jmp = !mProc->GetFlag(Processor8086::FLAGS_SF);
 			break;
 		case JO:
-			jmp = proc->GetFlag(FLAGS_OF);
+			jmp = mProc->GetFlag(Processor8086::FLAGS_OF);
 			break;
 		case JP:
-			jmp = proc->GetFlag(FLAGS_PF);
+			jmp = mProc->GetFlag(Processor8086::FLAGS_PF);
 			break;
 		case JS:
-			jmp = proc->GetFlag(FLAGS_SF);
+			jmp = mProc->GetFlag(Processor8086::FLAGS_SF);
 
 		default:
 			break;		
 	}
 
 	if(jmp) {
-		unsigned int newIP = proc->GetRegister(REG_IP);
+		unsigned int newIP = mProc->GetRegister(Processor8086::REG_IP);
 		unsigned int relAddr = src->GetValue();
 		if (relAddr & 0x80)
 			newIP -= 0xFF & (~relAddr + 1);
 		else 
 			newIP += relAddr;
 		newIP &= 0xFFFF;
-		proc->SetRegister(REG_IP, newIP);
+		mProc->SetRegister(Processor8086::REG_IP, newIP);
 	}
 
 	return 0;

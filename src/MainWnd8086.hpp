@@ -10,17 +10,17 @@
 #include "VMWorker.hpp"
 
 namespace Ui {
-class MemWnd;
+class MainWnd8086;
 }
 
-class MemWnd : public QMainWindow
+class MainWnd8086 : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	explicit MemWnd(const char* const file = 0, QWidget *parent = 0);
+	explicit MainWnd8086(const char* const file = 0, QWidget *parent = 0);
 
-	~MemWnd();
+	~MainWnd8086();
 
 public slots:
 
@@ -64,7 +64,7 @@ signals:
 	void vmPause();
 
 private:
-	Ui::MemWnd *ui;
+	Ui::MainWnd8086 *ui;
 	VMWorker* mVMWorker;
 
 	void loadFile(bool newFile = false);

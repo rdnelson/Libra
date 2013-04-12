@@ -11,22 +11,24 @@
 \*-------------------------------------*/
 
 #include "Hlt.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
 
 #include <cstdio>
 
-Hlt::Hlt(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Hlt::Hlt(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
-Instruction* Hlt::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
+Instruction* Hlt::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newHlt = 0;
+	Instruction8086* newHlt = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -38,6 +40,7 @@ Instruction* Hlt::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 			GETINST(preSize + 1);
 			snprintf(buf, 65, "HLT");
 			newHlt = new Hlt(pre, buf, inst, (int)*opLoc);
+			newHlt->SetProc(mProc);
 			break;
 		}
 	}
@@ -46,8 +49,8 @@ Instruction* Hlt::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 
 }
 
-int Hlt::Execute(Processor* proc) {
+int Hlt::Execute() {
 
-	proc->Halt();
+	mProc->Halt();
 	return 0;
 }

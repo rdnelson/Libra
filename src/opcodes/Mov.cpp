@@ -11,7 +11,7 @@
 \*-------------------------------------*/
 
 #include "Mov.hpp"
-#include "../Instruction.hpp"
+#include "../Instruction8086.hpp"
 #include "../ModrmOperand.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
@@ -34,11 +34,13 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
 
-	Instruction* newMov = 0;
+	Instruction8086* newMov = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -49,13 +51,14 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case MOV_MOD16_REG16:
 		{
 			unsigned int size = (*opLoc == MOV_MOD8_REG8 ? 1 : 2);
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::REG, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
+			newMov->SetProc(mProc);
 			newMov->SetOperand(Operand::SRC, src);
 			newMov->SetOperand(Operand::DST, dst);
 			break;
@@ -65,26 +68,28 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case MOV_REG16_MOD16:
 		{
 			unsigned int size = (*opLoc == MOV_REG8_MOD8 ? 1 : 2);
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::REG, size);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::REG, size);
 
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
+			newMov->SetProc(mProc);
 			newMov->SetOperand(Operand::SRC, src);
 			newMov->SetOperand(Operand::DST, dst);
 			break;
 		}
 		case MOV_MOD16_SEGREG:
 		{
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::SEGREG, 2);
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::SEGREG, 2);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, 2);
 
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
+			newMov->SetProc(mProc);
 			newMov->SetOperand(Operand::SRC, src);
 			newMov->SetOperand(Operand::DST, dst);
 			break;
@@ -92,13 +97,14 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 		case MOV_SEGREG_MOD16:
 		{
-			Operand* src = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, 2);
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::SEGREG, 2);
+			Operand* src = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, 2);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::SEGREG, 2);
 
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
+			newMov->SetProc(mProc);
 			newMov->SetOperand(Operand::SRC, src);
 			newMov->SetOperand(Operand::DST, dst);
 			break;
@@ -108,18 +114,19 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case MOV_AX_MOFF16:
 		{
 			unsigned int size = (*opLoc == MOV_AL_MOFF8 ? 1 : 2);
-			Operand* dst = new RegisterOperand(*opLoc == MOV_AL_MOFF8 ? REG_AL : REG_AX, proc);
+			Operand* dst = new RegisterOperand(*opLoc == MOV_AL_MOFF8 ? Processor8086::REG_AL : Processor8086::REG_AX, mProc);
 
 			unsigned int val = (int)*(opLoc + 1);
 			val += ((int)*(opLoc + 2)) << 8;
 
 			Memory::MemoryOffset tmpMem = opLoc.getNewOffset(val);
-			Operand* src = AddressOperand::GetAddressOperand(proc, tmpMem, size);
+			Operand* src = AddressOperand::GetAddressOperand(mProc, tmpMem, size);
 
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 3);
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
+			newMov->SetProc(mProc);
 			newMov->SetOperand(Operand::SRC, src);
 			newMov->SetOperand(Operand::DST, dst);
 			break;
@@ -129,18 +136,19 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case MOV_MOFF16_AX:
 		{
 			unsigned int size = (*opLoc == MOV_MOFF8_AL ? 1 : 2);
-			Operand* src = new RegisterOperand(*opLoc == MOV_MOFF8_AL ? REG_AL : REG_AX, proc);
+			Operand* src = new RegisterOperand(*opLoc == MOV_MOFF8_AL ? Processor8086::REG_AL : Processor8086::REG_AX, mProc);
 
 			unsigned int val = (int)*(opLoc + 1);
 			val += ((int)*(opLoc + 2)) << 8;
 
 			Memory::MemoryOffset tmpMem = opLoc.getNewOffset(val);
-			Operand* dst = AddressOperand::GetAddressOperand(proc, tmpMem, size);
+			Operand* dst = AddressOperand::GetAddressOperand(mProc, tmpMem, size);
 
 			snprintf(buf, 65, "MOV %s, %s", dst->GetDisasm().c_str(), src->GetDisasm().c_str());
 			GETINST(preSize + 3);
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
+			newMov->SetProc(mProc);
 			newMov->SetOperand(Operand::SRC, src);
 			newMov->SetOperand(Operand::DST, dst);
 			break;
@@ -169,13 +177,13 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			if(*opLoc <= MOV_BL_IMM8) {
 				//The 8 bit omes
 				size = 1;
-				dst = new RegisterOperand((eRegisters)(*opLoc - MOV_AL_IMM8 + REG_AL), proc);
+				dst = new RegisterOperand((Processor8086::eRegisters)(*opLoc - MOV_AL_IMM8 + Processor8086::REG_AL), mProc);
 			} else if(*opLoc <= MOV_BH_IMM8) {
 				size = 1;
-				dst = new RegisterOperand((eRegisters)(*opLoc - MOV_AH_IMM8 + REG_AH), proc);
+				dst = new RegisterOperand((Processor8086::eRegisters)(*opLoc - MOV_AH_IMM8 + Processor8086::REG_AH), mProc);
 			} else {
 				size = 2;
-				dst = new RegisterOperand((eRegisters)(*opLoc - MOV_AX_IMM16), proc);
+				dst = new RegisterOperand((Processor8086::eRegisters)(*opLoc - MOV_AX_IMM16), mProc);
 			}
 
 			unsigned int val = (int)*(opLoc + 1 + dst->GetBytecodeLen());
@@ -187,6 +195,7 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(preSize + 1 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
+			newMov->SetProc(mProc);
 			newMov->SetOperand(Operand::SRC, src);
 			newMov->SetOperand(Operand::DST, dst);
 			break;
@@ -196,7 +205,7 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 		case MOV_MOD16_IMM16:
 		{
 			unsigned int size = (*opLoc == MOV_MOD8_IMM8 ? 1 : 2);
-			Operand* dst = ModrmOperand::GetModrmOperand(proc, opLoc, ModrmOperand::MOD, size);
+			Operand* dst = ModrmOperand::GetModrmOperand(mProc, opLoc, ModrmOperand::MOD, size);
 
 			unsigned int val = (int)*(opLoc + 2 + dst->GetBytecodeLen());
 			if(size == 2) {
@@ -207,6 +216,7 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			GETINST(preSize + 2 + dst->GetBytecodeLen() + src->GetBytecodeLen());
 
 			newMov = new Mov(pre, buf, inst, (unsigned char)*opLoc);
+			newMov->SetProc(mProc);
 			newMov->SetOperand(Operand::SRC, src);
 			newMov->SetOperand(Operand::DST, dst);
 		}
@@ -216,8 +226,8 @@ Instruction* Mov::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 	return newMov;
 }
 
-int Mov::Execute(Processor* proc) {
-	proc += 0;
+int Mov::Execute() {
+	mProc += 0;
 	if(mOperands[Operand::SRC] && mOperands[Operand::DST]) {
 		mOperands[Operand::DST]->SetValue(mOperands[Operand::SRC]->GetValue());
 		return 0;

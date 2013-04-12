@@ -12,11 +12,11 @@
 
 #include "RegisterOperand.hpp"
 
-RegisterOperand::RegisterOperand(eRegisters reg, Processor* proc) : mReg(reg), mProc(proc), mSection(0) {
-	if(mReg > NumRegisters) {
-		if(mReg < LowRegisters) {
+RegisterOperand::RegisterOperand(Processor8086::eRegisters reg, Processor8086* proc) : mReg(reg), mProc(proc), mSection(0) {
+	if(mReg > Processor8086::NumRegisters) {
+		if(mReg < Processor8086::LowRegisters) {
 			mSection = 1;
-		} else if(mReg < HighRegisters) {
+		} else if(mReg < Processor8086::HighRegisters) {
 			mSection = 2;
 		}
 	}
@@ -27,9 +27,9 @@ unsigned int RegisterOperand::GetValue() {
 	if(mSection == 0)
 		return mProc->GetRegister(mReg);
 	else if(mSection == 1)
-		return mProc->GetRegisterLow((eRegisters)(mReg - NumRegisters - 1));
+		return mProc->GetRegisterLow((Processor8086::eRegisters)(mReg - Processor8086::NumRegisters - 1));
 	else if(mSection == 2)
-		return mProc->GetRegisterHigh((eRegisters)(mReg - LowRegisters - 1));
+		return mProc->GetRegisterHigh((Processor8086::eRegisters)(mReg - Processor8086::LowRegisters - 1));
 
 	//shouldn't hit
 	return 0;
@@ -40,58 +40,58 @@ void RegisterOperand::SetValue(unsigned int val) {
 }
 
 unsigned int RegisterOperand::GetBitmask() {
-	if(mReg < NumRegisters)
+	if(mReg < Processor8086::NumRegisters)
 		return 0xFFFF;
-	if(mReg < AllRegisters)
+	if(mReg < Processor8086::AllRegisters)
 		return 0xFF;
 	return 0;
 }
 
 const std::string RegisterOperand::GetDisasm() {
 	switch(mReg) {
-		case REG_AX:
+		case Processor8086::REG_AX:
 			return "AX";
-		case REG_BX:
+		case Processor8086::REG_BX:
 			return "BX";
-		case REG_CX:
+		case Processor8086::REG_CX:
 			return "CX";
-		case REG_DX:
+		case Processor8086::REG_DX:
 			return "DX";
-		case REG_SP:
+		case Processor8086::REG_SP:
 			return "SP";
-		case REG_BP:
+		case Processor8086::REG_BP:
 			return "BP";
-		case REG_SI:
+		case Processor8086::REG_SI:
 			return "SI";
-		case REG_DI:
+		case Processor8086::REG_DI:
 			return "DI";
-		case REG_AH:
+		case Processor8086::REG_AH:
 			return "AH";
-		case REG_AL:
+		case Processor8086::REG_AL:
 			return "AL";
-		case REG_BH:
+		case Processor8086::REG_BH:
 			return "BH";
-		case REG_BL:
+		case Processor8086::REG_BL:
 			return "BL";
-		case REG_CH:
+		case Processor8086::REG_CH:
 			return "CH";
-		case REG_CL:
+		case Processor8086::REG_CL:
 			return "CL";
-		case REG_DH:
+		case Processor8086::REG_DH:
 			return "DH";
-		case REG_DL:
+		case Processor8086::REG_DL:
 			return "DL";
-		case REG_CS:
+		case Processor8086::REG_CS:
 			return "CS";
-		case REG_DS:
+		case Processor8086::REG_DS:
 			return "DS";
-		case REG_SS:
+		case Processor8086::REG_SS:
 			return "SS";
-		case REG_ES:
+		case Processor8086::REG_ES:
 			return "ES";
-		case REG_IP:
+		case Processor8086::REG_IP:
 			return "IP";
-		case REG_FLAGS:
+		case Processor8086::REG_FLAGS:
 			return "FLAGS";
 		default:
 			return "INVALID";

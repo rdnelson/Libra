@@ -50,7 +50,7 @@ void VMWorker::run() {
 				mRunConditions = NOT_RUNNING;
 				return;
 			} else if (err == Processor::PROC_HALT) {
-				if(!mVM->GetProc().GetFlag(FLAGS_IF)) {
+				if(!mVM->GetProc().InterruptsEnabled()) {
 					end = Timer::GetSystemTime();
 					std::ofstream fout("time.log");
 					fout << "Instructions: " << instCount << std::endl;

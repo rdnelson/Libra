@@ -11,13 +11,13 @@
 \*-------------------------------------*/
 
 #include "ModrmOperand.hpp"
-#include "Processor.hpp"
+#include "Processor8086.hpp"
 #include "RegisterOperand.hpp"
 
 #include <cstring>
 #include <sstream>
 
-ModrmOperand::ModrmOperand(Processor* proc, const Memory::MemoryOffset& addr, unsigned int size, unsigned int bytelen )
+ModrmOperand::ModrmOperand(Processor8086* proc, const Memory::MemoryOffset& addr, unsigned int size, unsigned int bytelen )
 	: mAddr(addr), mSize(size), mProc(proc), mByteLen(bytelen) {}
 
 unsigned int ModrmOperand::GetValue(unsigned int size) {
@@ -30,62 +30,62 @@ void ModrmOperand::SetValue(unsigned int val) {
 	mProc->SetMemory(mAddr, mSize, val);
 }
 
-Operand* ModrmOperand::GetRegister(Processor* proc, unsigned int val, unsigned int size) {
+Operand* ModrmOperand::GetRegister(Processor8086* proc, unsigned int val, unsigned int size) {
 	switch(val) {
 		case 0x00:
 			if(size == 1)
-				return new RegisterOperand(REG_AL, proc);
+				return new RegisterOperand(Processor8086::REG_AL, proc);
 			else if(size == 2)
-				return new RegisterOperand(REG_AX, proc);
+				return new RegisterOperand(Processor8086::REG_AX, proc);
 			return 0;
 			break;
 		case 0x01:
 			if(size == 1)
-				return new RegisterOperand(REG_CL, proc);
+				return new RegisterOperand(Processor8086::REG_CL, proc);
 			else if(size == 2)
-				return new RegisterOperand(REG_CX, proc);
+				return new RegisterOperand(Processor8086::REG_CX, proc);
 			return 0;
 			break;
 		case 0x02:
 			if(size == 1)
-				return new RegisterOperand(REG_DL, proc);
+				return new RegisterOperand(Processor8086::REG_DL, proc);
 			else if(size == 2)
-				return new RegisterOperand(REG_DX, proc);
+				return new RegisterOperand(Processor8086::REG_DX, proc);
 			return 0;
 			break;
 		case 0x03:
 			if(size == 1)
-				return new RegisterOperand(REG_BL, proc);
+				return new RegisterOperand(Processor8086::REG_BL, proc);
 			else if(size == 2)
-				return new RegisterOperand(REG_BX, proc);
+				return new RegisterOperand(Processor8086::REG_BX, proc);
 			return 0;
 			break;
 		case 0x04:
 			if(size == 1)
-				return new RegisterOperand(REG_AH, proc);
+				return new RegisterOperand(Processor8086::REG_AH, proc);
 			else if(size == 2)
-				return new RegisterOperand(REG_SP, proc);
+				return new RegisterOperand(Processor8086::REG_SP, proc);
 			return 0;
 			break;
 		case 0x05:
 			if(size == 1)
-				return new RegisterOperand(REG_CH, proc);
+				return new RegisterOperand(Processor8086::REG_CH, proc);
 			else if(size == 2)
-				return new RegisterOperand(REG_BP, proc);
+				return new RegisterOperand(Processor8086::REG_BP, proc);
 			return 0;
 			break;
 		case 0x06:
 			if(size == 1)
-				return new RegisterOperand(REG_DH, proc);
+				return new RegisterOperand(Processor8086::REG_DH, proc);
 			else if(size == 2)
-				return new RegisterOperand(REG_SI, proc);
+				return new RegisterOperand(Processor8086::REG_SI, proc);
 			return 0;
 			break;
 		case 0x07:
 			if(size == 1)
-				return new RegisterOperand(REG_BH, proc);
+				return new RegisterOperand(Processor8086::REG_BH, proc);
 			else if(size == 2)
-				return new RegisterOperand(REG_DI, proc);
+				return new RegisterOperand(Processor8086::REG_DI, proc);
 			return 0;
 			break;
 		default:
@@ -94,20 +94,20 @@ Operand* ModrmOperand::GetRegister(Processor* proc, unsigned int val, unsigned i
 
 }
 
-Operand* ModrmOperand::GetSegRegister(Processor* proc, unsigned int sreg) {
+Operand* ModrmOperand::GetSegRegister(Processor8086* proc, unsigned int sreg) {
 
 	switch(sreg) {
 		case 0x00:
-			return new RegisterOperand(REG_ES, proc);
+			return new RegisterOperand(Processor8086::REG_ES, proc);
 			break;
 		case 0x01:
-			return new RegisterOperand(REG_CS, proc);
+			return new RegisterOperand(Processor8086::REG_CS, proc);
 			break;
 		case 0x02:
-			return new RegisterOperand(REG_SS, proc);
+			return new RegisterOperand(Processor8086::REG_SS, proc);
 			break;
 		case 0x03:
-			return new RegisterOperand(REG_DS, proc);
+			return new RegisterOperand(Processor8086::REG_DS, proc);
 			break;
 		default:
 			return 0;
@@ -115,7 +115,7 @@ Operand* ModrmOperand::GetSegRegister(Processor* proc, unsigned int sreg) {
 
 }
 
-Operand* ModrmOperand::GetModrmOperand(Processor* proc, Memory::MemoryOffset& inst, eModRm position, unsigned int size) {
+Operand* ModrmOperand::GetModrmOperand(Processor8086* proc, Memory::MemoryOffset& inst, eModRm position, unsigned int size) {
 
 	std::stringstream ss;
 	ModrmOperand* newMod = 0;
@@ -165,35 +165,35 @@ Operand* ModrmOperand::GetModrmOperand(Processor* proc, Memory::MemoryOffset& in
 
 	switch(*modrm & 0x07) {
 		case 0x00:
-			addr = proc->GetRegister(REG_BX) + proc->GetRegister(REG_SI);
+			addr = proc->GetRegister(Processor8086::REG_BX) + proc->GetRegister(Processor8086::REG_SI);
 			ss << "[BX + SI";
 			break;
 		case 0x01:
-			addr = proc->GetRegister(REG_BX) + proc->GetRegister(REG_DI);
+			addr = proc->GetRegister(Processor8086::REG_BX) + proc->GetRegister(Processor8086::REG_DI);
 			ss << "[BX + DI";
 			break;
 		case 0x02:
-			addr = proc->GetRegister(REG_BP) + proc->GetRegister(REG_SI);
+			addr = proc->GetRegister(Processor8086::REG_BP) + proc->GetRegister(Processor8086::REG_SI);
 			ss << "[BP + SI";
 			break;
 		case 0x03:
-			addr = proc->GetRegister(REG_BP) + proc->GetRegister(REG_DI);
+			addr = proc->GetRegister(Processor8086::REG_BP) + proc->GetRegister(Processor8086::REG_DI);
 			ss << "[BP + DI";
 			break;
 		case 0x04:
-			addr = proc->GetRegister(REG_SI);
+			addr = proc->GetRegister(Processor8086::REG_SI);
 			ss << "[SI";
 			break;
 		case 0x05:
-			addr = proc->GetRegister(REG_DI);
+			addr = proc->GetRegister(Processor8086::REG_DI);
 			ss << "[DI";
 			break;
 		case 0x06:
-			addr = proc->GetRegister(REG_BP);
+			addr = proc->GetRegister(Processor8086::REG_BP);
 			ss << "[BP";
 			break;
 		case 0x07:
-			addr = proc->GetRegister(REG_BX);
+			addr = proc->GetRegister(Processor8086::REG_BX);
 			ss << "[BX";
 			break;
 	}

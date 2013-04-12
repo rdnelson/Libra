@@ -13,15 +13,15 @@
 #pragma once
 
 #include "Cmp.hpp"
-#include "../Instruction.hpp"
+#include "../Instruction8086.hpp"
 
-class Processor;
+class Processor8086;
 
-class Sub: public Instruction {
+class Sub: public Instruction8086 {
 
 	public:
 		static Instruction* CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc);
-		int Execute(Processor* proc);
+		int Execute();
 
 		enum eValidOpcodes {
 			SUB_AL_IMM8			= 0x2C,

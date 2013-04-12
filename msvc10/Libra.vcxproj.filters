@@ -81,12 +81,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Debug\moc_MemWnd.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Release\moc_MemWnd.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Debug\moc_QKbdFilter.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -270,19 +264,10 @@
     <ClCompile Include="..\src\Breakpoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Instruction.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Memory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\MemWnd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Processor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Prefix.cpp">
@@ -318,12 +303,6 @@
     <ClCompile Include="..\src\RegisterOperand.cpp">
       <Filter>Source Files\Operands</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\InstTable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Release_Static\moc_MemWnd.cpp">
-      <Filter>Generated Files\Release_Static</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\Release_Static\moc_QKbdFilter.cpp">
       <Filter>Generated Files\Release_Static</Filter>
     </ClCompile>
@@ -332,9 +311,6 @@
     </ClCompile>
     <ClCompile Include="..\src\Release_Static\moc_VMWorker.cpp">
       <Filter>Generated Files\Release_Static</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug_Static\moc_MemWnd.cpp">
-      <Filter>Generated Files\Debug_Static</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Debug_Static\moc_QKbdFilter.cpp">
       <Filter>Generated Files\Debug_Static</Filter>
@@ -360,11 +336,35 @@
     <ClCompile Include="..\src\Release\moc_QInstructionList.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Processor8086.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\InstTable8086.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Instruction8086.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Instruction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\MainWnd8086.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug_Static\moc_MainWnd8086.cpp">
+      <Filter>Generated Files\Debug_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Debug\moc_MainWnd8086.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release_Static\moc_MainWnd8086.cpp">
+      <Filter>Generated Files\Release_Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Release\moc_MainWnd8086.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\GeneratedFiles\ui_MemWnd.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\opcodes\Aaa.hpp">
       <Filter>Header Files\Opcodes</Filter>
     </ClInclude>
@@ -524,16 +524,10 @@
     <ClInclude Include="..\src\Breakpoint.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Instruction.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\Memory.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Prefix.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Processor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Register.hpp">
@@ -575,16 +569,25 @@
     <ClInclude Include="..\src\peripherals\Timer.hpp">
       <Filter>Header Files\Peripherals</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Processor8086.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Processor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Instruction8086.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Instruction.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\GeneratedFiles\ui_MainWnd8086.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\src\MemWnd.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="..\src\Resources.qrc">
       <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\src\MemWnd.hpp">
-      <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="..\src\QKbdFilter.hpp">
       <Filter>Header Files</Filter>
@@ -597,6 +600,12 @@
     </CustomBuild>
     <CustomBuild Include="..\src\QInstructionList.hpp">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\src\MainWnd8086.hpp">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\src\MainWnd8086.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -11,22 +11,24 @@
 \*-------------------------------------*/
 
 #include "Int.hpp"
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ImmediateOperand.hpp"
 #include "../RegisterOperand.hpp"
 
 #include <cstdio>
 
-Int::Int(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Int::Int(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
-Instruction* Int::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
+Instruction* Int::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
-	Instruction* newInt = 0;
+	Instruction8086* newInt = 0;
 
 	if(pre) {
 		opLoc += preSize = pre->GetLength();
@@ -39,6 +41,7 @@ Instruction* Int::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 			GETINST(preSize + 1);
 			snprintf(buf, 65, "INT 3");
 			newInt = new Int(pre, buf, inst, (int)*opLoc);
+			newInt->SetProc(mProc);
 			newInt->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -49,6 +52,7 @@ Instruction* Int::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 			snprintf(buf, 65, "INT %s", dst->GetDisasm().c_str());
 
 			newInt = new Int(pre, buf, inst, (int)*opLoc);
+			newInt->SetProc(mProc);
 			newInt->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -58,6 +62,7 @@ Instruction* Int::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 			GETINST(preSize + 1);
 			snprintf(buf, 65, "INTO");
 			newInt = new Int(pre, buf, inst, (int)*opLoc);
+			newInt->SetProc(mProc);
 			newInt->SetOperand(Operand::DST, dst);
 			break;
 		}
@@ -67,7 +72,7 @@ Instruction* Int::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 
 }
 
-int Int::Execute(Processor* proc) {
+int Int::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 
 	if(!dst) {
@@ -75,20 +80,20 @@ int Int::Execute(Processor* proc) {
 	}
 
 	if(mOpcode == INTO) {
-		if(proc->GetFlag(FLAGS_OF)) {
-			proc->PushRegister(REG_FLAGS);
-			proc->SetFlag(FLAGS_IF, false);
-			proc->SetFlag(FLAGS_TF, false);
-			proc->PushRegister(REG_IP);
-			proc->SetRegister(REG_IP, proc->GetMemory((dst->GetValue() << 2), 2));
+		if(mProc->GetFlag(Processor8086::FLAGS_OF)) {
+			mProc->PushRegister(Processor8086::REG_FLAGS);
+			mProc->SetFlag(Processor8086::FLAGS_IF, false);
+			mProc->SetFlag(Processor8086::FLAGS_TF, false);
+			mProc->PushRegister(Processor8086::REG_IP);
+			mProc->SetRegister(Processor8086::REG_IP, mProc->GetMemory((dst->GetValue() << 2), 2));
 		}
 		return 0;
 	} else {
-		proc->PushRegister(REG_FLAGS);
-		proc->SetFlag(FLAGS_IF, false);
-		proc->SetFlag(FLAGS_TF, false);
-		proc->PushRegister(REG_IP);
-		proc->SetRegister(REG_IP, proc->GetMemory((dst->GetValue() << 2), 2));
+		mProc->PushRegister(Processor8086::REG_FLAGS);
+		mProc->SetFlag(Processor8086::FLAGS_IF, false);
+		mProc->SetFlag(Processor8086::FLAGS_TF, false);
+		mProc->PushRegister(Processor8086::REG_IP);
+		mProc->SetRegister(Processor8086::REG_IP, mProc->GetMemory((dst->GetValue() << 2), 2));
 		return 0;
 	}
 

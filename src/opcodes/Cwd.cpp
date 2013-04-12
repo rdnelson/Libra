@@ -12,16 +12,17 @@
 
 #include "Cwd.hpp"
 
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 
 #include <cstdio>
 
-Cwd::Cwd(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op) {}
+Cwd::Cwd(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op) {}
 
-Instruction* Cwd::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
+Instruction* Cwd::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
 	Memory::MemoryOffset opLoc = memLoc;
 	char buf[65];
 	std::string inst;
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 	unsigned int preSize = 0;
@@ -38,13 +39,13 @@ Instruction* Cwd::CreateInstruction(Memory::MemoryOffset& memLoc, Processor*) {
 	return 0;
 }
 
-int Cwd::Execute(Processor* proc) {
+int Cwd::Execute() {
 
-	unsigned int ax = proc->GetRegister(REG_AX);
+	unsigned int ax = mProc->GetRegister(Processor8086::REG_AX);
 	if(ax >= 0x8000) {
-		proc->SetRegister(REG_DX, 0xFFFF);
+		mProc->SetRegister(Processor8086::REG_DX, 0xFFFF);
 	} else {
-		proc->SetRegister(REG_DX, 0x0000);
+		mProc->SetRegister(Processor8086::REG_DX, 0x0000);
 	}
 	return 0;
 }

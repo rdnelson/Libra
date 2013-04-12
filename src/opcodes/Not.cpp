@@ -12,21 +12,23 @@
 
 #include "Not.hpp"
 
-#include "../Processor.hpp"
+#include "../Processor8086.hpp"
 #include "../ModrmOperand.hpp"
 
 #include <cstdio>
 
-Not::Not(Prefix* pre, std::string text, std::string inst, int op) : Instruction(pre,text,inst,op)
+Not::Not(Prefix* pre, std::string text, std::string inst, int op) : Instruction8086(pre,text,inst,op)
 {}
 
 Instruction* Not::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* proc) {
+	if(proc == 0 || proc->GetModel() != Processor::MODEL_8086) return 0;
+	Processor8086* mProc = (Processor8086*)proc;
 
 	Memory::MemoryOffset opLoc = memLoc;
 	int preLen = 0;
 	char buf[65];
 	std::string inst;
-	Instruction* newNot = 0;
+	Instruction8086* newNot = 0;
 
 	Prefix* pre = Prefix::GetPrefix(memLoc);
 
@@ -42,10 +44,11 @@ Instruction* Not::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 			if(modrm == 2) {
 				unsigned int size = (*opLoc == NOT_MOD8 ? 1 : 2);
 				Operand* dst = ModrmOperand::GetModrmOperand
-					(proc, opLoc, ModrmOperand::MOD, size);
+					(mProc, opLoc, ModrmOperand::MOD, size);
 				snprintf(buf, 65, "NOT %s", dst->GetDisasm().c_str());
 				GETINST(preLen + 2 + dst->GetBytecodeLen());
 				newNot = new Not(pre, buf, inst, (int)*opLoc);
+				newNot->SetProc(mProc);
 				newNot->SetOperand(Operand::DST, dst);
 				break;
 			}
@@ -55,7 +58,7 @@ Instruction* Not::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 
 }
 
-int Not::Execute(Processor*) {
+int Not::Execute() {
 	Operand* dst = mOperands[Operand::DST];
 
 	if(!dst) {
