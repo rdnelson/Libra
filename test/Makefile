@@ -111,6 +111,6 @@ $(patsubst $(USER_DIR)/%.hpp,$(USER_OBJ_DIR)/moc_%.o,$(USER_MOC)): $(USER_OBJ_DI
 	$(MOC) $(MOC_FLAGS) $< -o $(USER_OBJ_DIR)/moc_$(patsubst $(USER_DIR)/%.hpp,%.cpp,$<)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_OBJ_DIR)/moc_$(patsubst $(USER_DIR)/%.hpp,%.cpp,$<) -o $@
 
-bin/libra_test : $(OBJ_DIR)/$(TEST_OBJS) $(OBJ_DIR)/gtest_main.a $(patsubst $(USER_DIR)/%.cpp,$(USER_OBJ_DIR)/%.o,$(USER_OBJS)) $(patsubst $(USER_DIR)/%.hpp,$(USER_OBJ_DIR/moc_%.o,$(USER_MOC))
+bin/libra_test : $(OBJ_DIR)/$(TEST_OBJS) $(OBJ_DIR)/gtest_main.a $(patsubst $(USER_DIR)/%.cpp,$(USER_OBJ_DIR)/%.o,$(USER_OBJS)) $(patsubst $(USER_DIR)/%.hpp,$(USER_OBJ_DIR)/moc_%.o,$(USER_MOC))
 	$(MKDIR) $(BIN_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ -pthread -lpthread -lgcov -lQtGui -lQtCore
