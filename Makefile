@@ -7,6 +7,7 @@ all: ./test/bin/libra_test
 	./test/bin/libra_test --gtest_output=xml
 
 coverage: all
+	chmod +x ./test/gcovr
 	./test/gcovr -x -r src/ -e ".*qrc_.*" -e ".*ui_.*" > coverage_report.xml
 
 clean:
