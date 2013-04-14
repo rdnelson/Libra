@@ -35,7 +35,7 @@ BIN_DIR = ./bin
 CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I$(USER_OBJ_DIR) -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -D_REENTRANT
 
 # Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra -fprofile-arcs -ftest-coverage
+CXXFLAGS += -O0 -g -Wall -Wextra -fprofile-arcs -ftest-coverage
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
