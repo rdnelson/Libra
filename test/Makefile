@@ -18,22 +18,24 @@ GTEST_DIR = ../lib/gtest-1.6.0
 
 # Where to find user code.
 USER_DIR = ../src
-USER_OBJ_DIR = ../src/obj/test
+USER_OBJ_DIR = ./obj
 OBJ_DIR = ./obj
-USER_OBJS = Instruction \
-	    Prefix \
-	    Memory \
-
+USER_OBJ = $(shell find $(USER_DIR) -iname "*.cpp" -not -iname "main.cpp")
+USER_UI = $(shell find $(USER_DIR) -iname "*.ui")
+USER_MOC = $(shell find $(USER_DIR) -iname "*.hpp" -print0 | xargs -0 -i{} grep -H Q_OBJECT {} | cut -f1 d:)
+MOC = /usr/bin/moc-qt4
+MOC_FLAGS = -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I$(USER_DIR)
+UIC = /usr/bin/uic-qt4
 
 # where to find test code
 TEST_DIR = ./tests
 BIN_DIR = ./bin
 
 # Flags passed to the preprocessor.
-CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I.
+CPPFLAGS += -I$(GTEST_DIR)/include -I$(USER_DIR) -D UNIT_TEST -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4 -I. -I$(USER_OBJ_DIR) -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -D_REENTRANT
 
 # Flags passed to the C++ compiler.
-CXXFLAGS += -g -Wall -Wextra
+CXXFLAGS += -g -Wall -Wextra -fprofile-arcs -ftest-coverage
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
@@ -52,7 +54,7 @@ MKDIR = mkdir -p
 all : bin/libra_test
 
 clean :
-	rm -f bin/libra_test $(OBJ_DIR)/* $(USER_OBJ_DIR)/*
+	rm -rf bin/libra_test $(OBJ_DIR)/* $(USER_OBJ_DIR)/*
 
 # Builds gtest.a and gtest_main.a.
 
@@ -92,10 +94,23 @@ $(OBJ_DIR)/%.o : $(TEST_DIR)/%.cpp \
 	$(MKDIR) $(OBJ_DIR)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-$(USER_OBJ_DIR)/%.o: $(USER_DIR)/%.cpp $(USER_DIR)/%.hpp
-	$(MKDIR) $(USER_OBJ_DIR)
+$(USER_OBJ_DIR)/%.o: $(USER_DIR)/%.cpp
+	$(MKDIR) $(@D)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
-bin/libra_test : $(OBJ_DIR)/$(TEST_OBJS) $(OBJ_DIR)/gtest_main.a $(addprefix $(USER_OBJ_DIR)/, $(addsuffix .o, $(USER_OBJS)))
+$(USER_OBJ_DIR)/ui_%.h: $(USER_UI)
+    $(MKDIR) $(@D)
+    $(UIC) -o $@ $^
+
+$(patsubs $(USER_DIR)/$.ui,$(USER_OBJ_DIR)/%.o,$(USER_UI)): $(USER_OBJ_DIR)/%.o: $(USER_DIR)/%.cpp $(USER_OBJ_DIR)/ui_%.h
+	$(MKDIR) $(@D)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+$(patsubst $(USER_DIR)/%.hpp,$(USER_OBJ_DIR)/moc_%.o,$(USER_MOC)): $(USER_OBJ_DIR)/moc_%.o: $(USER_DIR)/%.hpp
+	$(MKDIR) $(@D)
+	$(MOC) $(MOC_FLAGS) $< -o $(USER_OBJ_DIR)/moc_$(patsubst $(USER_DIR)/%.hpp,%.cpp,$<)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(USER_OBJ_DIR)/moc_$(patsubst $(USER_DIR)/%.hpp,%.cpp,$<) -o $@
+
+bin/libra_test : $(OBJ_DIR)/$(TEST_OBJS) $(OBJ_DIR)/gtest_main.a $(patsubst $(USER_DIR)/%.cpp,$(USER_OBJ_DIR)/%.o,$(USER_OBJS)) $(patsubst $(USER_DIR)/%.hpp,$(USER_OBJ_DIR/moc_%.o,$(USER_MOC))
 	$(MKDIR) $(BIN_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -pthread -lpthread $^ -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $^ -o $@ -pthread -lpthread -lgcov -lQtGui -lQtCore
