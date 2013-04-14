@@ -99,8 +99,8 @@ $(USER_OBJ_DIR)/%.o: $(USER_DIR)/%.cpp
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
 
 $(USER_OBJ_DIR)/ui_%.h: $(USER_UI)
-    $(MKDIR) $(@D)
-    $(UIC) -o $@ $^
+	$(MKDIR) $(@D)
+	$(UIC) -o $@ $^
 
 $(patsubs $(USER_DIR)/$.ui,$(USER_OBJ_DIR)/%.o,$(USER_UI)): $(USER_OBJ_DIR)/%.o: $(USER_DIR)/%.cpp $(USER_OBJ_DIR)/ui_%.h
 	$(MKDIR) $(@D)
