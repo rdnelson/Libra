@@ -130,3 +130,7 @@ UpgradeLog*.XML
 # NuGet
 packages/
 lib/gtest-1.6.0/*
+
+doc/_build/*
+doc/_static/*
+doc/_templates/*
