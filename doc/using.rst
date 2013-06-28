@@ -88,6 +88,9 @@ name. The definition of each action will be detailed below:
 File Menu
 ---------
 
+The file menu has actions that deal with the opening of files, or general
+program actions like quitting.
+
 .. _load-obj:
 
 Load Object File
@@ -112,6 +115,11 @@ is probably a bit too complicated for you.
 
 Debug Menu
 ----------
+
+The debug menu holds all of the actions that are used to delve into the
+operation of the loaded program. These include actions that can be used
+to pause execution at necessary times, or to execute very small sections
+of the program at a time.
 
 Run
 ^^^
