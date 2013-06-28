@@ -1,7 +1,8 @@
-.. _peripherals:
 
 .. index::
 	single: Peripheral
+
+.. _peripherals:
 
 Peripherals
 ===========
