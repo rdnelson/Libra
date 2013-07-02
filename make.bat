@@ -1,6 +1,7 @@
 mkdir bin
 del /Q bin\*
 call %SDK_DIR%\bin\SetEnv.cmd /Debug
+setenv /x86
 cd msvc10
 msbuild Libra.sln /nologo /verbosity:m /p:Configuration=Debug
 call %SDK_DIR%\bin\SetEnv.cmd /Release
