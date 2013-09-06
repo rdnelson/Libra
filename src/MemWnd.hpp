@@ -99,6 +99,7 @@ private:
 	void loadFile(bool newFile = false);
 	void UpdateScreen();
 	void UpdateGui();
+	void UpdateFlags();
 	void UpdateMemView(unsigned int ip = 0xFFFFFFFF, unsigned int len = 0);
 	void UpdateInstHighlight();
 	void UpdateInstructions();
@@ -117,6 +118,7 @@ private:
 	int COL_LABEL;
 	int COL_LST;
 	int COL_INST;
+	bool ipWarned;
 
 };
 

@@ -96,6 +96,7 @@ int Processor::Step() {
 		PushRegister(REG_IP);
 		SetRegister(REG_IP, GetMemory(mInterrupt << 2, 2));
 		Memory::MemoryOffset curMem = mMem.getOffset(GetRegister(REG_IP));
+		delete mNextInst;
 		mNextInst = Instruction::ReadInstruction(curMem, this);
 		mInterrupt = -1;
 		mHalt = false;
@@ -411,6 +412,21 @@ void Processor::DeviceDump() {
 	for(unsigned int i = 0; i < mDevices.size(); i++) {
 		mDevices[i]->Dump();
 	}
+}
+
+bool Processor::ForceReloadInstruction(unsigned int IP) {
+
+	Memory::MemoryOffset curMem = mMem.getOffset(IP);
+	Instruction* tmpInst = Instruction::ReadInstruction(curMem, this);
+
+	if(tmpInst && tmpInst->IsValid()) {
+		delete mNextInst;
+		SetRegister(REG_IP, IP);
+		mNextInst = tmpInst;
+		return true;
+	}
+
+	return false;
 }
 
 void Processor::SetInterrupt(unsigned char n) {

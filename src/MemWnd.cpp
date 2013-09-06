@@ -31,7 +31,8 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	mSettings("SCE", "Libra"),
 	COL_LABEL(0),
 	COL_LST(1),
-	COL_INST(2)
+	COL_INST(2),
+	ipWarned(false)
 {
 	//Setup the ui object (Qt Mandatory)
 	ui->setupUi(this);
@@ -459,6 +460,16 @@ void MemWnd::workerStopped() {
  * GUI Update Function Section
  */
 
+void MemWnd::UpdateFlags() {
+	ui->chkAdjust->setChecked(mVM.GetProc().GetFlag(FLAGS_AF));
+	ui->chkOverflow->setChecked(mVM.GetProc().GetFlag(FLAGS_OF));
+	ui->chkCarry->setChecked(mVM.GetProc().GetFlag(FLAGS_CF));
+	ui->chkParity->setChecked(mVM.GetProc().GetFlag(FLAGS_PF));
+	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
+	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
+	ui->chkInterrupt->setChecked(mVM.GetProc().GetFlag(FLAGS_IF));
+}
+
 void MemWnd::UpdateGui() {
 
 	UpdateScreen();
@@ -475,13 +486,8 @@ void MemWnd::UpdateGui() {
 	ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
 	ClearRegisterHighlighting();
 	ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS));
-	ui->chkAdjust->setChecked(mVM.GetProc().GetFlag(FLAGS_AF));
-	ui->chkOverflow->setChecked(mVM.GetProc().GetFlag(FLAGS_OF));
-	ui->chkCarry->setChecked(mVM.GetProc().GetFlag(FLAGS_CF));
-	ui->chkParity->setChecked(mVM.GetProc().GetFlag(FLAGS_PF));
-	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
-	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
-	ui->chkInterrupt->setChecked(mVM.GetProc().GetFlag(FLAGS_IF));
+
+	UpdateFlags();
 
 	UpdateMemView();
 
@@ -807,7 +813,35 @@ void MemWnd::spChanged() { if (_validRegText(this->ui->txtSP->text())) { mVM.Get
 void MemWnd::bpChanged() { if (_validRegText(this->ui->txtBP->text())) { mVM.GetProc().SetRegister(REG_BP, _htoi(this->ui->txtBP->text())); } ui->txtBP->setText(mVM.GetProc().GetRegisterHex(REG_BP)); }
 void MemWnd::siChanged() { if (_validRegText(this->ui->txtSI->text())) { mVM.GetProc().SetRegister(REG_SI, _htoi(this->ui->txtSI->text())); } ui->txtSI->setText(mVM.GetProc().GetRegisterHex(REG_SI)); }
 void MemWnd::diChanged() { if (_validRegText(this->ui->txtDI->text())) { mVM.GetProc().SetRegister(REG_DI, _htoi(this->ui->txtDI->text())); } ui->txtDI->setText(mVM.GetProc().GetRegisterHex(REG_DI)); }
-void MemWnd::flChanged() { if (_validRegText(this->ui->txtFLAGS->text())) { mVM.GetProc().SetRegister(REG_FLAGS, _htoi(this->ui->txtFLAGS->text())); } ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS)); }
-void MemWnd::ipChanged() { if (_validRegText(this->ui->txtIP->text())) { mVM.GetProc().SetRegister(REG_IP, _htoi(this->ui->txtIP->text())); } else { ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP)); } }
+void MemWnd::flChanged() { if (_validRegText(this->ui->txtFLAGS->text())) { mVM.GetProc().SetRegister(REG_FLAGS, _htoi(this->ui->txtFLAGS->text())); } ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS)); UpdateFlags(); }
+
+void MemWnd::ipChanged() {
+	if (!this->ui->txtIP->text().compare(mVM.GetProc().GetRegisterHex(REG_IP)))
+		return;
+
+	disconnect(this->ui->txtIP, SIGNAL(editingFinished()), this, SLOT(ipChanged()));
+
+	int reply = QMessageBox::Yes;
+
+	if (!this->ipWarned) {
+		reply = QMessageBox::warning(this, "IP Changing", "Changing the value of IP will likely cause instruction highlighting to misbehave.\n\t\tDo you want to continue?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+		if (reply == QMessageBox::Yes)
+			ipWarned = true;
+	}
+
+
+	if (reply == QMessageBox::Yes && _validRegText(this->ui->txtIP->text())) {
+		if (!mVM.GetProc().ForceReloadInstruction(_htoi(this->ui->txtIP->text()))) {
+			QMessageBox::critical(this, "Invalid Instruction at new IP", "The instruction at the new IP is not valid.\nReverting IP to previous value.");
+			ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
+		} else {
+			this->UpdateGui();
+		}
+	} else {
+		ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
+	}
+
+	connect(this->ui->txtIP, SIGNAL(editingFinished()), this, SLOT(ipChanged()));
+}
 
 ///End register update functions
