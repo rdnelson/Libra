@@ -82,7 +82,11 @@ void QMemModel::Highlight(const int addr, const int len, const QColor color) {
 }
 
 Qt::ItemFlags QMemModel::flags(const QModelIndex&) const {
-	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | ( mEditable ? Qt::ItemIsEditable : 0);
+	Qt::ItemFlags retVal = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	if(mEditable)
+		retVal |= Qt::ItemIsEditable;
+
+	return retVal;
 }
 
 unsigned int QMemModel::_htoi(const QString& text) {
