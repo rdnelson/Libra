@@ -16,7 +16,7 @@
 #include <cstring>
 #include <iostream>
 
-typedef void (*AccessCallback)(size_t offset, size_t size);
+typedef void (*AccessCallback)(size_t offset, size_t size, void* arg);
 typedef std::pair<size_t, size_t> MemPair;
 
 class Memory {
@@ -32,8 +32,8 @@ class Memory {
 		int RegisterWriteCallback(AccessCallback callback);
 		unsigned char* getPtr() const { return mMem; }
 		size_t getSize() const { return mSize; }
-		void notifyReadCallbacks();
-		void notifyWriteCallbacks();
+		void notifyReadCallbacks(void* arg);
+		void notifyWriteCallbacks(void* arg);
 		void Clear();
 
 		class MemoryOffset {

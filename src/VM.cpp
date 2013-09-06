@@ -24,16 +24,24 @@
 
 const char* const VM::VM_ERR_STRINGS[] = { "Success", "Failed to open file", "Failed to read file", "File exceeded maximum size limits", "File was corrupt", "File contained an instruction longer than 512 bytes" };
 
-void mem_rlog(size_t offset, size_t size) {
-	std::ofstream fout("mem.log", std::ios::app);
-	fout << size << " byte(s) of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " read" << std::endl;
-	fout.close();
+void mem_rlog(size_t offset, size_t size, void* arg) {
+	if (arg == 0)
+		return;
+
+	std::ofstream* fout = (std::ofstream*)arg;
+	if(fout->good()) {
+		*fout << size << " byte(s) of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " read" << std::endl;
+	}
 }
 
-void mem_wlog(size_t offset, size_t size) {
-	std::ofstream fout("mem.log", std::ios::app);
-	fout << size << " byte(s) of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " written" << std::endl;
-	fout.close();
+void mem_wlog(size_t offset, size_t size, void* arg) {
+	if (arg == 0)
+		return;
+
+	std::ofstream* fout = (std::ofstream*)arg;
+	if(fout->good()) {
+		*fout << size << " byte(s) of memory at 0x" << std::hex << std::uppercase << std::setw(4) << std::setfill('0') << offset << " written" << std::endl;
+	}
 }
 
 VM::VM() : mLoaded(false), mRunning(false), mVirgo(false), mInFunc(0), mMem(MEM_SIZE), mProc(mMem) {
@@ -41,6 +49,21 @@ VM::VM() : mLoaded(false), mRunning(false), mVirgo(false), mInFunc(0), mMem(MEM_
 	Instruction::InitializeOpcodes();
 	mMem.RegisterReadCallback(mem_rlog);
 	mMem.RegisterWriteCallback(mem_wlog);
+
+}
+
+void VM::EnableMemoryLogging() {
+	mMemLog.open("mem.log", std::ios::app);
+	if(mMemLog.good()) {
+		mMemLog << "---------- Beginning New Session ----------" << std::endl;
+	}
+}
+
+void VM::DisableMemoryLogging() {
+	if(mMemLog.good()) {
+		mMemLog << "----------    Ending Session     ----------" << std::endl;
+	}
+	mMemLog.close();
 }
 
 // This function will load a pure object file. No PE style header, just straight machine code
@@ -320,13 +343,14 @@ int VM::Run() {
 		}
 
 	}
-	mMem.notifyReadCallbacks();
-	mMem.notifyWriteCallbacks();
+	mMem.notifyReadCallbacks(&mMemLog);
+	mMem.notifyWriteCallbacks(&mMemLog);
 	return err;
 }
 
 int VM::Step() {
 	int err = 0;
+
 	if((err = mProc.Step()) < 0) {
 		std::cout << "Encountered an error (#" << err << "), quitting" << std::endl;
 	} else {

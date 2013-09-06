@@ -36,7 +36,7 @@ void Memory::Clear() {
 	}
 }
 
-void Memory::notifyReadCallbacks() {
+void Memory::notifyReadCallbacks(void* arg) {
 
 	if(mReadBuffer.size() == 0) {
 		return;
@@ -54,13 +54,13 @@ void Memory::notifyReadCallbacks() {
 
 	for(size_t i = 0; i < mReadCallbacks.size(); i++) {
 		for(size_t j = 0; j < mReadBuffer.size(); j++) {
-			mReadCallbacks[i](mReadBuffer[j].first, mReadBuffer[j].second);
+			mReadCallbacks[i](mReadBuffer[j].first, mReadBuffer[j].second, arg);
 		}
 	}
 	mReadBuffer.clear();
 }
 
-void Memory::notifyWriteCallbacks() {
+void Memory::notifyWriteCallbacks(void* arg) {
 
 	if(mWriteBuffer.size() == 0) {
 		return;
@@ -68,7 +68,7 @@ void Memory::notifyWriteCallbacks() {
 
 	for(size_t i = 0; i < mWriteCallbacks.size(); i++) {
 		for(size_t j = 0; j < mWriteBuffer.size(); j++) {
-			mWriteCallbacks[i](mWriteBuffer[j].first, mWriteBuffer[j].second);
+			mWriteCallbacks[i](mWriteBuffer[j].first, mWriteBuffer[j].second, arg);
 		}
 	}
 	mWriteBuffer.clear();

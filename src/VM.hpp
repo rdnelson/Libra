@@ -13,6 +13,7 @@
 #pragma once
 
 #include <vector>
+#include <fstream>
 
 #include "Memory.hpp"
 #include "Processor.hpp"
@@ -26,6 +27,9 @@ class VM {
 
 	public:
 		VM();
+
+		void EnableMemoryLogging();
+		void DisableMemoryLogging();
 
 		int Run();
 		int Step();
@@ -53,8 +57,12 @@ class VM {
 		Breakpoint* FindBreakpoint(unsigned int addr);
 		const std::vector<Breakpoint*> & GetBreakpoints() { return mBreakpoints; }
 
-		inline void notifyReadCallbacks() { mMem.notifyReadCallbacks(); }
-		inline void notifyWriteCallbacks() { mMem.notifyWriteCallbacks(); }
+		inline void notifyReadCallbacks() { mMem.notifyReadCallbacks(&mMemLog); }
+		inline void notifyWriteCallbacks() { mMem.notifyWriteCallbacks(&mMemLog); }
+
+		inline void notifyReadCallbacks(void* arg) { mMem.notifyReadCallbacks(arg); }
+		inline void notifyWriteCallbacks(void* arg) { mMem.notifyWriteCallbacks(arg); }
+
 		inline unsigned int GetCallDepth() const { return mInFunc; }
 
 		void SetTimer(QTimer* timer) { mProc.SetTimer(timer); }
@@ -88,5 +96,7 @@ class VM {
 		std::vector<Instruction*> mInstructions;
 		std::vector<Breakpoint*> mBreakpoints;
 		std::vector<std::string> mLabels;
+
+		std::ofstream mMemLog;
 
 };
