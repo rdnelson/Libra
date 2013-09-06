@@ -58,6 +58,41 @@ public slots:
 	void TimerEvent();
 	void UpdateScreenTick();
 
+	/// Flag Update Functions
+
+	void adjustFlagChanged(int);
+	void carryFlagChanged(int);
+	void directionFlagChanged(int);
+	void interruptFlagChanged(int);
+	void overflowFlagChanged(int);
+	void parityFlagChanged(int);
+	void signFlagChanged(int);
+	void trapFlagChanged(int);
+	void zeroFlagChanged(int);
+
+	/// End Flag Updates
+
+	/// Register update functions
+
+	void axChanged();
+	void bxChanged();
+	void cxChanged();
+	void dxChanged();
+	void spChanged();
+	void bpChanged();
+	void siChanged();
+	void diChanged();
+	void flChanged();
+	void ipChanged();
+
+	/// End Register update functions
+
+	/// Begin Memory update function
+
+	void memChanged(const QModelIndex&, const QModelIndex&);
+
+	/// End memory update function
+
 signals:
 	void vmResume();
 	void vmStep();
@@ -70,12 +105,14 @@ private:
 	void loadFile(bool newFile = false);
 	void UpdateScreen();
 	void UpdateGui();
+	void UpdateFlags();
 	void UpdateMemView(unsigned int ip = 0xFFFFFFFF, unsigned int len = 0);
 	void UpdateInstHighlight();
 	void UpdateInstructions();
 	void ClearRegisterHighlighting();
 	void HighlightBreakpoints();
 	void DisableRun(int err);
+	void SetMemoryEditState(bool editable);
 	void EnableRun();
 
 	VM mVM;
@@ -86,6 +123,7 @@ private:
 	int COL_LABEL;
 	int COL_LST;
 	int COL_INST;
+	bool ipWarned;
 
 };
 
