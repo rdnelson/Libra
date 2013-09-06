@@ -215,13 +215,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLabel" name="label_3">
@@ -252,13 +252,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLabel" name="label_4">
@@ -289,13 +289,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLabel" name="label_5">
@@ -326,13 +326,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLabel" name="label_6">
@@ -363,13 +363,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLabel" name="label_7">
@@ -400,13 +400,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLabel" name="label_8">
@@ -437,13 +437,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLabel" name="label_9">
@@ -474,13 +474,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLineEdit" name="txtFLAGS">
@@ -498,13 +498,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLabel" name="label_10">
@@ -535,13 +535,13 @@
                 </font>
                </property>
                <property name="focusPolicy">
-                <enum>Qt::NoFocus</enum>
+                <enum>Qt::ClickFocus</enum>
                </property>
                <property name="text">
                 <string>0000</string>
                </property>
                <property name="readOnly">
-                <bool>true</bool>
+                <bool>false</bool>
                </property>
               </widget>
               <widget class="QLabel" name="label_11">
@@ -768,7 +768,7 @@
      <x>0</x>
      <y>0</y>
      <width>1004</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

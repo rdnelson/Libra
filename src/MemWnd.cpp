@@ -120,6 +120,18 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(this->ui->chkTrap, SIGNAL(stateChanged(int)), this, SLOT(trapFlagChanged(int)));
 	connect(this->ui->chkZero, SIGNAL(stateChanged(int)), this, SLOT(zeroFlagChanged(int)));
 
+	//Connect the register controls
+	connect(this->ui->txtAX, SIGNAL(editingFinished()), this, SLOT(axChanged()));
+	connect(this->ui->txtBX, SIGNAL(editingFinished()), this, SLOT(bxChanged()));
+	connect(this->ui->txtCX, SIGNAL(editingFinished()), this, SLOT(cxChanged()));
+	connect(this->ui->txtDX, SIGNAL(editingFinished()), this, SLOT(dxChanged()));
+	connect(this->ui->txtSP, SIGNAL(editingFinished()), this, SLOT(spChanged()));
+	connect(this->ui->txtBP, SIGNAL(editingFinished()), this, SLOT(bpChanged()));
+	connect(this->ui->txtSI, SIGNAL(editingFinished()), this, SLOT(siChanged()));
+	connect(this->ui->txtDI, SIGNAL(editingFinished()), this, SLOT(diChanged()));
+	connect(this->ui->txtFLAGS, SIGNAL(editingFinished()), this, SLOT(flChanged()));
+	connect(this->ui->txtIP, SIGNAL(editingFinished()), this, SLOT(ipChanged()));
+
 	//Initialize the timer's QTimer object
 	QTimer* baseTimer = new QTimer();
 	connect(baseTimer, SIGNAL(timeout()), this, SLOT(TimerEvent()));
@@ -758,3 +770,44 @@ void MemWnd::trapFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_TF, state 
 void MemWnd::zeroFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_ZF, state == Qt::Checked); }
 
 ///End Checkbox Flag update Functions
+
+
+///Register update functions
+
+bool MemWnd::_validRegText(const QString& text) {
+	if (text.length() > 4)  // 5 characters exceeds bounds
+		return false;
+
+	for (int i = 0; i < text.length(); i++) {
+		if (!text.at(i).isDigit() && !(text.at(i).toLower().toAscii() >= 'a' && text.at(i).toLower().toAscii() <= 'f'))
+			return false;
+	}
+	return true;
+}
+
+unsigned int MemWnd::_htoi(const QString& text) {
+	unsigned int retVal = 0;
+
+	for (int i = 0; i < text.length(); i++) {
+		char lower = text.at(i).toLower().toAscii();
+		if(text.at(i).isDigit()) {
+			retVal += (text.at(i).toAscii() - '0') << ((text.length() - i - 1) * 4);
+		} else if (lower >= 'a' && lower <= 'f') {
+			retVal += (lower - 'a' + 10) << ((text.length() - i - 1) * 4);
+		}
+	}
+	return retVal;
+}
+
+void MemWnd::axChanged() { if (_validRegText(this->ui->txtAX->text())) { mVM.GetProc().SetRegister(REG_AX, _htoi(this->ui->txtAX->text())); } ui->txtAX->setText(mVM.GetProc().GetRegisterHex(REG_AX)); }
+void MemWnd::bxChanged() { if (_validRegText(this->ui->txtBX->text())) { mVM.GetProc().SetRegister(REG_BX, _htoi(this->ui->txtBX->text())); } ui->txtBX->setText(mVM.GetProc().GetRegisterHex(REG_BX)); }
+void MemWnd::cxChanged() { if (_validRegText(this->ui->txtCX->text())) { mVM.GetProc().SetRegister(REG_CX, _htoi(this->ui->txtCX->text())); } ui->txtCX->setText(mVM.GetProc().GetRegisterHex(REG_CX)); }
+void MemWnd::dxChanged() { if (_validRegText(this->ui->txtDX->text())) { mVM.GetProc().SetRegister(REG_DX, _htoi(this->ui->txtDX->text())); } ui->txtDX->setText(mVM.GetProc().GetRegisterHex(REG_DX)); }
+void MemWnd::spChanged() { if (_validRegText(this->ui->txtSP->text())) { mVM.GetProc().SetRegister(REG_SP, _htoi(this->ui->txtSP->text())); } ui->txtSP->setText(mVM.GetProc().GetRegisterHex(REG_SP)); }
+void MemWnd::bpChanged() { if (_validRegText(this->ui->txtBP->text())) { mVM.GetProc().SetRegister(REG_BP, _htoi(this->ui->txtBP->text())); } ui->txtBP->setText(mVM.GetProc().GetRegisterHex(REG_BP)); }
+void MemWnd::siChanged() { if (_validRegText(this->ui->txtSI->text())) { mVM.GetProc().SetRegister(REG_SI, _htoi(this->ui->txtSI->text())); } ui->txtSI->setText(mVM.GetProc().GetRegisterHex(REG_SI)); }
+void MemWnd::diChanged() { if (_validRegText(this->ui->txtDI->text())) { mVM.GetProc().SetRegister(REG_DI, _htoi(this->ui->txtDI->text())); } ui->txtDI->setText(mVM.GetProc().GetRegisterHex(REG_DI)); }
+void MemWnd::flChanged() { if (_validRegText(this->ui->txtFLAGS->text())) { mVM.GetProc().SetRegister(REG_FLAGS, _htoi(this->ui->txtFLAGS->text())); } ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS)); }
+void MemWnd::ipChanged() { if (_validRegText(this->ui->txtIP->text())) { mVM.GetProc().SetRegister(REG_IP, _htoi(this->ui->txtIP->text())); } else { ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP)); } }
+
+///End register update functions

@@ -72,6 +72,21 @@ public slots:
 
 	/// End Flag Updates
 
+	/// Register update functions
+
+	void axChanged();
+	void bxChanged();
+	void cxChanged();
+	void dxChanged();
+	void spChanged();
+	void bpChanged();
+	void siChanged();
+	void diChanged();
+	void flChanged();
+	void ipChanged();
+
+	/// End Register update functions
+
 signals:
 	void vmResume();
 	void vmStep();
@@ -91,6 +106,8 @@ private:
 	void HighlightBreakpoints();
 	void DisableRun(int err);
 	void EnableRun();
+	bool _validRegText(const QString&);
+	unsigned int _htoi(const QString&);
 
 	VM mVM;
 	QString mFile;
