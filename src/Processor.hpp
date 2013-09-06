@@ -122,7 +122,7 @@ class Processor {
 		void MemDump();
 		void DeviceDump();
 
-
+		bool ForceReloadInstruction(unsigned int);
 
 	private:
 

@@ -20,6 +20,12 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 	void Highlight(const int addr, const int len, const QColor color);
 	void ClearHighlights() { mHighlight.clear(); }
+	Qt::ItemFlags flags(const QModelIndex& index) const;
+	void setEditable(bool editable) { mEditable = editable; }
+	bool isDirty() { return mDirty; }
+	bool clean() { mDirty = false; }
+	static unsigned int _htoi(const QString&);
+	static bool _validHexText(const QString&, unsigned int maxlen);
 signals:
 
 public slots:
@@ -29,6 +35,8 @@ private:
 	std::map<int,QColor> mHighlight;
 	static const int mRows = 4096;
 	static const int mColumns = 16;
+	bool mEditable;
+	bool mDirty;
 
 };
 

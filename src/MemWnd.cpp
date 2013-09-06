@@ -16,6 +16,7 @@
 #include "peripherals/Keyboard.hpp"
 #include "peripherals/Timer.hpp"
 #include "QKbdFilter.hpp"
+#include "Processor.hpp"
 
 #include <QTimer>
 #include <iostream>
@@ -30,7 +31,8 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	mSettings("SCE", "Libra"),
 	COL_LABEL(0),
 	COL_LST(1),
-	COL_INST(2)
+	COL_INST(2),
+	ipWarned(false)
 {
 	//Setup the ui object (Qt Mandatory)
 	ui->setupUi(this);
@@ -108,6 +110,32 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
 	connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
 
+	//Connect the flag controls
+	connect(this->ui->chkAdjust, SIGNAL(stateChanged(int)), this, SLOT(adjustFlagChanged(int)));
+	connect(this->ui->chkCarry, SIGNAL(stateChanged(int)), this, SLOT(carryFlagChanged(int)));
+	connect(this->ui->chkDirection, SIGNAL(stateChanged(int)), this, SLOT(directionFlagChanged(int)));
+	connect(this->ui->chkInterrupt, SIGNAL(stateChanged(int)), this, SLOT(interruptFlagChanged(int)));
+	connect(this->ui->chkOverflow, SIGNAL(stateChanged(int)), this, SLOT(overflowFlagChanged(int)));
+	connect(this->ui->chkParity, SIGNAL(stateChanged(int)), this, SLOT(parityFlagChanged(int)));
+	connect(this->ui->chkSign, SIGNAL(stateChanged(int)), this, SLOT(signFlagChanged(int)));
+	connect(this->ui->chkTrap, SIGNAL(stateChanged(int)), this, SLOT(trapFlagChanged(int)));
+	connect(this->ui->chkZero, SIGNAL(stateChanged(int)), this, SLOT(zeroFlagChanged(int)));
+
+	//Connect the register controls
+	connect(this->ui->txtAX, SIGNAL(editingFinished()), this, SLOT(axChanged()));
+	connect(this->ui->txtBX, SIGNAL(editingFinished()), this, SLOT(bxChanged()));
+	connect(this->ui->txtCX, SIGNAL(editingFinished()), this, SLOT(cxChanged()));
+	connect(this->ui->txtDX, SIGNAL(editingFinished()), this, SLOT(dxChanged()));
+	connect(this->ui->txtSP, SIGNAL(editingFinished()), this, SLOT(spChanged()));
+	connect(this->ui->txtBP, SIGNAL(editingFinished()), this, SLOT(bpChanged()));
+	connect(this->ui->txtSI, SIGNAL(editingFinished()), this, SLOT(siChanged()));
+	connect(this->ui->txtDI, SIGNAL(editingFinished()), this, SLOT(diChanged()));
+	connect(this->ui->txtFLAGS, SIGNAL(editingFinished()), this, SLOT(flChanged()));
+	connect(this->ui->txtIP, SIGNAL(editingFinished()), this, SLOT(ipChanged()));
+
+	//Connect the memory control
+	connect(this->ui->tableView, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(memChanged(const QModelIndex&, const QModelIndex&)));
+
 	//Initialize the timer's QTimer object
 	QTimer* baseTimer = new QTimer();
 	connect(baseTimer, SIGNAL(timeout()), this, SLOT(TimerEvent()));
@@ -164,7 +192,7 @@ void MemWnd::runVM_Clicked() {
 		UpdateMemView();
 
 		//Disable focus (helps with keyboard input)
-		ui->tableView->setFocusPolicy(Qt::NoFocus);
+		SetMemoryEditState(false);
 
 		//Clear all highlighting except breakpoints
 		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
@@ -223,7 +251,7 @@ void MemWnd::stepOutVM_Clicked() {
 		UpdateMemView();
 
 		//Disable focus (helps with keyboard input)
-		ui->tableView->setFocusPolicy(Qt::NoFocus);
+		SetMemoryEditState(false);
 
 		//Clear all highlighting except breakpoints
 		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
@@ -258,7 +286,7 @@ void MemWnd::stepOverVM_Clicked() {
 		UpdateMemView();
 
 		//Disable focus (helps with keyboard input)
-		ui->tableView->setFocusPolicy(Qt::NoFocus);
+		SetMemoryEditState(false);
 
 		//Clear all highlighting except breakpoints
 		HighlightBreakpoints();
@@ -377,6 +405,8 @@ void MemWnd::loadFile(bool newFile) {
 
 			//Update all the other controls
 			UpdateGui();
+
+			SetMemoryEditState(true);
 		} else {
 			QMessageBox::critical(this, "File loading failed", "Loading the file \"" + mFile + "\" Failed.\n" + mVM.GetErrStr(err));
 		}
@@ -399,7 +429,7 @@ void MemWnd::workerBreakpoint() {
 //Program execution complete
 void MemWnd::workerRunDone() {
 	this->setWindowTitle("VM Stopped");
-	ui->tableView->setFocusPolicy(Qt::WheelFocus);
+	SetMemoryEditState(true);
 	UpdateGui();
 }
 //Program execution error
@@ -410,7 +440,7 @@ void MemWnd::workerRunError(int err) {
 //Program paused
 void MemWnd::workerPaused() {
 	UpdateGui();
-	ui->tableView->setFocusPolicy(Qt::WheelFocus);
+	SetMemoryEditState(true);
 	EnableRun();
 }
 //Program step complete
@@ -435,6 +465,18 @@ void MemWnd::workerStopped() {
  * GUI Update Function Section
  */
 
+void MemWnd::UpdateFlags() {
+	ui->chkAdjust->setChecked(mVM.GetProc().GetFlag(FLAGS_AF));
+	ui->chkOverflow->setChecked(mVM.GetProc().GetFlag(FLAGS_OF));
+	ui->chkCarry->setChecked(mVM.GetProc().GetFlag(FLAGS_CF));
+	ui->chkParity->setChecked(mVM.GetProc().GetFlag(FLAGS_PF));
+	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
+	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
+	ui->chkInterrupt->setChecked(mVM.GetProc().GetFlag(FLAGS_IF));
+	ui->chkDirection->setChecked(mVM.GetProc().GetFlag(FLAGS_DF));
+	ui->chkTrap->setChecked(mVM.GetProc().GetFlag(FLAGS_TF));
+}
+
 void MemWnd::UpdateGui() {
 
 	UpdateScreen();
@@ -451,13 +493,8 @@ void MemWnd::UpdateGui() {
 	ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
 	ClearRegisterHighlighting();
 	ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS));
-	ui->chkAdjust->setChecked(mVM.GetProc().GetFlag(FLAGS_AF));
-	ui->chkOverflow->setChecked(mVM.GetProc().GetFlag(FLAGS_OF));
-	ui->chkCarry->setChecked(mVM.GetProc().GetFlag(FLAGS_CF));
-	ui->chkParity->setChecked(mVM.GetProc().GetFlag(FLAGS_PF));
-	ui->chkZero->setChecked(mVM.GetProc().GetFlag(FLAGS_ZF));
-	ui->chkSign->setChecked(mVM.GetProc().GetFlag(FLAGS_SF));
-	ui->chkInterrupt->setChecked(mVM.GetProc().GetFlag(FLAGS_IF));
+
+	UpdateFlags();
 
 	UpdateMemView();
 
@@ -731,4 +768,79 @@ void MemWnd::TimerEvent() {
 
 void MemWnd::UpdateScreenTick() {
 	UpdateScreen();
+}
+
+///Checkbox Flag update Functions
+
+void MemWnd::adjustFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_AF, state == Qt::Checked); }
+void MemWnd::carryFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_CF, state == Qt::Checked); }
+void MemWnd::directionFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_DF, state == Qt::Checked); }
+void MemWnd::interruptFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_IF, state == Qt::Checked); }
+void MemWnd::overflowFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_OF, state == Qt::Checked); }
+void MemWnd::parityFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_PF, state == Qt::Checked); }
+void MemWnd::signFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_SF, state == Qt::Checked); }
+void MemWnd::trapFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_TF, state == Qt::Checked); }
+void MemWnd::zeroFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_ZF, state == Qt::Checked); }
+
+///End Checkbox Flag update Functions
+
+
+///Register update functions
+
+void MemWnd::axChanged() { if (QMemModel::_validHexText(this->ui->txtAX->text(), 4)) { mVM.GetProc().SetRegister(REG_AX, QMemModel::_htoi(this->ui->txtAX->text())); } ui->txtAX->setText(mVM.GetProc().GetRegisterHex(REG_AX)); }
+void MemWnd::bxChanged() { if (QMemModel::_validHexText(this->ui->txtBX->text(), 4)) { mVM.GetProc().SetRegister(REG_BX, QMemModel::_htoi(this->ui->txtBX->text())); } ui->txtBX->setText(mVM.GetProc().GetRegisterHex(REG_BX)); }
+void MemWnd::cxChanged() { if (QMemModel::_validHexText(this->ui->txtCX->text(), 4)) { mVM.GetProc().SetRegister(REG_CX, QMemModel::_htoi(this->ui->txtCX->text())); } ui->txtCX->setText(mVM.GetProc().GetRegisterHex(REG_CX)); }
+void MemWnd::dxChanged() { if (QMemModel::_validHexText(this->ui->txtDX->text(), 4)) { mVM.GetProc().SetRegister(REG_DX, QMemModel::_htoi(this->ui->txtDX->text())); } ui->txtDX->setText(mVM.GetProc().GetRegisterHex(REG_DX)); }
+void MemWnd::spChanged() { if (QMemModel::_validHexText(this->ui->txtSP->text(), 4)) { mVM.GetProc().SetRegister(REG_SP, QMemModel::_htoi(this->ui->txtSP->text())); } ui->txtSP->setText(mVM.GetProc().GetRegisterHex(REG_SP)); }
+void MemWnd::bpChanged() { if (QMemModel::_validHexText(this->ui->txtBP->text(), 4)) { mVM.GetProc().SetRegister(REG_BP, QMemModel::_htoi(this->ui->txtBP->text())); } ui->txtBP->setText(mVM.GetProc().GetRegisterHex(REG_BP)); }
+void MemWnd::siChanged() { if (QMemModel::_validHexText(this->ui->txtSI->text(), 4)) { mVM.GetProc().SetRegister(REG_SI, QMemModel::_htoi(this->ui->txtSI->text())); } ui->txtSI->setText(mVM.GetProc().GetRegisterHex(REG_SI)); }
+void MemWnd::diChanged() { if (QMemModel::_validHexText(this->ui->txtDI->text(), 4)) { mVM.GetProc().SetRegister(REG_DI, QMemModel::_htoi(this->ui->txtDI->text())); } ui->txtDI->setText(mVM.GetProc().GetRegisterHex(REG_DI)); }
+void MemWnd::flChanged() { if (QMemModel::_validHexText(this->ui->txtFLAGS->text(), 4)) { mVM.GetProc().SetRegister(REG_FLAGS, QMemModel::_htoi(this->ui->txtFLAGS->text())); } ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS)); UpdateFlags(); }
+
+void MemWnd::ipChanged() {
+	if (!this->ui->txtIP->text().compare(mVM.GetProc().GetRegisterHex(REG_IP)))
+		return;
+
+	disconnect(this->ui->txtIP, SIGNAL(editingFinished()), this, SLOT(ipChanged()));
+
+	int reply = QMessageBox::Yes;
+
+	if (!this->ipWarned) {
+		reply = QMessageBox::warning(this, "IP Changing", "Changing the value of IP will likely cause instruction highlighting to misbehave.\n\t\tDo you want to continue?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+		if (reply == QMessageBox::Yes)
+			ipWarned = true;
+	}
+
+
+	if (reply == QMessageBox::Yes && QMemModel::_validHexText(this->ui->txtIP->text(), 4)) {
+		if (!mVM.GetProc().ForceReloadInstruction(QMemModel::_htoi(this->ui->txtIP->text()))) {
+			QMessageBox::critical(this, "Invalid Instruction at new IP", "The instruction at the new IP is not valid.\nReverting IP to previous value.");
+			ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
+		} else {
+			this->UpdateGui();
+		}
+	} else {
+		ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
+	}
+
+	connect(this->ui->txtIP, SIGNAL(editingFinished()), this, SLOT(ipChanged()));
+}
+
+///End register update functions
+
+void MemWnd::memChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight) {
+	QMemModel* model = (QMemModel*)this->ui->tableView->model();
+
+	if(model->isDirty() && topLeft == bottomRight) {
+		mVM.GetProc().SetMemory(topLeft.column() + topLeft.row() *  0x10, 1, (unsigned int)model->data(topLeft, Qt::UserRole).toChar().toAscii());
+	}
+}
+
+void MemWnd::SetMemoryEditState(bool editable) {
+	if(editable) {
+		ui->tableView->setFocusPolicy(Qt::WheelFocus);
+	} else {
+		ui->tableView->setFocusPolicy(Qt::NoFocus);
+	}
+	((QMemModel*)ui->tableView->model())->setEditable(editable);
 }
