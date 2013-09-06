@@ -16,6 +16,7 @@
 #include "peripherals/Keyboard.hpp"
 #include "peripherals/Timer.hpp"
 #include "QKbdFilter.hpp"
+#include "Processor.hpp"
 
 #include <QTimer>
 #include <iostream>
@@ -107,6 +108,17 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(mVMWorker, SIGNAL(stopped()), this, SLOT(workerStopped()));
 	connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
 	connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
+
+	//Connect the flag controls
+	connect(this->ui->chkAdjust, SIGNAL(stateChanged(int)), this, SLOT(adjustFlagChanged(int)));
+	connect(this->ui->chkCarry, SIGNAL(stateChanged(int)), this, SLOT(carryFlagChanged(int)));
+	connect(this->ui->chkDirection, SIGNAL(stateChanged(int)), this, SLOT(directionFlagChanged(int)));
+	connect(this->ui->chkInterrupt, SIGNAL(stateChanged(int)), this, SLOT(interruptFlagChanged(int)));
+	connect(this->ui->chkOverflow, SIGNAL(stateChanged(int)), this, SLOT(overflowFlagChanged(int)));
+	connect(this->ui->chkParity, SIGNAL(stateChanged(int)), this, SLOT(parityFlagChanged(int)));
+	connect(this->ui->chkSign, SIGNAL(stateChanged(int)), this, SLOT(signFlagChanged(int)));
+	connect(this->ui->chkTrap, SIGNAL(stateChanged(int)), this, SLOT(trapFlagChanged(int)));
+	connect(this->ui->chkZero, SIGNAL(stateChanged(int)), this, SLOT(zeroFlagChanged(int)));
 
 	//Initialize the timer's QTimer object
 	QTimer* baseTimer = new QTimer();
@@ -732,3 +744,17 @@ void MemWnd::TimerEvent() {
 void MemWnd::UpdateScreenTick() {
 	UpdateScreen();
 }
+
+///Checkbox Flag update Functions
+
+void MemWnd::adjustFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_AF, state == Qt::Checked); }
+void MemWnd::carryFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_CF, state == Qt::Checked); }
+void MemWnd::directionFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_DF, state == Qt::Checked); }
+void MemWnd::interruptFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_IF, state == Qt::Checked); }
+void MemWnd::overflowFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_OF, state == Qt::Checked); }
+void MemWnd::parityFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_PF, state == Qt::Checked); }
+void MemWnd::signFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_SF, state == Qt::Checked); }
+void MemWnd::trapFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_TF, state == Qt::Checked); }
+void MemWnd::zeroFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_ZF, state == Qt::Checked); }
+
+///End Checkbox Flag update Functions

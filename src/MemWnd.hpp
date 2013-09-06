@@ -58,6 +58,20 @@ public slots:
 	void TimerEvent();
 	void UpdateScreenTick();
 
+	/// Flag Update Functions
+
+	void adjustFlagChanged(int);
+	void carryFlagChanged(int);
+	void directionFlagChanged(int);
+	void interruptFlagChanged(int);
+	void overflowFlagChanged(int);
+	void parityFlagChanged(int);
+	void signFlagChanged(int);
+	void trapFlagChanged(int);
+	void zeroFlagChanged(int);
+
+	/// End Flag Updates
+
 signals:
 	void vmResume();
 	void vmStep();
