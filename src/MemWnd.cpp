@@ -604,11 +604,11 @@ void MemWnd::UpdateInstHighlight() {
 		op = inst->GetOperand(i);
 		if(op) {
 			int val = op->GetUnresolvedValue();
-			if(val > 0 && val < 0x10000) {
+			if(val >= 0 && val < 0x10000) {
 				//Address, highlight it in mem view
 				QMemModel* qMemModel = (QMemModel*)ui->tableView->model();
 				if(qMemModel) {
-					qMemModel->Highlight(val, 2, color);
+					qMemModel->Highlight(val, op->GetBitmask() == 0xFF ? 1 : 2, color);
 				}
 				qMemModel->update();
 			} else if(val < 0) {
