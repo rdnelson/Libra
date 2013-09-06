@@ -133,6 +133,9 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(this->ui->txtFLAGS, SIGNAL(editingFinished()), this, SLOT(flChanged()));
 	connect(this->ui->txtIP, SIGNAL(editingFinished()), this, SLOT(ipChanged()));
 
+	//Connect the memory control
+	connect(this->ui->tableView, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(memChanged(const QModelIndex&, const QModelIndex&)));
+
 	//Initialize the timer's QTimer object
 	QTimer* baseTimer = new QTimer();
 	connect(baseTimer, SIGNAL(timeout()), this, SLOT(TimerEvent()));
@@ -189,7 +192,7 @@ void MemWnd::runVM_Clicked() {
 		UpdateMemView();
 
 		//Disable focus (helps with keyboard input)
-		ui->tableView->setFocusPolicy(Qt::NoFocus);
+		SetMemoryEditState(false);
 
 		//Clear all highlighting except breakpoints
 		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
@@ -248,7 +251,7 @@ void MemWnd::stepOutVM_Clicked() {
 		UpdateMemView();
 
 		//Disable focus (helps with keyboard input)
-		ui->tableView->setFocusPolicy(Qt::NoFocus);
+		SetMemoryEditState(false);
 
 		//Clear all highlighting except breakpoints
 		for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
@@ -283,7 +286,7 @@ void MemWnd::stepOverVM_Clicked() {
 		UpdateMemView();
 
 		//Disable focus (helps with keyboard input)
-		ui->tableView->setFocusPolicy(Qt::NoFocus);
+		SetMemoryEditState(false);
 
 		//Clear all highlighting except breakpoints
 		HighlightBreakpoints();
@@ -402,6 +405,8 @@ void MemWnd::loadFile(bool newFile) {
 
 			//Update all the other controls
 			UpdateGui();
+
+			SetMemoryEditState(true);
 		} else {
 			QMessageBox::critical(this, "File loading failed", "Loading the file \"" + mFile + "\" Failed.\n" + mVM.GetErrStr(err));
 		}
@@ -424,7 +429,7 @@ void MemWnd::workerBreakpoint() {
 //Program execution complete
 void MemWnd::workerRunDone() {
 	this->setWindowTitle("VM Stopped");
-	ui->tableView->setFocusPolicy(Qt::WheelFocus);
+	SetMemoryEditState(true);
 	UpdateGui();
 }
 //Program execution error
@@ -435,7 +440,7 @@ void MemWnd::workerRunError(int err) {
 //Program paused
 void MemWnd::workerPaused() {
 	UpdateGui();
-	ui->tableView->setFocusPolicy(Qt::WheelFocus);
+	SetMemoryEditState(true);
 	EnableRun();
 }
 //Program step complete
@@ -780,40 +785,15 @@ void MemWnd::zeroFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_ZF, state 
 
 ///Register update functions
 
-bool MemWnd::_validRegText(const QString& text) {
-	if (text.length() > 4)  // 5 characters exceeds bounds
-		return false;
-
-	for (int i = 0; i < text.length(); i++) {
-		if (!text.at(i).isDigit() && !(text.at(i).toLower().toAscii() >= 'a' && text.at(i).toLower().toAscii() <= 'f'))
-			return false;
-	}
-	return true;
-}
-
-unsigned int MemWnd::_htoi(const QString& text) {
-	unsigned int retVal = 0;
-
-	for (int i = 0; i < text.length(); i++) {
-		char lower = text.at(i).toLower().toAscii();
-		if(text.at(i).isDigit()) {
-			retVal += (text.at(i).toAscii() - '0') << ((text.length() - i - 1) * 4);
-		} else if (lower >= 'a' && lower <= 'f') {
-			retVal += (lower - 'a' + 10) << ((text.length() - i - 1) * 4);
-		}
-	}
-	return retVal;
-}
-
-void MemWnd::axChanged() { if (_validRegText(this->ui->txtAX->text())) { mVM.GetProc().SetRegister(REG_AX, _htoi(this->ui->txtAX->text())); } ui->txtAX->setText(mVM.GetProc().GetRegisterHex(REG_AX)); }
-void MemWnd::bxChanged() { if (_validRegText(this->ui->txtBX->text())) { mVM.GetProc().SetRegister(REG_BX, _htoi(this->ui->txtBX->text())); } ui->txtBX->setText(mVM.GetProc().GetRegisterHex(REG_BX)); }
-void MemWnd::cxChanged() { if (_validRegText(this->ui->txtCX->text())) { mVM.GetProc().SetRegister(REG_CX, _htoi(this->ui->txtCX->text())); } ui->txtCX->setText(mVM.GetProc().GetRegisterHex(REG_CX)); }
-void MemWnd::dxChanged() { if (_validRegText(this->ui->txtDX->text())) { mVM.GetProc().SetRegister(REG_DX, _htoi(this->ui->txtDX->text())); } ui->txtDX->setText(mVM.GetProc().GetRegisterHex(REG_DX)); }
-void MemWnd::spChanged() { if (_validRegText(this->ui->txtSP->text())) { mVM.GetProc().SetRegister(REG_SP, _htoi(this->ui->txtSP->text())); } ui->txtSP->setText(mVM.GetProc().GetRegisterHex(REG_SP)); }
-void MemWnd::bpChanged() { if (_validRegText(this->ui->txtBP->text())) { mVM.GetProc().SetRegister(REG_BP, _htoi(this->ui->txtBP->text())); } ui->txtBP->setText(mVM.GetProc().GetRegisterHex(REG_BP)); }
-void MemWnd::siChanged() { if (_validRegText(this->ui->txtSI->text())) { mVM.GetProc().SetRegister(REG_SI, _htoi(this->ui->txtSI->text())); } ui->txtSI->setText(mVM.GetProc().GetRegisterHex(REG_SI)); }
-void MemWnd::diChanged() { if (_validRegText(this->ui->txtDI->text())) { mVM.GetProc().SetRegister(REG_DI, _htoi(this->ui->txtDI->text())); } ui->txtDI->setText(mVM.GetProc().GetRegisterHex(REG_DI)); }
-void MemWnd::flChanged() { if (_validRegText(this->ui->txtFLAGS->text())) { mVM.GetProc().SetRegister(REG_FLAGS, _htoi(this->ui->txtFLAGS->text())); } ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS)); UpdateFlags(); }
+void MemWnd::axChanged() { if (QMemModel::_validHexText(this->ui->txtAX->text(), 4)) { mVM.GetProc().SetRegister(REG_AX, QMemModel::_htoi(this->ui->txtAX->text())); } ui->txtAX->setText(mVM.GetProc().GetRegisterHex(REG_AX)); }
+void MemWnd::bxChanged() { if (QMemModel::_validHexText(this->ui->txtBX->text(), 4)) { mVM.GetProc().SetRegister(REG_BX, QMemModel::_htoi(this->ui->txtBX->text())); } ui->txtBX->setText(mVM.GetProc().GetRegisterHex(REG_BX)); }
+void MemWnd::cxChanged() { if (QMemModel::_validHexText(this->ui->txtCX->text(), 4)) { mVM.GetProc().SetRegister(REG_CX, QMemModel::_htoi(this->ui->txtCX->text())); } ui->txtCX->setText(mVM.GetProc().GetRegisterHex(REG_CX)); }
+void MemWnd::dxChanged() { if (QMemModel::_validHexText(this->ui->txtDX->text(), 4)) { mVM.GetProc().SetRegister(REG_DX, QMemModel::_htoi(this->ui->txtDX->text())); } ui->txtDX->setText(mVM.GetProc().GetRegisterHex(REG_DX)); }
+void MemWnd::spChanged() { if (QMemModel::_validHexText(this->ui->txtSP->text(), 4)) { mVM.GetProc().SetRegister(REG_SP, QMemModel::_htoi(this->ui->txtSP->text())); } ui->txtSP->setText(mVM.GetProc().GetRegisterHex(REG_SP)); }
+void MemWnd::bpChanged() { if (QMemModel::_validHexText(this->ui->txtBP->text(), 4)) { mVM.GetProc().SetRegister(REG_BP, QMemModel::_htoi(this->ui->txtBP->text())); } ui->txtBP->setText(mVM.GetProc().GetRegisterHex(REG_BP)); }
+void MemWnd::siChanged() { if (QMemModel::_validHexText(this->ui->txtSI->text(), 4)) { mVM.GetProc().SetRegister(REG_SI, QMemModel::_htoi(this->ui->txtSI->text())); } ui->txtSI->setText(mVM.GetProc().GetRegisterHex(REG_SI)); }
+void MemWnd::diChanged() { if (QMemModel::_validHexText(this->ui->txtDI->text(), 4)) { mVM.GetProc().SetRegister(REG_DI, QMemModel::_htoi(this->ui->txtDI->text())); } ui->txtDI->setText(mVM.GetProc().GetRegisterHex(REG_DI)); }
+void MemWnd::flChanged() { if (QMemModel::_validHexText(this->ui->txtFLAGS->text(), 4)) { mVM.GetProc().SetRegister(REG_FLAGS, QMemModel::_htoi(this->ui->txtFLAGS->text())); } ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS)); UpdateFlags(); }
 
 void MemWnd::ipChanged() {
 	if (!this->ui->txtIP->text().compare(mVM.GetProc().GetRegisterHex(REG_IP)))
@@ -830,8 +810,8 @@ void MemWnd::ipChanged() {
 	}
 
 
-	if (reply == QMessageBox::Yes && _validRegText(this->ui->txtIP->text())) {
-		if (!mVM.GetProc().ForceReloadInstruction(_htoi(this->ui->txtIP->text()))) {
+	if (reply == QMessageBox::Yes && QMemModel::_validHexText(this->ui->txtIP->text(), 4)) {
+		if (!mVM.GetProc().ForceReloadInstruction(QMemModel::_htoi(this->ui->txtIP->text()))) {
 			QMessageBox::critical(this, "Invalid Instruction at new IP", "The instruction at the new IP is not valid.\nReverting IP to previous value.");
 			ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
 		} else {
@@ -845,3 +825,20 @@ void MemWnd::ipChanged() {
 }
 
 ///End register update functions
+
+void MemWnd::memChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight) {
+	QMemModel* model = (QMemModel*)this->ui->tableView->model();
+
+	if(model->isDirty() && topLeft == bottomRight) {
+		mVM.GetProc().SetMemory(topLeft.column() + topLeft.row() *  0x10, 1, (unsigned int)model->data(topLeft, Qt::UserRole).toChar().toAscii());
+	}
+}
+
+void MemWnd::SetMemoryEditState(bool editable) {
+	if(editable) {
+		ui->tableView->setFocusPolicy(Qt::WheelFocus);
+	} else {
+		ui->tableView->setFocusPolicy(Qt::NoFocus);
+	}
+	((QMemModel*)ui->tableView->model())->setEditable(editable);
+}

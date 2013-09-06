@@ -1,10 +1,10 @@
 #include "QMemModel.hpp"
 
 QMemModel::QMemModel(QObject *parent) :
-	QAbstractTableModel(parent)
-{
-	parent+=0;
-}
+	QAbstractTableModel(parent),
+	mEditable(false),
+	mDirty(false)
+{ }
 
 QVariant QMemModel::data(const QModelIndex &index, int role) const {
 
@@ -22,6 +22,8 @@ QVariant QMemModel::data(const QModelIndex &index, int role) const {
 		} else {
 			return (*mHighlight.find(index.row() * 0x10 + index.column())).second;
 		}
+	} else if(role == Qt::UserRole) {
+		return mData[index.row() * 0x10 + index.column()] & 0xFF;
 	}
 	return QVariant();
 }
@@ -44,7 +46,13 @@ bool QMemModel::setData(const QModelIndex &index, const QVariant &value, int rol
 		return false;
 
 	if(role == Qt::EditRole) {
-		mData[index.row() * 0x10 + index.column()] = value.toChar().toAscii();
+		if (_validHexText(value.toString(), 2)) {
+			mData[index.row() * 0x10 + index.column()] = (unsigned char)(_htoi(value.toString()) & 0xFF);
+			mDirty = true;
+			emit dataChanged(index, index);
+		} else {
+			return false;
+		}
 	}
 	return true;
 }
@@ -71,4 +79,33 @@ void QMemModel::Highlight(const int addr, const int len, const QColor color) {
 	for(int i = 0; i < len; i++) {
 		mHighlight[(addr + i) % (mRows * 0x10)] = color;
 	}
+}
+
+Qt::ItemFlags QMemModel::flags(const QModelIndex&) const {
+	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | ( mEditable ? Qt::ItemIsEditable : 0);
+}
+
+unsigned int QMemModel::_htoi(const QString& text) {
+	unsigned int retVal = 0;
+
+	for (int i = 0; i < text.length(); i++) {
+		char lower = text.at(i).toLower().toAscii();
+		if(text.at(i).isDigit()) {
+			retVal += (text.at(i).toAscii() - '0') << ((text.length() - i - 1) * 4);
+		} else if (lower >= 'a' && lower <= 'f') {
+			retVal += (lower - 'a' + 10) << ((text.length() - i - 1) * 4);
+		}
+	}
+	return retVal;
+}
+
+bool QMemModel::_validHexText(const QString& text, unsigned int maxlen) {
+	if (text.length() > maxlen || text.length() <= 0)  // 5 characters exceeds bounds
+		return false;
+
+	for (int i = 0; i < text.length(); i++) {
+		if (!text.at(i).isDigit() && !(text.at(i).toLower().toAscii() >= 'a' && text.at(i).toLower().toAscii() <= 'f'))
+			return false;
+	}
+	return true;
 }

@@ -87,6 +87,12 @@ public slots:
 
 	/// End Register update functions
 
+	/// Begin Memory update function
+
+	void memChanged(const QModelIndex&, const QModelIndex&);
+
+	/// End memory update function
+
 signals:
 	void vmResume();
 	void vmStep();
@@ -106,9 +112,8 @@ private:
 	void ClearRegisterHighlighting();
 	void HighlightBreakpoints();
 	void DisableRun(int err);
+	void SetMemoryEditState(bool editable);
 	void EnableRun();
-	bool _validRegText(const QString&);
-	unsigned int _htoi(const QString&);
 
 	VM mVM;
 	QString mFile;

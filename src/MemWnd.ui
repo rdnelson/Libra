@@ -718,6 +718,12 @@
             <family>Courier New</family>
            </font>
           </property>
+          <property name="focusPolicy">
+           <enum>Qt::WheelFocus</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::DoubleClicked</set>
+          </property>
           <attribute name="horizontalHeaderHighlightSections">
            <bool>true</bool>
           </attribute>
