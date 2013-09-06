@@ -81,6 +81,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	this->connect(this->ui->actionReload_File, SIGNAL(triggered()), this, SLOT(reloadObjFile_Clicked()));
 	this->connect(this->ui->actionBreakpoint, SIGNAL(triggered()), this, SLOT(toggleBreakpoint_Clicked()));
 	this->connect(this->ui->actionEnable_Listings, SIGNAL(triggered()), this, SLOT(enableListings_Clicked()));
+	this->connect(this->ui->actionEnable_Memory_Logging, SIGNAL(triggered()), this, SLOT(enableMemoryLogging_Clicked()));
 	this->connect(this->ui->lstInstructions, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(lstInstructions_RightClicked(const QPoint&)));
 
 	//Create the memory view model
@@ -239,8 +240,7 @@ void MemWnd::stepInVM_Clicked() {
 		UpdateGui();
 
 		//Notify all Memory Logging functions to update their logs
-		mVM.notifyReadCallbacks();
-		mVM.notifyWriteCallbacks();
+		UpdateMemCallbacks();
 	}
 }
 
@@ -276,6 +276,9 @@ void MemWnd::stepOutVM_Clicked() {
 
 		//Enable the stop button
 		ui->actionStop->setEnabled(true);
+
+		//Notify all Memory Logging functions to update their logs
+		UpdateMemCallbacks();
 	}
 }
 
@@ -301,6 +304,19 @@ void MemWnd::stepOverVM_Clicked() {
 
 		//Enable the stop button
 		ui->actionStop->setEnabled(true);
+
+		//Notify all Memory Logging functions to update their logs
+		UpdateMemCallbacks();
+	}
+}
+
+void MemWnd::UpdateMemCallbacks() {
+	if(this->ui->actionEnable_Memory_Logging->isChecked()) {
+		mVM.notifyReadCallbacks();
+		mVM.notifyWriteCallbacks();
+	} else {
+		mVM.notifyReadCallbacks(0);
+		mVM.notifyWriteCallbacks(0);
 	}
 }
 
@@ -339,6 +355,13 @@ void MemWnd::toggleBreakpoint_Clicked() {
 
 void MemWnd::enableListings_Clicked() {
 	UpdateInstructions();
+}
+
+void MemWnd::enableMemoryLogging_Clicked() {
+	if(this->ui->actionEnable_Memory_Logging->isChecked())
+		mVM.EnableMemoryLogging();
+	else
+		mVM.DisableMemoryLogging();
 }
 
 void MemWnd::lstInstructions_RightClicked(const QPoint& pt) {
@@ -431,23 +454,31 @@ void MemWnd::workerRunDone() {
 	this->setWindowTitle("VM Stopped");
 	SetMemoryEditState(true);
 	UpdateGui();
+
+	//Notify all Memory Logging functions to update their logs
+	UpdateMemCallbacks();
 }
 //Program execution error
 void MemWnd::workerRunError(int err) {
 	UpdateGui();
 	DisableRun(err);
+
+	//Notify all Memory Logging functions to update their logs
+	UpdateMemCallbacks();
 }
 //Program paused
 void MemWnd::workerPaused() {
 	UpdateGui();
 	SetMemoryEditState(true);
 	EnableRun();
+
+	//Notify all Memory Logging functions to update their logs
+	UpdateMemCallbacks();
 }
 //Program step complete
 void MemWnd::workerStepDone() {
 	UpdateScreen();
-	mVM.notifyReadCallbacks();
-	mVM.notifyWriteCallbacks();
+	UpdateMemCallbacks();
 }
 //Program's processor returned an info code
 void MemWnd::workerProcReturn(int err) {
@@ -459,6 +490,9 @@ void MemWnd::workerProcReturn(int err) {
 void MemWnd::workerStopped() {
 	QMessageBox::information(this, "Halt Encountered", "HLT was encountered, execution is terminated.");
 	workerPaused();
+
+	//Notify all Memory Logging functions to update their logs
+	UpdateMemCallbacks();
 }
 
 /*

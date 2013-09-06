@@ -810,6 +810,7 @@
      <string>Options</string>
     </property>
     <addaction name="actionEnable_Listings"/>
+    <addaction name="actionEnable_Memory_Logging"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Debug"/>
@@ -967,6 +968,14 @@
    </property>
    <property name="text">
     <string>Enable Listings</string>
+   </property>
+  </action>
+  <action name="actionEnable_Memory_Logging">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable Memory Logging</string>
    </property>
   </action>
  </widget>

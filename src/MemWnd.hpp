@@ -36,6 +36,7 @@ public slots:
 	void stopVM_Clicked();
 	void toggleBreakpoint_Clicked();
 	void enableListings_Clicked();
+	void enableMemoryLogging_Clicked();
 	void lstInstructions_RightClicked(const QPoint&);
 
 	//VMWorker Slots
@@ -109,6 +110,7 @@ private:
 	void UpdateMemView(unsigned int ip = 0xFFFFFFFF, unsigned int len = 0);
 	void UpdateInstHighlight();
 	void UpdateInstructions();
+	void UpdateMemCallbacks();
 	void ClearRegisterHighlighting();
 	void HighlightBreakpoints();
 	void DisableRun(int err);
