@@ -38,6 +38,7 @@ void Screen::Dump() {
 }
 
 bool Screen::Put16(unsigned int port, unsigned int data) {
+	bool clearLine = false;
 	switch(port) {
 	case 0x04E8:
 		return true;
@@ -52,21 +53,32 @@ bool Screen::Put16(unsigned int port, unsigned int data) {
 			for(unsigned int i = 0; i < 4; i++) {
 				_PutChar(' ');
 				_PutColour(0);
+
+				if (mCurX == 0) {
+					clearLine = true;
+				}
 			}
 		} else if(chr == 0x0A) { //Line feed
 			mCurY = (mCurY + 1) % NUM_ROWS;
 			if(mCurY == mFirstRow) {
 				mFirstRow = (mFirstRow + 1) % NUM_ROWS;
+				clearLine = true;
 			}
-				for(unsigned int i = 0; i < NUM_COLS; i++) {
-				mScreen[i + mCurY * NUM_COLS] = ' ';
-				mColor[i + mCurY * NUM_COLS] = 0;
-				}
 		} else if(chr == 0x0D) {
 			mCurX = 0;
 		} else if(chr >= 32 && chr < 127) {
 			_PutColour(colour);
 			_PutChar(chr);
+
+			if (mCurX == 0) {
+				clearLine = true;
+			}
+		}
+		if (clearLine) {
+			for(unsigned int i = 0; i < NUM_COLS; i++) {
+				mScreen[i + mCurY * NUM_COLS] = ' ';
+				mColor[i + mCurY * NUM_COLS] = 0;
+			}
 		}
 		return true;
 	}
