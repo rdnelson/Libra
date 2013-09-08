@@ -79,7 +79,7 @@ Memory::MemoryOffset& Memory::MemoryOffset::operator=(const Memory::MemoryOffset
 		return *this;
 	}
 	const_cast<Memory&>(mParent) = obj.mParent;
-	mOffset = obj.mOffset;
+	mOffset = obj.mOffset % mParent.mSize;
 	return *this;
 }
 
