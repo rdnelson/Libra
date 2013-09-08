@@ -80,14 +80,14 @@ class Memory {
 
 			protected:
 				MemoryOffset(Memory& parent, size_t offset)
-					: mParent(parent), mOffset(offset) {}
+					: mParent(parent) { mOffset = offset % mParent.mSize;}
 
 
 				Memory& mParent;
 				size_t mOffset;
 				bool mEnabled;
 		};
-		MemoryOffset getOffset(size_t offset) { return MemoryOffset(*this, offset); }
+		MemoryOffset getOffset(size_t offset) { return MemoryOffset(*this, offset % this->mSize); }
 
 	private:
 		unsigned char*	mMem;
