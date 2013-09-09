@@ -393,7 +393,7 @@ void MemWnd::loadFile(bool newFile) {
 
 	//Open a file dialog if this is loading a new object file
 	if(newFile) {
-		QString file = QFileDialog::getOpenFileName(this, tr("Open File"), mCurDir, tr("Flat Binary (*.*);;Virgo Object (*.obj)"));
+		QString file = QFileDialog::getOpenFileName(this, tr("Open File"), mCurDir, tr("Virgo Object (*.obj);;Flat Binary (*.*)"));
 		mFile = file;
 	}
 
