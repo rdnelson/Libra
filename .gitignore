@@ -3,6 +3,9 @@
 *.stackdump
 *.swp
 src/libra
+src/librad
+src/libra32
+src/librad32
 src/libra-qt
 moc_*.cpp
 qrc_*.cpp
@@ -134,3 +137,7 @@ lib/gtest-1.6.0/*
 doc/_build/*
 doc/_static/*
 doc/_templates/*
+
+redist/amd64/*
+redist/i386/*
+*.deb

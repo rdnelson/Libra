@@ -15,6 +15,15 @@ CONFIG(dbg) {
 	TARGET = librad
 }
 
+CONFIG(32bit) {
+    message(32bit version)
+    OBJECTS_DIR = $$JOIN(OBJECTS_DIR,,,32)
+    QMAKE_CXXFLAGS += -m32
+    QMAKE_LFLAGS += -m32
+    LIBS += -L/usr/lib/i386-linux-gnu -L/lib/i386-linux-gnu
+    TARGET = $$JOIN(TARGET,,,32)
+}
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TEMPLATE = app

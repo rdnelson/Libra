@@ -24,3 +24,6 @@ gtest: $(GTESTDIR)/config.status
 
 $(GTESTDIR)/config.status:
 	cd $(GTESTDIR); ./configure
+
+deb:
+	$(MAKE) -C redist/ all
