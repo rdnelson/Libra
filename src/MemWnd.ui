@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>MemWnd</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="Resources.qrc">
+    <normaloff>:/res/Libra.ico</normaloff>:/res/Libra.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
