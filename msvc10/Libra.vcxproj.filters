@@ -575,6 +575,9 @@
     <ClInclude Include="..\src\peripherals\Timer.hpp">
       <Filter>Header Files\Peripherals</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\src\MemWnd.ui">
@@ -624,6 +627,8 @@
     <None Include="..\res\testproject24.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="icon1.ico" />
+    <None Include="..\res\Libra.ico" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\opcodes\Lxs.hpp">
@@ -632,5 +637,8 @@
     <ClInclude Include="..\src\opcodes\Push.hpp">
       <Filter>Header Files\Opcodes</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="msvc10_resources.rc" />
   </ItemGroup>
 </Project>

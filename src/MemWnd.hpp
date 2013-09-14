@@ -106,6 +106,7 @@ private:
 	void loadFile(bool newFile = false);
 	void UpdateScreen();
 	void UpdateGui();
+	void UpdateRegisters();
 	void UpdateFlags();
 	void UpdateMemView(unsigned int ip = 0xFFFFFFFF, unsigned int len = 0);
 	void UpdateInstHighlight();
