@@ -8,5 +8,6 @@
         <file>../res/StepInto24.ico</file>
         <file>../res/StepOut24.ico</file>
         <file>../res/StepOver24.ico</file>
+        <file>../res/Libra.ico</file>
     </qresource>
 </RCC>
