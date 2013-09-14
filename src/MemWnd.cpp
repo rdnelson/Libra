@@ -511,9 +511,7 @@ void MemWnd::UpdateFlags() {
 	ui->chkTrap->setChecked(mVM.GetProc().GetFlag(FLAGS_TF));
 }
 
-void MemWnd::UpdateGui() {
-
-	UpdateScreen();
+void MemWnd::UpdateRegisters() {
 
 	//Update all of the register and flag boxes
 	ui->txtAX->setText(mVM.GetProc().GetRegisterHex(REG_AX));
@@ -525,10 +523,16 @@ void MemWnd::UpdateGui() {
 	ui->txtBP->setText(mVM.GetProc().GetRegisterHex(REG_BP));
 	ui->txtSP->setText(mVM.GetProc().GetRegisterHex(REG_SP));
 	ui->txtIP->setText(mVM.GetProc().GetRegisterHex(REG_IP));
-	ClearRegisterHighlighting();
 	ui->txtFLAGS->setText(mVM.GetProc().GetRegisterHex(REG_FLAGS));
 
+}
+
+void MemWnd::UpdateGui() {
+
+	UpdateScreen();
 	UpdateFlags();
+
+	ClearRegisterHighlighting();
 
 	UpdateMemView();
 
@@ -806,15 +810,15 @@ void MemWnd::UpdateScreenTick() {
 
 ///Checkbox Flag update Functions
 
-void MemWnd::adjustFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_AF, state == Qt::Checked); }
-void MemWnd::carryFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_CF, state == Qt::Checked); }
-void MemWnd::directionFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_DF, state == Qt::Checked); }
-void MemWnd::interruptFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_IF, state == Qt::Checked); }
-void MemWnd::overflowFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_OF, state == Qt::Checked); }
-void MemWnd::parityFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_PF, state == Qt::Checked); }
-void MemWnd::signFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_SF, state == Qt::Checked); }
-void MemWnd::trapFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_TF, state == Qt::Checked); }
-void MemWnd::zeroFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_ZF, state == Qt::Checked); }
+void MemWnd::adjustFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_AF, state == Qt::Checked); UpdateRegisters(); }
+void MemWnd::carryFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_CF, state == Qt::Checked); UpdateRegisters(); }
+void MemWnd::directionFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_DF, state == Qt::Checked); UpdateRegisters(); }
+void MemWnd::interruptFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_IF, state == Qt::Checked); UpdateRegisters(); }
+void MemWnd::overflowFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_OF, state == Qt::Checked); UpdateRegisters(); }
+void MemWnd::parityFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_PF, state == Qt::Checked); UpdateRegisters(); }
+void MemWnd::signFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_SF, state == Qt::Checked); UpdateRegisters(); }
+void MemWnd::trapFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_TF, state == Qt::Checked); UpdateRegisters(); }
+void MemWnd::zeroFlagChanged(int state) { mVM.GetProc().SetFlag(FLAGS_ZF, state == Qt::Checked); UpdateRegisters(); }
 
 ///End Checkbox Flag update Functions
 
