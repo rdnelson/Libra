@@ -675,7 +675,14 @@ void MemWnd::UpdateInstructions() {
 
 			//If labels are enabled
 			if(j == COL_LABEL) {
-				ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE(mVM.GetInstructionLabel(i).c_str()));
+				if (mVM.GetInstructionLabel(i).empty() && ui->actionEnable_Listings->isChecked()) {
+					char* buf = new char[20];
+					sprintf(buf, "%0.4X", mVM.GetInstructionAddr(i));
+					ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE("    " + QString(buf) + "    "));
+					delete buf;
+				}
+				else
+					ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE(mVM.GetInstructionLabel(i).c_str()));
 			} else if(j == COL_LST) {
 				if(ui->actionEnable_Listings->isChecked()) {
 					ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE(mVM.GetInstructionText(i).c_str()));
