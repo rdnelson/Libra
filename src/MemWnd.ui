@@ -578,7 +578,7 @@
                </size>
               </property>
               <property name="title">
-               <string>Input/Output (I/O)</string>
+               <string>Input/Output Port (I/O)</string>
               </property>
               <widget class="QLabel" name="label_13">
                <property name="geometry">
