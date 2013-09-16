@@ -113,7 +113,7 @@ private:
 	void UpdateInstructions();
 	void UpdateMemCallbacks();
 	void ClearRegisterHighlighting();
-	void HighlightBreakpoints();
+	void HighlightInstructions();
 	void DisableRun(int err);
 	void SetMemoryEditState(bool editable);
 	void EnableRun();
