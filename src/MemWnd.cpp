@@ -18,6 +18,9 @@
 #include "QKbdFilter.hpp"
 #include "Processor.hpp"
 
+#include "opcodes/In.hpp"
+#include "opcodes/Out.hpp"
+
 #include <QTimer>
 #include <iostream>
 
@@ -606,6 +609,32 @@ void MemWnd::UpdateInstHighlight() {
 				color = Qt::white;
 		}
 		op = inst->GetOperand(i);
+
+		if (i == 1 &&
+			(inst->GetOpcode() == In::IN_AL_DX ||
+			 inst->GetOpcode() == In::IN_AL_IMM8 ||
+			 inst->GetOpcode() == In::IN_AX_DX ||
+			 inst->GetOpcode() == In::IN_AX_IMM8)) {
+
+			 ui->txtIN->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+			 char hex[5];
+			 sprintf(hex, "%04X", op->GetValue());
+			 ui->txtIN->setText(hex);
+		} else if (i == 1) {
+			ui->txtIN->setText("N/A");
+		} else if (i == 0 &&
+			(inst->GetOpcode() == Out::OUT_DX_AL ||
+			 inst->GetOpcode() == Out::OUT_DX_AX ||
+			 inst->GetOpcode() == Out::OUT_IMM8_AL ||
+			 inst->GetOpcode() == Out::OUT_IMM8_AX)) {
+				 ui->txtOUT->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+				 char hex[5];
+				 sprintf(hex, "%04X", op->GetValue());
+				 ui->txtOUT->setText(hex);
+		} else if (i == 0) {
+			ui->txtOUT->setText("N/A");
+		}
+
 		if(op) {
 			int val = op->GetUnresolvedValue();
 			if(val >= 0 && val < 0x10000) {
@@ -719,6 +748,8 @@ void MemWnd::ClearRegisterHighlighting() {
 	ui->txtSP->setStyleSheet("");
 	ui->txtIP->setStyleSheet("");
 	ui->txtFLAGS->setStyleSheet("");
+	ui->txtOUT->setStyleSheet("");
+	ui->txtIN->setStyleSheet("");
 }
 
 void MemWnd::HighlightBreakpoints() {

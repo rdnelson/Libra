@@ -48,7 +48,7 @@ class Instruction {
 		inline bool IsValid() { return mValid; }
 
 		//returns the opcode byte
-		inline int GetOpcode() { return mOpcode; }
+		inline const int GetOpcode() const { return mOpcode; }
 
 		//returns the full bytestream of the instruction
 		inline std::string GetInstruction() { return mInst; }
