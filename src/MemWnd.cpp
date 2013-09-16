@@ -18,8 +18,8 @@
 #include "QKbdFilter.hpp"
 #include "Processor.hpp"
 
-#include "opcodes\In.hpp"
-#include "opcodes\Out.hpp"
+#include "opcodes/In.hpp"
+#include "opcodes/Out.hpp"
 
 #include <QTimer>
 #include <iostream>
@@ -620,7 +620,6 @@ void MemWnd::UpdateInstHighlight() {
 			 char hex[5];
 			 sprintf(hex, "%04X", op->GetValue());
 			 ui->txtIN->setText(hex);
-			 continue;
 		} else if (i == 1) {
 			ui->txtIN->setText("N/A");
 		} else if (i == 0 &&
@@ -632,7 +631,6 @@ void MemWnd::UpdateInstHighlight() {
 				 char hex[5];
 				 sprintf(hex, "%04X", op->GetValue());
 				 ui->txtOUT->setText(hex);
-			continue;
 		} else if (i == 0) {
 			ui->txtOUT->setText("N/A");
 		}
