@@ -295,7 +295,7 @@ void MemWnd::stepOverVM_Clicked() {
 		SetMemoryEditState(false);
 
 		//Clear all highlighting except breakpoints
-		HighlightBreakpoints();
+		HighlightInstructions();
 
 		ClearRegisterHighlighting();
 
@@ -346,14 +346,14 @@ void MemWnd::toggleBreakpoint_Clicked() {
 	if(bp != 0) {
 		//Remove any existing breakpoints
 		mVM.RemoveBreakpoint(bp->GetIP());
-		HighlightBreakpoints();
+		HighlightInstructions();
 		return;
 	}
 	//Create a new unconditional breakpoint
 	bp = new Breakpoint(mVM.GetInstructionAddr(ui->lstInstructions->currentRow()));
 	mVM.AddBreakpoint(bp);
 	//Highlight the new breakpoint
-	HighlightBreakpoints();
+	HighlightInstructions();
 }
 
 void MemWnd::enableListings_Clicked() {
@@ -383,7 +383,7 @@ void MemWnd::lstInstructions_RightClicked(const QPoint& pt) {
 			} else {
 				mVM.AddBreakpoint(new Breakpoint(addr));
 			}
-			HighlightBreakpoints();
+			HighlightInstructions();
 		}
 	}
 
@@ -540,20 +540,9 @@ void MemWnd::UpdateGui() {
 	UpdateMemView();
 
 	//Update the instruction listing highlight state
-	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
-	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
-		for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
-			if(mVM.GetInstructionAddr(i) == ip) {
-				ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::yellow);
-				ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i,0));
-			} else if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
-				ui->lstInstructions->item(i,j)->setBackgroundColor(Qt::red);
-			} else {
-				ui->lstInstructions->item(i,j)->setBackgroundColor(Qt::white);
-			}
-		}
-	}
+	HighlightInstructions();
 
+	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
 	UpdateMemView(ip, mVM.CalcInstructionLen());
 
 	UpdateInstHighlight();
@@ -620,6 +609,7 @@ void MemWnd::UpdateInstHighlight() {
 			 char hex[5];
 			 sprintf(hex, "%04X", op->GetValue());
 			 ui->txtIN->setText(hex);
+			 continue;
 		} else if (i == 1) {
 			ui->txtIN->setText("N/A");
 		} else if (i == 0 &&
@@ -627,10 +617,11 @@ void MemWnd::UpdateInstHighlight() {
 			 inst->GetOpcode() == Out::OUT_DX_AX ||
 			 inst->GetOpcode() == Out::OUT_IMM8_AL ||
 			 inst->GetOpcode() == Out::OUT_IMM8_AX)) {
-				 ui->txtOUT->setStyleSheet("QLineEdit {background: " + color.name() + "}");
-				 char hex[5];
-				 sprintf(hex, "%04X", op->GetValue());
-				 ui->txtOUT->setText(hex);
+			 ui->txtOUT->setStyleSheet("QLineEdit {background: " + color.name() + "}");
+			 char hex[5];
+			 sprintf(hex, "%04X", op->GetValue());
+			 ui->txtOUT->setText(hex);
+			continue;
 		} else if (i == 0) {
 			ui->txtOUT->setText("N/A");
 		}
@@ -759,15 +750,17 @@ void MemWnd::ClearRegisterHighlighting() {
 	ui->txtIN->setStyleSheet("");
 }
 
-void MemWnd::HighlightBreakpoints() {
+void MemWnd::HighlightInstructions() {
+	unsigned int ip = mVM.GetProc().GetRegister(REG_IP);
 	for(unsigned int i = 0; i < mVM.GetNumInstructions(); i++) {
-		if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
-			for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
-				ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::red);
-			}
-		} else {
-			for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
-				ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::white);
+		for(int j = 0; j < ui->lstInstructions->columnCount(); j++) {
+			if(mVM.GetInstructionAddr(i) == ip) {
+				ui->lstInstructions->item(i, j)->setBackgroundColor(Qt::yellow);
+				ui->lstInstructions->scrollToItem(ui->lstInstructions->item(i,0));
+			} else if(mVM.FindBreakpoint(mVM.GetInstructionAddr(i))) {
+				ui->lstInstructions->item(i,j)->setBackgroundColor(Qt::red);
+			} else {
+				ui->lstInstructions->item(i,j)->setBackgroundColor(Qt::white);
 			}
 		}
 	}
