@@ -534,6 +534,7 @@ void MemWnd::UpdateGui() {
 
 	UpdateScreen();
 	UpdateFlags();
+	UpdateRegisters();
 
 	ClearRegisterHighlighting();
 
