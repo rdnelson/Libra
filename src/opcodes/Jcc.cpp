@@ -125,7 +125,7 @@ int Jcc::Execute(Processor* proc) {
 			jmp = proc->GetFlag(FLAGS_CF);
 			break;
 		case JBE:
-			jmp = proc->GetFlag(FLAGS_CF) && proc->GetFlag(FLAGS_ZF);
+			jmp = proc->GetFlag(FLAGS_CF) || proc->GetFlag(FLAGS_ZF);
 			break;
 		case JCXZ:
 			jmp = proc->GetRegister(REG_CX) == 0;
@@ -134,7 +134,7 @@ int Jcc::Execute(Processor* proc) {
 			jmp = proc->GetFlag(FLAGS_ZF);
 			break;
 		case JG:
-			jmp = !proc->GetFlag(FLAGS_ZF) && proc->GetFlag(FLAGS_SF) == proc->GetFlag(FLAGS_OF);
+			jmp = !proc->GetFlag(FLAGS_ZF) && (proc->GetFlag(FLAGS_SF) == proc->GetFlag(FLAGS_OF));
 			break;
 		case JGE:
 			jmp = proc->GetFlag(FLAGS_SF) == proc->GetFlag(FLAGS_OF);
@@ -143,7 +143,7 @@ int Jcc::Execute(Processor* proc) {
 			jmp = proc->GetFlag(FLAGS_SF) != proc->GetFlag(FLAGS_OF);
 			break;
 		case JLE:
-			jmp = proc->GetFlag(FLAGS_SF) != proc->GetFlag(FLAGS_OF) && proc->GetFlag(FLAGS_ZF);
+			jmp = (proc->GetFlag(FLAGS_SF) != proc->GetFlag(FLAGS_OF)) || proc->GetFlag(FLAGS_ZF);
 			break;
 		case JNE:
 			jmp = !proc->GetFlag(FLAGS_ZF);
