@@ -81,12 +81,15 @@ int Loop::Execute(Processor* proc) {
 			if(cx == 0) {
 				return 0;
 			}
+            break;
 		case LOOPE:
 			if(cx == 0 || !proc->GetFlag(FLAGS_ZF))
 				return 0;
+            break;
 		case LOOPNE:
 			if(cx == 0 || proc->GetFlag(FLAGS_ZF))
 				return 0;
+            break;
 	}
 
 	//Jump has to happen
