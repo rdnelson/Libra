@@ -12,7 +12,7 @@
 #include "Instruction.hpp"
 #include "QMemModel.hpp"
 #include "QDesktopServices"
-#include "QUrl.h"
+#include "QUrl"
 #include "Breakpoint.hpp"
 #include "peripherals/Screen.hpp"
 #include "peripherals/Keyboard.hpp"
