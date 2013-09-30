@@ -102,7 +102,7 @@ Instruction* Rot::CreateInstruction(Memory::MemoryOffset& memLoc, Processor* pro
 						(modrm == RCL_MODRM ? "RCL" : "RCR")),
 					dst->GetDisasm().c_str(), val);
 
-				Operand* src = new ImmediateOperand(val, size, (opLoc + 2 + dst->GetBytecodeLen()).getOffset());
+				Operand* src = new ImmediateOperand(val, 1, (opLoc + 2 + dst->GetBytecodeLen()).getOffset());
 				GETINST(preSize + 2 + dst->GetBytecodeLen() + 1);
 
 				newRot = new Rot(pre, buf, inst, (unsigned char)*opLoc, modrm);
@@ -141,7 +141,7 @@ int Rot::Execute(Processor* proc) {
 	case(RCR_MODRM):
 		for (count = ((srcVal & 0x1F) % (size + 1)); count > 0; count--) {
 			tempCF = (dstVal & 1) != 0;
-			dstVal =  dstVal/2 + CF * (sign << 1);
+			dstVal =  dstVal/2 + CF * (sign);
 			CF = tempCF;
 		}
 		if ((srcVal % (size * 8)) == 1) {
