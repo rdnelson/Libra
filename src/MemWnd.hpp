@@ -38,6 +38,7 @@ public slots:
 	void enableListings_Clicked();
 	void enableMemoryLogging_Clicked();
 	void lstInstructions_RightClicked(const QPoint&);
+    void openHelp();
 
 	//VMWorker Slots
 	//trigger on breakpoint
