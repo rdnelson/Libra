@@ -11,7 +11,7 @@
 #include "QThread"
 #include "Instruction.hpp"
 #include "QMemModel.hpp"
-#include "QDesktopServices.h"
+#include "QDesktopServices"
 #include "QUrl.h"
 #include "Breakpoint.hpp"
 #include "peripherals/Screen.hpp"
