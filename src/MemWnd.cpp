@@ -11,6 +11,8 @@
 #include "QThread"
 #include "Instruction.hpp"
 #include "QMemModel.hpp"
+#include "QDesktopServices"
+#include "QUrl"
 #include "Breakpoint.hpp"
 #include "peripherals/Screen.hpp"
 #include "peripherals/Keyboard.hpp"
@@ -86,6 +88,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	this->connect(this->ui->actionEnable_Listings, SIGNAL(triggered()), this, SLOT(enableListings_Clicked()));
 	this->connect(this->ui->actionEnable_Memory_Logging, SIGNAL(triggered()), this, SLOT(enableMemoryLogging_Clicked()));
 	this->connect(this->ui->lstInstructions, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(lstInstructions_RightClicked(const QPoint&)));
+	this->connect(this->ui->actionHelp, SIGNAL(triggered()), this, SLOT(openHelp()));
 
 	//Create the memory view model
 	QMemModel* memModel = new QMemModel(this);
@@ -913,4 +916,8 @@ void MemWnd::SetMemoryEditState(bool editable) {
 		ui->tableView->setFocusPolicy(Qt::NoFocus);
 	}
 	((QMemModel*)ui->tableView->model())->setEditable(editable);
+}
+
+void MemWnd::openHelp() {
+    QDesktopServices::openUrl(QUrl("Docs\\index.html"));
 }
