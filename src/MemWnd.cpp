@@ -451,6 +451,7 @@ void MemWnd::loadFile(bool newFile) {
 //Breakpoint Hit
 void MemWnd::workerBreakpoint() {
 
+	SetMemoryEditState(true);
 	EnableRun();
 	UpdateGui();
 
@@ -466,6 +467,7 @@ void MemWnd::workerRunDone() {
 }
 //Program execution error
 void MemWnd::workerRunError(int err) {
+	SetMemoryEditState(true);
 	UpdateGui();
 	DisableRun(err);
 
@@ -483,6 +485,7 @@ void MemWnd::workerPaused() {
 }
 //Program step complete
 void MemWnd::workerStepDone() {
+	SetMemoryEditState(true);
 	UpdateScreen();
 	UpdateMemCallbacks();
 }
@@ -494,6 +497,7 @@ void MemWnd::workerProcReturn(int err) {
 }
 //Program's processor halted
 void MemWnd::workerStopped() {
+	SetMemoryEditState(true);
 	QMessageBox::information(this, "Halt Encountered", "HLT was encountered, execution is terminated.");
 	workerPaused();
 
