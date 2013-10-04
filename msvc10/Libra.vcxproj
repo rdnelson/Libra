@@ -302,6 +302,7 @@ xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\CmdTree.cpp" />
     <ClCompile Include="..\src\Debug\moc_MemWnd.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
@@ -486,6 +487,7 @@ xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y</Command>
     <ClCompile Include="..\src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\CmdTree.hpp" />
     <ClInclude Include="..\src\GeneratedFiles\ui_MemWnd.h" />
     <ClInclude Include="..\src\opcodes\Aaa.hpp" />
     <ClInclude Include="..\src\opcodes\Aad.hpp" />

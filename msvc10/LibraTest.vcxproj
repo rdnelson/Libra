@@ -70,7 +70,8 @@
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(ProjectDir)\..\lib\gtest-1.6.0\msvc\Libra\Release\</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>
+    </LinkIncremental>
     <IncludePath>$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;$(VCInstallDir)atlmfc\include;$(VCInstallDir)include;$(ProjectDir)\..\lib\gtest-1.6.0\include\;$(ProjectDir)\..\src\</IncludePath>
     <LibraryPath>$(VCInstallDir)lib;$(VCInstallDir)atlmfc\lib;$(WindowsSdkDir)lib;$(FrameworkSDKDir)\lib;$(ProjectDir)\..\lib\gtest-1.6.0\msvc\Libra\Debug\</LibraryPath>
   </PropertyGroup>
@@ -100,8 +101,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>gtest.lib;gtest_main.lib;$(QTDIR)\lib\qtmain.lib;$(QTDIR)\lib\QtGui4.lib;$(QTDIR)\lib\QtCore4.lib;winmm.lib;imm32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-
+      <AdditionalDependencies>gtest.lib;gtest_main.lib;winmm.lib;imm32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)\Win32\Release\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -113,20 +113,25 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include;$(QTDIR)\include\ActiveQt;release;.;..\..\..\Qt\4.8.4\mkspecs\default;..\src\GeneratedFiles;..\test\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>gtestd.lib;gtest_maind.lib;$(QTDIR)\lib\qtmaind.lib;$(QTDIR)\lib\QtGuid4.lib;$(QTDIR)\lib\QtCored4.lib;winmm.lib;imm32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <AdditionalDependencies>gtestd.lib;gtest_maind.lib;winmm.lib;imm32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)\Win32\Debug\</AdditionalLibraryDirectories>
+      <LinkTimeCodeGeneration>
+      </LinkTimeCodeGeneration>
     </Link>
     <PostBuildEvent>
       <Command>xcopy $(TargetPath) $(ProjectDir)\..\bin\ /C /Y</Command>
@@ -180,298 +185,20 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\AddressOperand.cpp" />
-    <ClCompile Include="..\src\Breakpoint.cpp" />
-    <ClCompile Include="..\src\Debug\moc_MemWnd.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug\moc_QInstructionList.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug\moc_QKbdFilter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug\moc_QMemModel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug\moc_VMWorker.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug_Static\moc_MemWnd.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug_Static\moc_QInstructionList.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug_Static\moc_QKbdFilter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug_Static\moc_QMemModel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Debug_Static\moc_VMWorker.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\GeneratedFiles\qrc_Resources.cpp" />
+    <ClCompile Include="..\src\CmdTree.cpp" />
     <ClCompile Include="..\src\Instruction.cpp" />
-    <ClCompile Include="..\src\InstTable.cpp" />
     <ClCompile Include="..\src\Memory.cpp" />
-    <ClCompile Include="..\src\MemWnd.cpp" />
-    <ClCompile Include="..\src\ModrmOperand.cpp" />
-    <ClCompile Include="..\src\opcodes\Aaa.cpp" />
-    <ClCompile Include="..\src\opcodes\Aad.cpp" />
-    <ClCompile Include="..\src\opcodes\Aam.cpp" />
-    <ClCompile Include="..\src\opcodes\Aas.cpp" />
-    <ClCompile Include="..\src\opcodes\Adc.cpp" />
-    <ClCompile Include="..\src\opcodes\Add.cpp" />
-    <ClCompile Include="..\src\opcodes\And.cpp" />
-    <ClCompile Include="..\src\opcodes\Call.cpp" />
-    <ClCompile Include="..\src\opcodes\Cbw.cpp" />
-    <ClCompile Include="..\src\opcodes\CLSTX.cpp" />
-    <ClCompile Include="..\src\opcodes\Cmp.cpp" />
-    <ClCompile Include="..\src\opcodes\CmpsX.cpp" />
-    <ClCompile Include="..\src\opcodes\Cwd.cpp" />
-    <ClCompile Include="..\src\opcodes\Daa.cpp" />
-    <ClCompile Include="..\src\opcodes\Das.cpp" />
-    <ClCompile Include="..\src\opcodes\Div.cpp" />
-    <ClCompile Include="..\src\opcodes\Hlt.cpp" />
-    <ClCompile Include="..\src\opcodes\IDiv.cpp" />
-    <ClCompile Include="..\src\opcodes\IMul.cpp" />
-    <ClCompile Include="..\src\opcodes\In.cpp" />
-    <ClCompile Include="..\src\opcodes\IncDec.cpp" />
-    <ClCompile Include="..\src\opcodes\Int.cpp" />
-    <ClCompile Include="..\src\opcodes\Iret.cpp" />
-    <ClCompile Include="..\src\opcodes\Jcc.cpp" />
-    <ClCompile Include="..\src\opcodes\Jmp.cpp" />
-    <ClCompile Include="..\src\opcodes\Lahf.cpp" />
-    <ClCompile Include="..\src\opcodes\Lea.cpp" />
-    <ClCompile Include="..\src\opcodes\Lods.cpp" />
-    <ClCompile Include="..\src\opcodes\Loop.cpp" />
-    <ClCompile Include="..\src\opcodes\Lxs.cpp" />
-    <ClCompile Include="..\src\opcodes\Mov.cpp" />
-    <ClCompile Include="..\src\opcodes\Movs.cpp" />
-    <ClCompile Include="..\src\opcodes\Mul.cpp" />
-    <ClCompile Include="..\src\opcodes\Neg.cpp" />
-    <ClCompile Include="..\src\opcodes\Nop.cpp" />
-    <ClCompile Include="..\src\opcodes\Not.cpp" />
-    <ClCompile Include="..\src\opcodes\Or.cpp" />
-    <ClCompile Include="..\src\opcodes\Out.cpp" />
-    <ClCompile Include="..\src\opcodes\Pop.cpp" />
-    <ClCompile Include="..\src\opcodes\Push.cpp" />
-    <ClCompile Include="..\src\opcodes\Ret.cpp" />
-    <ClCompile Include="..\src\opcodes\Rot.cpp" />
-    <ClCompile Include="..\src\opcodes\Sahf.cpp" />
-    <ClCompile Include="..\src\opcodes\Sbb.cpp" />
-    <ClCompile Include="..\src\opcodes\Scas.cpp" />
-    <ClCompile Include="..\src\opcodes\StiCli.cpp" />
-    <ClCompile Include="..\src\opcodes\Stos.cpp" />
-    <ClCompile Include="..\src\opcodes\Sub.cpp" />
-    <ClCompile Include="..\src\opcodes\Sxx.cpp" />
-    <ClCompile Include="..\src\opcodes\Test.cpp" />
-    <ClCompile Include="..\src\opcodes\Xchg.cpp" />
-    <ClCompile Include="..\src\opcodes\Xlat.cpp" />
-    <ClCompile Include="..\src\opcodes\Xor.cpp" />
-    <ClCompile Include="..\src\peripherals\Keyboard.cpp" />
-    <ClCompile Include="..\src\peripherals\Screen.cpp" />
-    <ClCompile Include="..\src\peripherals\Timer.cpp" />
     <ClCompile Include="..\src\Prefix.cpp" />
-    <ClCompile Include="..\src\Processor.cpp" />
-    <ClCompile Include="..\src\QInstructionList.cpp" />
-    <ClCompile Include="..\src\QKbdFilter.cpp" />
-    <ClCompile Include="..\src\QMemModel.cpp" />
-    <ClCompile Include="..\src\RegisterOperand.cpp" />
-    <ClCompile Include="..\src\Release\moc_MemWnd.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Release\moc_QInstructionList.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Release\moc_QKbdFilter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Release\moc_QMemModel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Release\moc_VMWorker.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Release_Static\moc_MemWnd.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Release_Static\moc_QInstructionList.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Release_Static\moc_QKbdFilter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Release_Static\moc_QMemModel.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\Release_Static\moc_VMWorker.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\VM.cpp" />
-    <ClCompile Include="..\src\VMWorker.cpp" />
+    <ClCompile Include="..\test\tests\TestCmdTree.cpp" />
     <ClCompile Include="..\test\tests\TestInstruction.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\AddressOperand.hpp" />
-    <ClInclude Include="..\src\Breakpoint.hpp" />
-    <ClInclude Include="..\src\GeneratedFiles\ui_MemWnd.h" />
-    <ClInclude Include="..\src\ImmediateOperand.hpp" />
+    <ClInclude Include="..\src\CmdTree.hpp" />
     <ClInclude Include="..\src\Instruction.hpp" />
-    <ClInclude Include="..\src\IPeripheral.hpp" />
     <ClInclude Include="..\src\Memory.hpp" />
-    <ClInclude Include="..\src\MemWnd.hpp">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\..\src\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQICO_NEEDED -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -D_CRT_SECURE_NO_WARNINGS -DNDEBUG  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I.\release" "-I." "-I.\..\..\..\Qt\4.8.4\mkspecs\default" "-I.\..\src\GeneratedFiles"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\..\src\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQICO_NEEDED -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -D_CRT_SECURE_NO_WARNINGS -DNDEBUG  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I.\release" "-I." "-I.\..\..\..\Qt\4.8.4\mkspecs\default" "-I.\..\src\GeneratedFiles"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\..\src\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQICO_NEEDED -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -D_CRT_SECURE_NO_WARNINGS -DNDEBUG  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I.\release" "-I." "-I.\..\..\..\Qt\4.8.4\mkspecs\default" "-I.\..\src\GeneratedFiles"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\..\src\$(ConfigurationName)\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQICO_NEEDED -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB -DQT_HAVE_MMX -DQT_HAVE_3DNOW -DQT_HAVE_SSE -DQT_HAVE_MMXEXT -DQT_HAVE_SSE2 -DQT_THREAD_SUPPORT -D_CRT_SECURE_NO_WARNINGS -DNDEBUG  "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I.\release" "-I." "-I.\..\..\..\Qt\4.8.4\mkspecs\default" "-I.\..\src\GeneratedFiles"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing MemWnd.hpp...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing MemWnd.hpp...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">Moc%27ing MemWnd.hpp...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">Moc%27ing MemWnd.hpp...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\src\$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\src\$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">..\src\$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">..\src\$(ConfigurationName)\moc_%(Filename).cpp;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
-    </ClInclude>
-    <ClInclude Include="..\src\ModrmOperand.hpp" />
-    <ClInclude Include="..\src\opcodes\Aaa.hpp" />
-    <ClInclude Include="..\src\opcodes\Aad.hpp" />
-    <ClInclude Include="..\src\opcodes\Aam.hpp" />
-    <ClInclude Include="..\src\opcodes\Aas.hpp" />
-    <ClInclude Include="..\src\opcodes\Adc.hpp" />
-    <ClInclude Include="..\src\opcodes\Add.hpp" />
-    <ClInclude Include="..\src\opcodes\AllOpcodes.hpp" />
-    <ClInclude Include="..\src\opcodes\And.hpp" />
-    <ClInclude Include="..\src\opcodes\Call.hpp" />
-    <ClInclude Include="..\src\opcodes\Cbw.hpp" />
-    <ClInclude Include="..\src\opcodes\CLSTX.hpp" />
-    <ClInclude Include="..\src\opcodes\Cmp.hpp" />
-    <ClInclude Include="..\src\opcodes\CmpsX.hpp" />
-    <ClInclude Include="..\src\opcodes\Cwd.hpp" />
-    <ClInclude Include="..\src\opcodes\Daa.hpp" />
-    <ClInclude Include="..\src\opcodes\Das.hpp" />
-    <ClInclude Include="..\src\opcodes\Div.hpp" />
-    <ClInclude Include="..\src\opcodes\Hlt.hpp" />
-    <ClInclude Include="..\src\opcodes\IDiv.hpp" />
-    <ClInclude Include="..\src\opcodes\IMul.hpp" />
-    <ClInclude Include="..\src\opcodes\In.hpp" />
-    <ClInclude Include="..\src\opcodes\IncDec.hpp" />
-    <ClInclude Include="..\src\opcodes\Int.hpp" />
-    <ClInclude Include="..\src\opcodes\Iret.hpp" />
-    <ClInclude Include="..\src\opcodes\Jcc.hpp" />
-    <ClInclude Include="..\src\opcodes\Jmp.hpp" />
-    <ClInclude Include="..\src\opcodes\Lahf.hpp" />
-    <ClInclude Include="..\src\opcodes\Lea.hpp" />
-    <ClInclude Include="..\src\opcodes\Lods.hpp" />
-    <ClInclude Include="..\src\opcodes\Loop.hpp" />
-    <ClInclude Include="..\src\opcodes\Lxs.hpp" />
-    <ClInclude Include="..\src\opcodes\Mov.hpp" />
-    <ClInclude Include="..\src\opcodes\Movs.hpp" />
-    <ClInclude Include="..\src\opcodes\Mul.hpp" />
-    <ClInclude Include="..\src\opcodes\Neg.hpp" />
-    <ClInclude Include="..\src\opcodes\Nop.hpp" />
-    <ClInclude Include="..\src\opcodes\Not.hpp" />
-    <ClInclude Include="..\src\opcodes\Or.hpp" />
-    <ClInclude Include="..\src\opcodes\Out.hpp" />
-    <ClInclude Include="..\src\opcodes\Pop.hpp" />
-    <ClInclude Include="..\src\opcodes\Push.hpp" />
-    <ClInclude Include="..\src\opcodes\Ret.hpp" />
-    <ClInclude Include="..\src\opcodes\Rot.hpp" />
-    <ClInclude Include="..\src\opcodes\Sahf.hpp" />
-    <ClInclude Include="..\src\opcodes\Sbb.hpp" />
-    <ClInclude Include="..\src\opcodes\Scas.hpp" />
-    <ClInclude Include="..\src\opcodes\StiCli.hpp" />
-    <ClInclude Include="..\src\opcodes\Stos.hpp" />
-    <ClInclude Include="..\src\opcodes\Sub.hpp" />
-    <ClInclude Include="..\src\opcodes\Sxx.hpp" />
-    <ClInclude Include="..\src\opcodes\Test.hpp" />
-    <ClInclude Include="..\src\opcodes\Xchg.hpp" />
-    <ClInclude Include="..\src\opcodes\Xlat.hpp" />
-    <ClInclude Include="..\src\opcodes\Xor.hpp" />
     <ClInclude Include="..\src\Operand.hpp" />
-    <ClInclude Include="..\src\peripherals\AllPeripherals.hpp" />
-    <ClInclude Include="..\src\peripherals\Keyboard.hpp" />
-    <ClInclude Include="..\src\peripherals\Screen.hpp" />
-    <ClInclude Include="..\src\peripherals\Timer.hpp" />
     <ClInclude Include="..\src\Prefix.hpp" />
-    <ClInclude Include="..\src\Processor.hpp" />
-    <ClInclude Include="..\src\QInstructionList.hpp" />
-    <ClInclude Include="..\src\QKbdFilter.hpp" />
-    <ClInclude Include="..\src\QMemModel.hpp" />
-    <ClInclude Include="..\src\Register.hpp" />
-    <ClInclude Include="..\src\RegisterOperand.hpp" />
-    <ClInclude Include="..\src\VirgoInstruction.hpp" />
-    <ClInclude Include="..\src\VM.hpp" />
-    <ClInclude Include="..\src\VMWorker.hpp" />
     <ClInclude Include="..\test\Common.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="..\src\MemWnd.ui">
-      <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o "..\src\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o "..\src\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">"$(QTDIR)\bin\uic.exe" -o "..\src\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">"$(QTDIR)\bin\uic.exe" -o "..\src\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">Uic%27ing %(Identity)...</Message>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\src\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\src\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">..\src\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">..\src\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release_Static|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug_Static|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

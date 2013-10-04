@@ -360,6 +360,9 @@
     <ClCompile Include="..\src\Release\moc_QInstructionList.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\CmdTree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\GeneratedFiles\ui_MemWnd.h">
@@ -575,8 +578,11 @@
     <ClInclude Include="..\src\peripherals\Timer.hpp">
       <Filter>Header Files\Peripherals</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="..\src\resource.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\CmdTree.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -627,7 +633,6 @@
     <None Include="..\res\testproject24.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="icon1.ico" />
     <None Include="..\res\Libra.ico" />
   </ItemGroup>
   <ItemGroup>
