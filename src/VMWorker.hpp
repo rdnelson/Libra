@@ -21,7 +21,7 @@ public slots:
     void pause();
 
 signals:
-    void quit();
+    void quitting();
     void error(int);
     void procReturn(int);
     void breakpoint();

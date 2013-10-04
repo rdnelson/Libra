@@ -111,7 +111,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(mVMWorker, SIGNAL(paused()), this, SLOT(workerPaused()));
 	connect(mVMWorker, SIGNAL(stepDone()), this, SLOT(workerStepDone()));
 	connect(mVMWorker, SIGNAL(error(int)), this, SLOT(workerRunError(int)));
-	connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
+	connect(mVMWorker, SIGNAL(quitting()), mVMWorker, SLOT(deleteLater()));
 	connect(mVMWorker, SIGNAL(procReturn(int)), this, SLOT(workerProcReturn(int)));
 	connect(mVMWorker, SIGNAL(stopped()), this, SLOT(workerStopped()));
 	connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
@@ -141,7 +141,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(this->ui->txtIP, SIGNAL(editingFinished()), this, SLOT(ipChanged()));
 
 	//Connect the memory control
-	connect(this->ui->tableView, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(memChanged(const QModelIndex&, const QModelIndex&)));
+	connect(memModel, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(memChanged(const QModelIndex&, const QModelIndex&)));
 
 	//Initialize the timer's QTimer object
 	QTimer* baseTimer = new QTimer();

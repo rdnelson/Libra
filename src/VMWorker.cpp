@@ -96,7 +96,7 @@ void VMWorker::run() {
 		}
 		emit error(err);
 	} else {
-		emit quit();
+		emit quitting();
 	}
 }
 
