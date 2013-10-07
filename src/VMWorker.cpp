@@ -40,6 +40,7 @@ void VMWorker::run() {
 		unsigned int end = start;
 		unsigned int instCount = 0;
 		unsigned int callDepth = mVM->GetCallDepth();
+        bool unprintWarned = false;
 		for(EVER) {
 			instCount++;
 			if((err = mVM->Step()) < 0) {
@@ -60,6 +61,18 @@ void VMWorker::run() {
 					emit stopped();
 					mRunConditions = NOT_RUNNING;
 					return;
+				}
+			} else if (err == Instruction::PERIPH_WRITE) {
+                unsigned int devErr = 0;
+                for(int i = 0; i < mVM->GetDevices().size(); i++) {
+                    if(devErr = mVM->GetDevices()[i]->GetError()) {
+                        if (devErr == IPeripheral::SCREEN_UNPRINTABLE && !unprintWarned) {
+                            unprintWarned = true;
+                            emit devError(mVM->GetDevices()[i], devErr);
+						} else if(devErr != IPeripheral::SCREEN_UNPRINTABLE) {
+                            emit devError(mVM->GetDevices()[i], devErr);
+						}
+					}
 				}
 			}
 			switch(mRunConditions) {

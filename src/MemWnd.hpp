@@ -39,6 +39,7 @@ public slots:
 	void enableMemoryLogging_Clicked();
 	void lstInstructions_RightClicked(const QPoint&);
     void openHelp();
+    void deviceError(IPeripheral*, unsigned int);
 
 	//VMWorker Slots
 	//trigger on breakpoint

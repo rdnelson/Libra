@@ -15,6 +15,7 @@
 #include <cstring>
 #include <iostream>
 #include <sstream>
+#include <QMessageBox>
 
 Screen::Screen() : mCurX(0), mCurY(0), mFirstRow(0){
 	memset(mScreen, ' ', sizeof(mScreen));
@@ -39,6 +40,7 @@ void Screen::Dump() {
 
 bool Screen::Put16(unsigned int port, unsigned int data) {
 	bool clearLine = false;
+    mError = 0;
 	switch(port) {
 	case 0x04E8:
 		return true;
@@ -73,6 +75,8 @@ bool Screen::Put16(unsigned int port, unsigned int data) {
 			if (mCurX == 0) {
 				clearLine = true;
 			}
+		} else {
+            mError = IPeripheral::SCREEN_UNPRINTABLE;
 		}
 		if (clearLine) {
 			for(unsigned int i = 0; i < NUM_COLS; i++) {

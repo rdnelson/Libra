@@ -29,6 +29,7 @@ signals:
     void runDone();
     void paused();
     void stopped();
+    void devError(IPeripheral*, unsigned int);
 
 private:
     VM* mVM;
