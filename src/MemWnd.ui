@@ -901,6 +901,8 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionHelp"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
@@ -1073,6 +1075,11 @@
    </property>
    <property name="text">
     <string>Enable Memory Logging</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

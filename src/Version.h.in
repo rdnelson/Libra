@@ -1,5 +1,5 @@
-#ifndef __CONFIG_H__
-#define __CONFIG_H__
+#ifndef __VERSION_H__
+#define __VERSION_H__
 
 #define VERSION "@GIT_VERSION@"
 #define HOSTNAME "@HOST_NAME@"
