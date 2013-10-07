@@ -114,6 +114,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(mVMWorker, SIGNAL(quit()), mVMWorker, SLOT(deleteLater()));
 	connect(mVMWorker, SIGNAL(procReturn(int)), this, SLOT(workerProcReturn(int)));
 	connect(mVMWorker, SIGNAL(stopped()), this, SLOT(workerStopped()));
+	connect(mVMWorker, SIGNAL(devError(IPeripheral*, unsigned int)), this, SLOT(deviceError(IPeripheral*, unsigned int)));
 	connect(this, SIGNAL(vmResume()), mVMWorker, SLOT(run()));
 	connect(this, SIGNAL(vmPause()), mVMWorker, SLOT(pause()));
 
@@ -237,6 +238,13 @@ void MemWnd::stepInVM_Clicked() {
 			DisableRun(err);
 		} else if(err == Processor::PROC_HALT) {
 			QMessageBox::information(this, "Halt Encountered", "HLT was encountered, execution is terminated.");
+		} else if (err == Instruction::PERIPH_WRITE) {
+			unsigned int devErr = 0;
+			for(int i = 0; i < mVM.GetDevices().size(); i++) {
+				if(devErr = mVM.GetDevices()[i]->GetError()) {
+					deviceError(mVM.GetDevices()[i], devErr);
+				}
+			}
 		}
 
 		//Enable stop (if it isn't already) because the program state can be reinitialized now
@@ -924,4 +932,13 @@ void MemWnd::SetMemoryEditState(bool editable) {
 
 void MemWnd::openHelp() {
     QDesktopServices::openUrl(QUrl("Docs\\index.html"));
+}
+
+void MemWnd::deviceError(IPeripheral* dev, unsigned int err) {
+	switch(err) {
+	case IPeripheral::SCREEN_UNPRINTABLE:
+		{
+			QMessageBox::warning(this, "Printing Unprintable Character", "You are attempting to print a character that has no visible representation.\nThis is likely caused by forgetting to convert a numeric value to it's ASCII equivalent.");
+		}
+	}
 }
