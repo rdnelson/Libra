@@ -104,7 +104,7 @@ unsigned int QMemModel::_htoi(const QString& text) {
 }
 
 bool QMemModel::_validHexText(const QString& text, unsigned int maxlen) {
-	if (text.length() > maxlen || text.length() <= 0)  // 5 characters exceeds bounds
+	if ((unsigned int)text.length() > maxlen || text.length() <= 0)  // 5 characters exceeds bounds
 		return false;
 
 	for (int i = 0; i < text.length(); i++) {
