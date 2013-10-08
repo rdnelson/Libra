@@ -64,6 +64,7 @@ add_executable(libra WIN32 ${libra_SOURCE} ${libra_RESOURCES_RCC} ${libra_FORMS_
 # Qt seems to need this for some reason
 include(${QT_USE_FILE})
 
+IF(WIN32)
 STRING(REGEX REPLACE "[.]lib" ".dll" QT_DLLS ${QT_LIBRARIES})
 STRING(REGEX REPLACE "lib" "bin" QT_DLLS ${QT_DLLS})
 STRING(REGEX REPLACE "[.]dll" ".dll;" QT_DLLS ${QT_DLLS})
@@ -80,6 +81,7 @@ STRING(REGEX REPLACE "[.]dll" ".dll;" QT_DEBUG_DLLS ${QT_DEBUG_DLLS})
 message("Debug: " ${QT_DEBUG_DLLS})
 STRING(REGEX REPLACE "[.]dll" ".dll;" QT_RELEASE_DLLS ${QT_RELEASE_DLLS})
 message("Release: " ${QT_RELEASE_DLLS})
+ENDIF(WIN32)
 
 # Include the various folders where files are generated
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_SOURCE_DIR} ${QT_INCLUDE_DIR} ${QT_INCLUDE_PATH})
