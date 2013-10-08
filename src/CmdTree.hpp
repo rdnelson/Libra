@@ -11,12 +11,16 @@
 #pragma once
 
 #include <string.h>
+#include <vector>
+
+class MemWnd;
+class QAbstractSocket;
 
 class CmdTree {
 
 public:
 	CmdTree() : mRoot('\0') {}
-	typedef int (*Command)(int, char*[]);
+	typedef void (*Command)(QAbstractSocket*, std::vector<char*>);
 
 	int AddCommand(char* cmd, Command handler);
 	int DelCommand(char* cmd);

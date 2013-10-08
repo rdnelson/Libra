@@ -37,7 +37,9 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	COL_LABEL(0),
 	COL_LST(1),
 	COL_INST(2),
-	ipWarned(false)
+	ipWarned(false),
+	mCliServer(0),
+	cmdParser(this)
 {
 	//Setup the ui object (Qt Mandatory)
 	ui->setupUi(this);
@@ -155,6 +157,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(guiTimer, SIGNAL(timeout()), this, SLOT(UpdateScreenTick()));
 	guiTimer->start();
 
+
 	//Now that everything is initialized, see if we can load the provided file
 	if(file != 0) {
 		mFile = QString::fromAscii(file);
@@ -163,6 +166,12 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 			mFile = "";
 		}
 	}
+}
+
+void MemWnd::setTestMode() {
+	mCliServer = new QTcpServer(this);
+	connect(mCliServer, SIGNAL(newConnection()), this, SLOT(newClient()));
+	mCliServer->listen(QHostAddress::Any, 54272);
 }
 
 MemWnd::~MemWnd()
@@ -920,4 +929,82 @@ void MemWnd::SetMemoryEditState(bool editable) {
 
 void MemWnd::openHelp() {
     QDesktopServices::openUrl(QUrl("Docs\\index.html"));
+}
+
+void MemWnd::newClient() {
+	QTcpSocket* newCli = mCliServer->nextPendingConnection();
+	if (newCli != 0) {
+		connect(newCli, SIGNAL(readyRead()), this, SLOT(dataReady()));
+		connect(newCli, SIGNAL(disconnected()), this, SLOT(clientDisconnect()));
+		mClients.push_back(newCli);
+	}
+}
+
+void MemWnd::clientDisconnect() {
+	for(int i = 0; i < mClients.size(); i++) {
+		if (mClients[i]->state() == QAbstractSocket::UnconnectedState) {
+			mClients.erase(mClients.begin() + i);
+		}
+	}
+}
+
+void MemWnd::dataReady() {
+	for(int  i = 0; i < mClients.size(); i++) {
+		if (mClients[i]->canReadLine()) {
+			char cmd[1025];
+			mClients[i]->readLine(cmd, sizeof(cmd));
+			execCommand(mClients[i], cmd);
+		}
+	}
+}
+
+void MemWnd::execCommand(QAbstractSocket* sock, char* cmd) {
+	if(*cmd == '\0') {
+		return;
+	}
+
+	std::vector<char*> argBegins;
+
+	char* end = cmd;
+	bool quote = false;
+	bool done = false;
+	while(*cmd != '\0') {
+		if(*end == '"') {
+			quote = true;
+			cmd++;
+			end++;
+		}
+
+		for(; (quote ? true : (*end != ' ' && *end != '\t')) && *end != '\0' && *end != '\n'; end++) {
+			if (*end == '"' && *(end - 1) != '\\') {
+				quote = false;
+				break;
+			}
+		}
+
+		if (*end == '\0' || *end == '\n') {
+			done = true;
+		}
+
+		*end = '\0';
+
+		if (strlen(cmd) > 0) {
+			argBegins.push_back(cmd);
+		}
+
+		if (done) {
+			break;
+		}
+
+		for(end++; *end == ' ' || *end == '\t'; end++);
+		cmd = end;
+	}
+
+	//TODO: call command with args.
+
+	if (argBegins.size() > 0) {
+		char* cmdName = argBegins[0];
+		argBegins.erase(argBegins.begin());
+		cmdParser.ExecCommand(sock, cmdName, argBegins);
+	}
 }

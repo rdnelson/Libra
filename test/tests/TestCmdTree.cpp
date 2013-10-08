@@ -15,10 +15,10 @@
 
 #include "CmdTree.hpp"
 
-int _testCmd1(int, char*[]) { return 1; }
-int _testCmd2(int, char*[]) { return 2; }
-int _testCmd3(int, char*[]) { return 3; }
-int _testCmd4(int, char*[]) { return 4; }
+void _testCmd1(QAbstractSocket*, std::vector<char*>) { return; }
+void _testCmd2(QAbstractSocket*, std::vector<char*>) { return; }
+void _testCmd3(QAbstractSocket*, std::vector<char*>) { return; }
+void _testCmd4(QAbstractSocket*, std::vector<char*>) { return; }
 
 TEST(CmdTreeTest, AddCommand) {
 	CmdTree cmds;
@@ -43,20 +43,20 @@ TEST(CmdTreeTest, GetCommand) {
 	CmdTree::Command testCmd4 = _testCmd4;
 
 	// insert commands
-	ASSERT_EQ( 0,cmds.AddCommand("start", testCmd1));
-	ASSERT_EQ( 0,cmds.AddCommand("quit", testCmd2));
-	ASSERT_EQ( 0,cmds.AddCommand("stop", testCmd3));
+	ASSERT_EQ(0, cmds.AddCommand("start", testCmd1));
+	ASSERT_EQ(0, cmds.AddCommand("quit", testCmd2));
+	ASSERT_EQ(0, cmds.AddCommand("stop", testCmd3));
 
 	// test full commands
-	ASSERT_EQ( testCmd1,cmds.GetCommand("start"));
-	ASSERT_EQ( testCmd1,cmds.GetCommand("START"));
-	ASSERT_EQ( testCmd1,cmds.GetCommand("StaRt"));
-	ASSERT_EQ( testCmd2,cmds.GetCommand("quit"));
-	ASSERT_EQ( testCmd2,cmds.GetCommand("QUIT"));
-	ASSERT_EQ( testCmd2,cmds.GetCommand("QuIT"));
-	ASSERT_EQ( testCmd3,cmds.GetCommand("stop"));
-	ASSERT_EQ( emptyCmd,cmds.GetCommand(""));
-	ASSERT_EQ( emptyCmd,cmds.GetCommand("invalid"));
+	ASSERT_EQ(testCmd1, cmds.GetCommand("start"));
+	ASSERT_EQ(testCmd1, cmds.GetCommand("START"));
+	ASSERT_EQ(testCmd1, cmds.GetCommand("StaRt"));
+	ASSERT_EQ(testCmd2, cmds.GetCommand("quit"));
+	ASSERT_EQ(testCmd2, cmds.GetCommand("QUIT"));
+	ASSERT_EQ(testCmd2, cmds.GetCommand("QuIT"));
+	ASSERT_EQ(testCmd3, cmds.GetCommand("stop"));
+	ASSERT_EQ(emptyCmd, cmds.GetCommand(""));
+	ASSERT_EQ(emptyCmd, cmds.GetCommand("invalid"));
 
 	// test other access method
 	ASSERT_EQ(testCmd1, cmds["start"]);
@@ -82,8 +82,8 @@ TEST(CmdTreeTest, DelCommand) {
 	CmdTree::Command testCmd4 = _testCmd4;
 
 	// insert commands
-	ASSERT_EQ( 0,cmds.AddCommand("start", testCmd1));
-	ASSERT_EQ( 0,cmds.AddCommand("stop", testCmd2));
+	ASSERT_EQ(0, cmds.AddCommand("start", testCmd1));
+	ASSERT_EQ(0, cmds.AddCommand("stop", testCmd2));
 
 	// delete doesn't interfere with other words
 	ASSERT_EQ(testCmd1, cmds["start"]);
@@ -98,8 +98,8 @@ TEST(CmdTreeTest, DelCommand) {
 	ASSERT_EQ(0, cmds.DelCommand("start"));
 	ASSERT_EQ(0, cmds.DelCommand("stop"));
 
-	ASSERT_EQ( CmdTree::ERR_INVALID_CMD,cmds.DelCommand("invalid"));
-	ASSERT_EQ( CmdTree::ERR_INVALID_CMD,cmds.DelCommand(""));
+	ASSERT_EQ(CmdTree::ERR_INVALID_CMD, cmds.DelCommand("invalid"));
+	ASSERT_EQ(CmdTree::ERR_INVALID_CMD, cmds.DelCommand(""));
 }
 
 TEST(CmdTreeTest, Count) {

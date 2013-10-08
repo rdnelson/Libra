@@ -363,6 +363,9 @@
     <ClCompile Include="..\src\CmdTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\TestCommandParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\GeneratedFiles\ui_MemWnd.h">
@@ -582,6 +585,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\CmdTree.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\TestCommandParser.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

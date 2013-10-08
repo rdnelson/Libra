@@ -6,8 +6,13 @@
 #include <QAbstractTextDocumentLayout>
 #include <QKeyEvent>
 #include <QSettings>
+#include <QTcpServer>
+#include <QTcpSocket>
+#include <vector>
 #include "VM.hpp"
 #include "VMWorker.hpp"
+#include "CmdTree.hpp"
+#include "TestCommandParser.hpp"
 
 namespace Ui {
 class MemWnd;
@@ -19,6 +24,8 @@ class MemWnd : public QMainWindow
 
 public:
 	explicit MemWnd(const char* const file = 0, QWidget *parent = 0);
+	void setTestMode();
+	friend TestCommandParser;
 
 	~MemWnd();
 
@@ -95,6 +102,10 @@ public slots:
 
 	/// End memory update function
 
+	void newClient();
+	void dataReady();
+	void clientDisconnect();
+
 signals:
 	void vmResume();
 	void vmStep();
@@ -118,11 +129,18 @@ private:
 	void DisableRun(int err);
 	void SetMemoryEditState(bool editable);
 	void EnableRun();
+	void execCommand(QAbstractSocket*, char*);
 
 	VM mVM;
 	QString mFile;
 	QString mCurDir;
 	QSettings mSettings;
+
+	//Test mode stuff
+	QTcpServer* mCliServer;
+	std::vector<QTcpSocket*> mClients;
+	TestCommandParser cmdParser;
+
 
 	int COL_LABEL;
 	int COL_LST;
