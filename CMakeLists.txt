@@ -36,6 +36,7 @@ configure_file (
 file(GLOB_RECURSE libra_SOURCE "src/*.cpp")
 file(GLOB_RECURSE libra_FORMS "src/*.ui")
 file(GLOB_RECURSE libra_RESOURCES "src/*.qrc")
+file(GLOB_RECURSE libra_WINRES "src/*.rc")
 
 #message("source: ${libra_SOURCE}")
 
@@ -45,8 +46,12 @@ find_package(Qt COMPONENTS QtCore QtGui QtMain REQUIRED)
 QT4_WRAP_UI(libra_FORMS_UIC ${libra_FORMS})
 QT4_ADD_RESOURCES(libra_RESOURCES_RCC ${libra_RESOURCES})
 
+if(WIN32)
+    list(APPEND libra_SOURCE ${libra_WINRES})
+endif(WIN32)
+
 # List the files that are required for the build
-add_executable(libra WIN32 ${libra_SOURCE} ${libra_RESOURCES_RCC} ${libra_FORMS_UIC})
+add_executable(libra WIN32 ${libra_SOURCE} ${libra_RESOURCES_RCC} ${libra_FORMS_UIC} )
 
 #if(CMAKE_BINARY_DIR EQUAL CMAKE_SOURCE_DIR)
 	set(EXECUTABLE_OUTPUT_PATH "bin")
