@@ -15,9 +15,8 @@ done
 mkdir build
 cd build
 if [ $codecov == 1 ]; then
-    cmake .. -F "Unix Makefiles" -DENABLE_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
+    cmake .. -G "Unix Makefiles" -DENABLE_COVERAGE=1 -DCMAKE_BUILD_TYPE=Debug
     make
-    cd build
     xvfb-run bin/libra &
     sleep 15
     killall xvfb-run
