@@ -1,9 +1,5 @@
-mkdir bin
-del /Q bin\*
-call %SDK_DIR%\bin\SetEnv.cmd /x86 /Debug
-cd msvc10
-msbuild Libra.sln /nologo /verbosity:m /p:Configuration=Debug
-call %SDK_DIR%\bin\SetEnv.cmd /x86 /Release
-msbuild Libra.sln /nologo /verbosity:m /p:Configuration=Release
-cd ..
-bin\LibraTest.exe --gtest_output=xml
+mkdir build
+del /Q build\*
+cd build
+cmake -G "Visual Studio 10" ..
+cmake --build . --target Install.vcxproj --config Release
