@@ -22,6 +22,7 @@
 
 #include "opcodes/In.hpp"
 #include "opcodes/Out.hpp"
+#include "Version.h"
 
 #include <QTimer>
 #include <iostream>
@@ -89,6 +90,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	this->connect(this->ui->actionEnable_Memory_Logging, SIGNAL(triggered()), this, SLOT(enableMemoryLogging_Clicked()));
 	this->connect(this->ui->lstInstructions, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(lstInstructions_RightClicked(const QPoint&)));
 	this->connect(this->ui->actionHelp, SIGNAL(triggered()), this, SLOT(openHelp()));
+    this->connect(this->ui->actionAbout, SIGNAL(triggered()), this, SLOT(openAbout()));
 
 	//Create the memory view model
 	QMemModel* memModel = new QMemModel(this);
@@ -941,4 +943,8 @@ void MemWnd::deviceError(IPeripheral* dev, unsigned int err) {
 			QMessageBox::warning(this, "Printing Unprintable Character", "You are attempting to print a character that has no visible representation.\nThis is likely caused by forgetting to convert a numeric value to it's ASCII equivalent.");
 		}
 	}
+}
+
+void MemWnd::openAbout() {
+    QMessageBox::information(this, "Placeholder About Dialog", VERSION "\n" HOSTNAME );
 }
