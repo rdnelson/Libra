@@ -40,7 +40,7 @@ file(GLOB_RECURSE libra_WINRES "src/*.rc")
 
 #message("source: ${libra_SOURCE}")
 
-find_package(Qt COMPONENTS QtCore QtGui QtMain REQUIRED)
+find_package(Qt4 COMPONENTS QtCore QtGui QtMain REQUIRED)
 
 # Process all of the Qt stuff
 QT4_WRAP_UI(libra_FORMS_UIC ${libra_FORMS})
