@@ -141,3 +141,6 @@ doc/_templates/*
 redist/amd64/*
 redist/i386/*
 *.deb
+
+Makefile*
+src/Version.h
