@@ -9,13 +9,14 @@ QT       += core gui
 CONFIG   += qt thread debug_and_release
 TARGET = libra
 INCLUDEPATH += src
-DESTDIR = bin
 
+Release:DESTDIR = bin
 Release:OBJECTS_DIR = build/release/obj
 Release:MOC_DIR = build/release/moc
 Release:RCC_DIR = build/release/rcc
 Release:UI_DIR = build/release/ui
 
+Debug:DESTDIR = bin_debug
 Debug:OBJECTS_DIR = build/debug/obj
 Debug:MOC_DIR = build/debug/moc
 Debug:RCC_DIR = build/debug/rcc
@@ -186,16 +187,37 @@ HEADERS  += src/MemWnd.hpp \
 	src/QMemModel.hpp \
 	src/QKbdFilter.hpp \
 	src/QInstructionList.hpp \
-	src/Version.h
+    src/Version.in
 
 FORMS    += src/MemWnd.ui
 
 RESOURCES += \
 	res/Resources.qrc
 
-versionTarget.target = src/Version.h
-versionTarget.depends = FORCE
-versionTarget.commands = sed -e "s/@GIT_VERSION@/$$system(git describe --tags --match v*)-$$system(git rev-parse --abbrev-ref HEAD)/" src/Version.h.in | sed -e "s/@HOST_NAME@/$$QMAKE_HOST.name/" > $$versionTarget.target
-PRE_TARGETDEPS += src/Version.h
-QMAKE_EXTRA_TARGETS += versionTarget
-DEPENDPATH = src
+VERSIONFILE = src/Version.in
+
+version_c.output = ${QMAKE_FILE_PATH}\\${QMAKE_FILE_BASE}.h
+version_c.input = VERSIONFILE
+win32-msvc* {
+    version_c.commands = powershell -Command \"cat ${QMAKE_FILE_IN} | %%{$_ -replace \\\"@GIT_VERSION@\\\", ((git describe --tags --match v*) + \\\"-\\\" + (git rev-parse --abbrev-ref HEAD))} | %%{$_ -replace \\\"@HOST_NAME@\\\", (hostname)} > ${QMAKE_FILE_OUT}\"
+} else {
+    version_c.commands = sed -e "s/@GIT_VERSION@/$$system(git describe --tags --match v*)-$$system(git rev-parse --abbrev-ref HEAD)/" src/Version.h.in | sed -e "s/@HOST_NAME@/$$QMAKE_HOST.name/" > ${QMAKE_FILE_OUT}
+}
+version_c.variable_out = GENERATED_FILES
+version_c.name = Version Compiler
+
+QMAKE_EXTRA_COMPILERS += version_c
+
+win32 {
+    Debug:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/QtCored4.dll \
+                            $$QMAKE_LIBDIR_QT/QtGuid4.dll
+    Release:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/QtCore4.dll \
+                              $$QMAKE_LIBDIR_QT/QtGui4.dll
+    EXTRA_BINFILES_WIN = $${EXTRA_BINFILES}
+    EXTRA_BINFILES_WIN ~= s,/,\\,g
+    DESTDIR_WIN = $$DESTDIR
+    DESTDIR_WIN ~= s,/,\\,g
+    for(FILE,EXTRA_BINFILES_WIN) {
+        QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$FILE) $$quote($$DESTDIR_WIN) $$escape_expand(\\n\\t)
+    }
+}

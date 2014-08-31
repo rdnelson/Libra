@@ -110,6 +110,7 @@ publish
 
 # Others
 [Bb]in
+[Bb]in_debug
 [Oo]bj
 sql
 TestResults
@@ -144,3 +145,4 @@ redist/i386/*
 
 Makefile*
 src/Version.h
+*.vcxproj*
