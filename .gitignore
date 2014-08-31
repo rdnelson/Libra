@@ -146,3 +146,4 @@ redist/i386/*
 Makefile*
 src/Version.h
 *.vcxproj*
+.DS_Store

@@ -201,10 +201,11 @@ version_c.input = VERSIONFILE
 win32-msvc* {
     version_c.commands = powershell -Command \"cat ${QMAKE_FILE_IN} | %%{$_ -replace \\\"@GIT_VERSION@\\\", ((git describe --tags --match v*) + \\\"-\\\" + (git rev-parse --abbrev-ref HEAD))} | %%{$_ -replace \\\"@HOST_NAME@\\\", (hostname)} > ${QMAKE_FILE_OUT}\"
 } else {
-    version_c.commands = sed -e "s/@GIT_VERSION@/$$system(git describe --tags --match v*)-$$system(git rev-parse --abbrev-ref HEAD)/" src/Version.h.in | sed -e "s/@HOST_NAME@/$$QMAKE_HOST.name/" > ${QMAKE_FILE_OUT}
+    version_c.commands = sed -e "s/@GIT_VERSION@/$$system(git describe --tags --match v*)-$$system(git rev-parse --abbrev-ref HEAD)/" ${QMAKE_FILE_IN} | sed -e "s/@HOST_NAME@/$$QMAKE_HOST.name/" > ${QMAKE_FILE_OUT}
 }
 version_c.variable_out = GENERATED_FILES
 version_c.name = Version Compiler
+version_c.depends = FORCE
 
 QMAKE_EXTRA_COMPILERS += version_c
 
@@ -220,4 +221,8 @@ win32 {
     for(FILE,EXTRA_BINFILES_WIN) {
         QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$FILE) $$quote($$DESTDIR_WIN) $$escape_expand(\\n\\t)
     }
+}
+
+macx {
+    ICON = res/Libra.icns
 }
