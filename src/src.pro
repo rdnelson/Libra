@@ -1,0 +1,242 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2012-10-15T17:47:20
+#
+#-------------------------------------------------
+
+QT       += core gui
+CONFIG   += qt thread debug_and_release
+
+Release:OBJDIR = ../obj/release
+Debug:OBJDIR = ../obj/debug
+
+Release:DESTDIR = ../bin
+Release:OBJECTS_DIR = $$OBJDIR/obj
+Release:MOC_DIR = $$OBJDIR/moc
+Release:RCC_DIR = $$OBJDIR/rcc
+Release:UI_DIR = $$OBJDIR/ui
+Release:TARGET = libra
+
+Debug:DESTDIR = ../bin_debug
+Debug:OBJECTS_DIR = $$OBJDIR/obj
+Debug:MOC_DIR = $$OBJDIR/moc
+Debug:RCC_DIR = $$OBJDIR/rcc
+Debug:UI_DIR = $$OBJDIR/ui
+Debug:TARGET = librad
+
+INCLUDEPATH += $$OBJDIR
+
+CONFIG(32bit) {
+    message(32bit version)
+    OBJECTS_DIR = $$JOIN(OBJECTS_DIR,,,32)
+    QMAKE_CXXFLAGS += -m32
+    QMAKE_LFLAGS += -m32
+    LIBS += -L/usr/lib/i386-linux-gnu -L/lib/i386-linux-gnu
+    TARGET = $$JOIN(TARGET,,,32)
+}
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TEMPLATE = app
+
+SOURCES +=\
+        MemWnd.cpp \
+	VM.cpp \
+	RegisterOperand.cpp \
+	Processor.cpp \
+	Prefix.cpp \
+	ModrmOperand.cpp \
+	main.cpp \
+	Instruction.cpp \
+	AddressOperand.cpp \
+	VMWorker.cpp \
+	Breakpoint.cpp \
+	Memory.cpp \
+	opcodes/Xor.cpp \
+	opcodes/Test.cpp \
+	opcodes/Sxx.cpp \
+	opcodes/Sub.cpp \
+	opcodes/Sahf.cpp \
+	opcodes/Ret.cpp \
+	opcodes/Push.cpp \
+	opcodes/Pop.cpp \
+	opcodes/Out.cpp \
+	opcodes/Or.cpp \
+	opcodes/Not.cpp \
+	opcodes/Neg.cpp \
+	opcodes/Mul.cpp \
+	opcodes/Mov.cpp \
+	opcodes/Lxs.cpp \
+	opcodes/Lea.cpp \
+	opcodes/Lahf.cpp \
+	opcodes/Jmp.cpp \
+	opcodes/Jcc.cpp \
+	opcodes/IncDec.cpp \
+	opcodes/In.cpp \
+	opcodes/IMul.cpp \
+	opcodes/IDiv.cpp \
+	opcodes/Div.cpp \
+	opcodes/Cwd.cpp \
+	opcodes/CmpsX.cpp \
+	opcodes/Cmp.cpp \
+	opcodes/CLSTX.cpp \
+	opcodes/Cbw.cpp \
+	opcodes/Call.cpp \
+	opcodes/And.cpp \
+	opcodes/Add.cpp \
+	opcodes/Adc.cpp \
+	opcodes/Aas.cpp \
+	opcodes/Aam.cpp \
+	opcodes/Aad.cpp \
+	opcodes/Aaa.cpp \
+	opcodes/Rot.cpp \
+	opcodes/Int.cpp \
+	opcodes/Iret.cpp \
+	opcodes/Hlt.cpp \
+	opcodes/StiCli.cpp \
+	opcodes/Nop.cpp \
+	opcodes/Xlat.cpp \
+	opcodes/Loop.cpp \
+	opcodes/Stos.cpp \
+	opcodes/Scas.cpp \
+	opcodes/Sbb.cpp \
+	opcodes/Lods.cpp \
+	opcodes/Movs.cpp \
+	opcodes/Xchg.cpp \
+	opcodes/Daa.cpp \
+	opcodes/Das.cpp \
+	peripherals/Screen.cpp \
+	peripherals/Keyboard.cpp \
+	peripherals/Timer.cpp \
+	QMemModel.cpp \
+	QKbdFilter.cpp \
+	QInstructionList.cpp \
+	InstTable.cpp
+
+HEADERS  += MemWnd.hpp \
+	VM.hpp \
+	RegisterOperand.hpp \
+	Register.hpp \
+	Processor.hpp \
+	Prefix.hpp \
+	IPeripheral.hpp \
+	Operand.hpp \
+	ModrmOperand.hpp \
+	Instruction.hpp \
+	ImmediateOperand.hpp \
+	AddressOperand.hpp \
+	Breakpoint.hpp \
+	VMWorker.hpp \
+	Memory.hpp \
+	opcodes/Xor.hpp \
+	opcodes/Test.hpp \
+	opcodes/Sxx.hpp \
+	opcodes/Sub.hpp \
+	opcodes/Sahf.hpp \
+	opcodes/Ret.hpp \
+	opcodes/Push.hpp \
+	opcodes/Pop.hpp \
+	opcodes/Out.hpp \
+	opcodes/Or.hpp \
+	opcodes/Not.hpp \
+	opcodes/Neg.hpp \
+	opcodes/Mul.hpp \
+	opcodes/Mov.hpp \
+	opcodes/Lxs.hpp \
+	opcodes/Lea.hpp \
+	opcodes/Lahf.hpp \
+	opcodes/Jmp.hpp \
+	opcodes/Jcc.hpp \
+	opcodes/IncDec.hpp \
+	opcodes/In.hpp \
+	opcodes/IMul.hpp \
+	opcodes/IDiv.hpp \
+	opcodes/Div.hpp \
+	opcodes/Cwd.hpp \
+	opcodes/CmpsX.hpp \
+	opcodes/Cmp.hpp \
+	opcodes/CLSTX.hpp \
+	opcodes/Cbw.hpp \
+	opcodes/Call.hpp \
+	opcodes/And.hpp \
+	opcodes/AllOpcodes.hpp \
+	opcodes/Add.hpp \
+	opcodes/Adc.hpp \
+	opcodes/Aas.hpp \
+	opcodes/Aam.hpp \
+	opcodes/Aad.hpp \
+	opcodes/Aaa.hpp \
+	opcodes/Rot.hpp \
+	opcodes/Int.hpp \
+	opcodes/Iret.hpp \
+	opcodes/Hlt.hpp \
+	opcodes/StiCli.hpp \
+	opcodes/Nop.hpp \
+	opcodes/Xlat.hpp \
+	opcodes/Loop.hpp \
+	opcodes/Stos.hpp \
+	opcodes/Scas.hpp \
+	opcodes/Sbb.hpp \
+	opcodes/Lods.hpp \
+	opcodes/Movs.hpp \
+	opcodes/Xchg.hpp \
+	opcodes/Daa.hpp \
+	opcodes/Das.hpp \
+	peripherals/Screen.hpp \
+	peripherals/AllPeripherals.hpp \
+	peripherals/Keyboard.hpp \
+	peripherals/Timer.hpp \
+	VirgoInstruction.hpp \
+	QMemModel.hpp \
+	QKbdFilter.hpp \
+	QInstructionList.hpp
+
+FORMS    += MemWnd.ui
+
+RESOURCES += \
+	../res/Resources.qrc
+
+VERSIONFILE += Version.in
+
+
+version_c.output = $$OBJDIR\\${QMAKE_FILE_BASE}.h
+version_c.input = VERSIONFILE
+win32-msvc* {
+    version_c.commands = powershell -Command \"cat ${QMAKE_FILE_IN} | %%{$_ -replace \\\"@GIT_VERSION@\\\", ((git describe --tags --match v*) + \\\"-\\\" + (git rev-parse --abbrev-ref HEAD))} | %%{$_ -replace \\\"@HOST_NAME@\\\", (hostname)} > ${QMAKE_FILE_OUT}\"
+} else {
+    version_c.commands = sed -e "s/@GIT_VERSION@/$$system(git describe --tags --match v* 2>/dev/null)-$$system(git rev-parse --abbrev-ref HEAD 2>/dev/null)/" ${QMAKE_FILE_IN} | sed -e "s/\\-/$$system(cat ../VERSION 2>/dev/null)/" | sed -e "s/\\\"\\\"/\\\"Unknown\\\"/" | sed -e "s/@HOST_NAME@/$$QMAKE_HOST.name/" > ${QMAKE_FILE_OUT}
+}
+version_c.variable_out = GENERATED_FILES
+version_c.name = Version Compiler
+version_c.depends = FORCE
+
+QMAKE_EXTRA_COMPILERS += version_c
+
+win32 {
+    Debug:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/QtCored4.dll \
+                            $$QMAKE_LIBDIR_QT/QtGuid4.dll
+    Release:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/QtCore4.dll \
+                              $$QMAKE_LIBDIR_QT/QtGui4.dll
+    EXTRA_BINFILES_WIN = $${EXTRA_BINFILES}
+    EXTRA_BINFILES_WIN ~= s,/,\\,g
+    DESTDIR_WIN = $$DESTDIR
+    DESTDIR_WIN ~= s,/,\\,g
+    for(FILE,EXTRA_BINFILES_WIN) {
+        QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$FILE) $$quote($$DESTDIR_WIN) $$escape_expand(\\n\\t)
+    }
+}
+
+macx {
+    ICON = ../res/Libra.icns
+}
+
+unix {
+    isEmpty(PREFIX) {
+        PREFIX = /usr
+    }
+    BINDIR = $$PREFIX/bin
+
+    INSTALLS += target
+
+    target.path = $$BINDIR
+}
