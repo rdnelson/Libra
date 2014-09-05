@@ -214,9 +214,15 @@ QMAKE_EXTRA_COMPILERS += version_c
 
 win32 {
     Debug:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/QtCored4.dll \
-                            $$QMAKE_LIBDIR_QT/QtGuid4.dll
+                            $$QMAKE_LIBDIR_QT/QtGuid4.dll \
+                            $$QMAKE_LIBDIR_QT/../plugins/imageformats/qicod4.dll \
+                            $$(WINDIR)/System32/msvcp100d.dll \
+                            $$(WINDIR)/System32/msvcr100d.dll
     Release:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/QtCore4.dll \
-                              $$QMAKE_LIBDIR_QT/QtGui4.dll
+                              $$QMAKE_LIBDIR_QT/QtGui4.dll \
+                              $$QMAKE_LIBDIR_QT/../plugins/imageformats/qico4.dll \
+                              $$(WINDIR)/System32/msvcp100.dll \
+                              $$(WINDIR)/System32/msvcr100.dll
     EXTRA_BINFILES_WIN = $${EXTRA_BINFILES}
     EXTRA_BINFILES_WIN ~= s,/,\\,g
     DESTDIR_WIN = $$DESTDIR
@@ -224,6 +230,12 @@ win32 {
     for(FILE,EXTRA_BINFILES_WIN) {
         QMAKE_POST_LINK += $$QMAKE_COPY $$quote($$FILE) $$quote($$DESTDIR_WIN) $$escape_expand(\\n\\t)
     }
+    QMAKE_POST_LINK += $$QMAKE_CHK_DIR_EXISTS $$quote($$DESTDIR_WIN\\imageformats) $$QMAKE_MKDIR $$quote($$DESTDIR_WIN\\imageformats) $$escape_expand(\\n\\t)
+    QMAKE_POST_LINK += $$QMAKE_MOVE $$quote($$DESTDIR_WIN\\qico*) $$quote($$DESTDIR_WIN\\imageformats) $$escape_expand(\\n\\t)
+
+    RC_FILE += ../res/msvc10_resources.rc
+
+    HEADERS += Version.in
 }
 
 macx {

@@ -147,3 +147,4 @@ Makefile*
 src/Version.h
 *.vcxproj*
 .DS_Store
+*.sln
