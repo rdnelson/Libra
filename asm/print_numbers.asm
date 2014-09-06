@@ -18,14 +18,14 @@ push cx
 push dx
 mov cx, 0
 mov bx, 10
-loop:
+mainloop:
 mov dx, 0
 cmp ax, 0
 jz print
 div bx
 push dx
 inc cx
-jmp loop
+jmp mainloop
 print:
 mov dx, 04E9h
 prt_loop:
@@ -33,14 +33,14 @@ cmp cx, 0
 jz done
 pop ax
 add al, '0'
-out [dx], al
+out dx, al
 dec cx
-jmp prt_loop:
+jmp prt_loop
 done:
 mov al, 10
-out [dx], al
+out dx, al
 mov al, 13
-out [dx], al
+out dx, al
 pop dx
 pop cx
 pop bx
@@ -48,4 +48,4 @@ pop ax
 ret
 
 
-end start
+.end start
