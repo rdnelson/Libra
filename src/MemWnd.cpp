@@ -99,12 +99,11 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	//Setup the memory view control
 	int width = ui->tableView->fontMetrics().width(" FF ");// * 3;
 	ui->tableView->setModel(memModel);
-	ui->tableView->horizontalHeader()->setResizeMode(QHeaderView::Fixed);
+	ui->tableView->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 	ui->tableView->verticalHeader()->setResizeMode(QHeaderView::Fixed);
 	for(int i = 0; i < 0x10; i++) {
 		ui->tableView->setColumnWidth(i, width);
 	}
-	ui->tableView->setFixedWidth(width/3 * (3 * 17 + 5));
 
 	//Create the VMWorker and hook it up to the slots on the GUI.
 	mVMWorker = new VMWorker(&mVM);

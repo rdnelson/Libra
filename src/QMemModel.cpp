@@ -24,6 +24,8 @@ QVariant QMemModel::data(const QModelIndex &index, int role) const {
 		}
 	} else if(role == Qt::UserRole) {
 		return mData[index.row() * 0x10 + index.column()] & 0xFF;
+	} else if(role == Qt::TextAlignmentRole) {
+		return Qt::AlignCenter;
 	}
 	return QVariant();
 }
