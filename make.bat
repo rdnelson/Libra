@@ -15,4 +15,4 @@ call "%SDK_DIR%\bin\SetEnv.cmd" /x86 /Release
 msbuild src\src.vcxproj /nologo /verbosity:m /p:Configuration=Release
 msbuild doc\doc.vcxproj /nologo /verbosity:m /p:Configuration=Release
 
-xcopy /Y /E src\bin\*.exe ..\bin\
+xcopy /Y /E bin\* ..\bin\
