@@ -16,7 +16,7 @@ all: libra.pro
 	$(MKDIR) bin
 	$(CP) build/bin/* ./bin
 ifeq (Darwin, $(shell uname -s))
-	$(MV) ./bin/Docs ./bin/libra.app/Content/
+	$(MV) ./bin/Docs ./bin/libra.app/Contents/Docs
 endif
 
 clean:
