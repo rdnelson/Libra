@@ -12,12 +12,12 @@ macx {
 
 
 sphinx.input = SPHINXFILES
-unix {
-	sphinx.commands = sphinx-build -b man -d $$OBJDIR/doctrees $$PWD $$DESTDIR/man
-	sphinx.output = $$DESTDIR/man/Libra.1
-} else {
+win32|macx {
 	sphinx.commands = sphinx-build -b html -d $$OBJDIR/doctrees $$PWD $$DESTDIR/Docs
 	sphinx.output = $$DESTDIR/Docs/index.html
+} else {
+	sphinx.commands = sphinx-build -b man -d $$OBJDIR/doctrees $$PWD $$DESTDIR/man
+	sphinx.output = $$DESTDIR/man/Libra.1
 }
 sphinx.name = Sphinx Documentation Compiler
 sphinx.depends = FORCE
