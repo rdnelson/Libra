@@ -6,3 +6,4 @@ isEmpty( ISQT4 ) {
 
 TEMPLATE = subdirs
 SUBDIRS = src doc
+CONFIG += debug_and_release

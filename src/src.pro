@@ -240,6 +240,15 @@ win32 {
 
 macx {
     ICON = ../res/Libra.icns
+
+    QMAKE_POST_LINK += $$QMAKE_MKDIR $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats $$escape_expand(\\n\\t)
+    Debug:QMAKE_POST_LINK += $$QMAKE_COPY $$QMAKE_LIBDIR_QT/../plugins/imageformats/libqico.dylib $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats $$escape_expand(\\n\\t)
+    Release:QMAKE_POST_LINK += $$QMAKE_COPY $$QMAKE_LIBDIR_QT/../plugins/imageformats/libqico.dylib $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats $$escape_expand(\\n\\t)
+    QMAKE_POST_LINK += macdeployqt $$DESTDIR/$${TARGET}.app -executable=$$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats/libqico.dylib $$escape_expand(\\n\\t)
+
+    QMAKE_POST_LINK2 += install_name_tool -change @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats/libqico.dylib $$escape_expand(\\n\\t)
+    QMAKE_POST_LINK2 += install_name_tool -change @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/4/QtGui $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats/libqico.dylib $$escape_expand(\\n\\t)
+
 }
 
 unix {
