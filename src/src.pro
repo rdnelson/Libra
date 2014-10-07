@@ -213,13 +213,13 @@ version_c.depends = FORCE
 QMAKE_EXTRA_COMPILERS += version_c
 
 win32 {
-    Debug:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/QtCored4.dll \
-                            $$QMAKE_LIBDIR_QT/QtGuid4.dll \
+    Debug:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/../bin/QtCored4.dll \
+                            $$QMAKE_LIBDIR_QT/../bin/QtGuid4.dll \
                             $$QMAKE_LIBDIR_QT/../plugins/imageformats/qicod4.dll \
                             $$(WINDIR)/System32/msvcp100d.dll \
                             $$(WINDIR)/System32/msvcr100d.dll
-    Release:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/QtCore4.dll \
-                              $$QMAKE_LIBDIR_QT/QtGui4.dll \
+    Release:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/../bin/QtCore4.dll \
+                              $$QMAKE_LIBDIR_QT/../bin/QtGui4.dll \
                               $$QMAKE_LIBDIR_QT/../plugins/imageformats/qico4.dll \
                               $$(WINDIR)/System32/msvcp100.dll \
                               $$(WINDIR)/System32/msvcr100.dll
