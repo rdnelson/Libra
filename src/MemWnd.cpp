@@ -933,7 +933,13 @@ void MemWnd::SetMemoryEditState(bool editable) {
 }
 
 void MemWnd::openHelp() {
-    QDesktopServices::openUrl(QUrl("Docs\\index.html"));
+#ifdef __APPLE__
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/../Docs/index.html"));
+#elif _WIN32
+    QDesktopServices::openUrl(QUrl::fromLocalFile("Docs\\index.html"));
+#else
+    QMessageBox::information(this, "Help", "Help can be found by executing 'man libra'");
+#endif
 }
 
 void MemWnd::deviceError(IPeripheral* dev, unsigned int err) {
