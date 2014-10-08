@@ -10,5 +10,10 @@ class QInstructionList : public QTableWidget {
 		explicit QInstructionList(QWidget* parent = 0);
 		void mousePressEvent(QMouseEvent*);
 		void mouseMoveEvent(QMouseEvent*);
+
+        void selectInstruction(unsigned int idx);
+
+    private:
+        void _highlightInstruction(QTableWidgetItem* item);
 };
 #endif

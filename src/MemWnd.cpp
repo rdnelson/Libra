@@ -90,7 +90,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	this->connect(this->ui->actionEnable_Memory_Logging, SIGNAL(triggered()), this, SLOT(enableMemoryLogging_Clicked()));
 	this->connect(this->ui->lstInstructions, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(lstInstructions_RightClicked(const QPoint&)));
 	this->connect(this->ui->actionHelp, SIGNAL(triggered()), this, SLOT(openHelp()));
-    this->connect(this->ui->actionAbout, SIGNAL(triggered()), this, SLOT(openAbout()));
+	this->connect(this->ui->actionAbout, SIGNAL(triggered()), this, SLOT(openAbout()));
 
 	//Create the memory view model
 	QMemModel* memModel = new QMemModel(this);
@@ -144,7 +144,7 @@ MemWnd::MemWnd(const char* const file, QWidget *parent) :
 	connect(this->ui->txtIP, SIGNAL(editingFinished()), this, SLOT(ipChanged()));
 
 	//Connect the memory control
-	connect(this->ui->tableView, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(memChanged(const QModelIndex&, const QModelIndex&)));
+	//connect(this->ui->tableView, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SLOT(memChanged(const QModelIndex&, const QModelIndex&)));
 
 	//Initialize the timer's QTimer object
 	QTimer* baseTimer = new QTimer();
@@ -601,13 +601,13 @@ void MemWnd::UpdateInstHighlight() {
 	for(unsigned int i = 0; i < 4; i++) {
 		switch(i) {
 			case 0:
-				color = Qt::green;
+				color = QColor::fromRgb(80, 255, 80);
 				break;
 			case 1:
-				color = Qt::red;
+				color = QColor::fromRgb(255, 80, 80);
 				break;
 			case 2:
-				color = Qt::magenta;
+				color = QColor::fromRgb(255, 80, 255);
 				break;
 			case 3:
 				color = Qt::cyan;
@@ -716,7 +716,7 @@ void MemWnd::UpdateInstructions() {
 				if (mVM.GetInstructionLabel(i).empty() && ui->actionEnable_Listings->isChecked()) {
 					char* buf = new char[20];
 					sprintf(buf, "%0.4X", mVM.GetInstructionAddr(i));
-					ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE("    " + QString(buf) + "    "));
+					ui->lstInstructions->setItem(ui->lstInstructions->rowCount() - 1, j, TABLE("	" + QString(buf) + "	"));
 					delete buf;
 				}
 				else
@@ -782,6 +782,16 @@ void MemWnd::HighlightInstructions() {
 			}
 		}
 	}
+	if (!ui->lstInstructions->selectedItems().empty()) {
+		QTableWidgetItem* item = ui->lstInstructions->selectedItems().first();
+		if (item->backgroundColor() == Qt::yellow || item->backgroundColor() == Qt::green) {
+			ui->lstInstructions->setStyleSheet("QTableWidget { selection-background-color: #00FF00; }");
+		} else if (item->backgroundColor() == Qt::red || item->backgroundColor() == QColor::fromRgb(0x88, 0x44, 0xff)) {
+			ui->lstInstructions->setStyleSheet("QTableWidget { selection-background-color: #8844FF; }");
+		} else {
+			ui->lstInstructions->setStyleSheet("QTableWidget { selection-background-color: #0080FF; }");
+		}
+	}
 }
 void MemWnd::DisableRun(int err) {
 
@@ -836,6 +846,34 @@ void MemWnd::KeyEvent(QKeyEvent* evt) {
 				}
 				((Keyboard*)mVM.GetDevices().at(i))->Update(key, evt->type() == QEvent::KeyPress);
 				break;
+			}
+		}
+	}
+
+	if (evt->type() == QEvent::KeyPress) {
+		QList<QTableWidgetItem*> items = ui->lstInstructions->selectedItems();
+		if (!items.empty()) {
+			unsigned int activeItem = 0;
+			// Move the selected instruction
+			if ((evt->key() & Qt::Key_Up) == Qt::Key_Up) {
+				activeItem = ui->lstInstructions->rowCount();
+				for (size_t i = 0; i < items.count(); i++) {
+					if (items.at(i)->row() < activeItem) {
+						activeItem = items.at(i)->row();
+					}
+				}
+				activeItem--;
+				ui->lstInstructions->selectRow(activeItem);
+				ui->lstInstructions->selectInstruction(activeItem);
+			} else if ((evt->key() & Qt::Key_Down) == Qt::Key_Down) {
+				for (size_t i = 0; i < items.count(); i++) {
+					if (items.at(i)->row() > activeItem) {
+						activeItem = items.at(i)->row();
+					}
+				}
+				activeItem++;
+				ui->lstInstructions->selectRow(activeItem);
+				ui->lstInstructions->selectInstruction(activeItem);
 			}
 		}
 	}
@@ -934,11 +972,11 @@ void MemWnd::SetMemoryEditState(bool editable) {
 
 void MemWnd::openHelp() {
 #ifdef __APPLE__
-    QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/../Docs/index.html"));
+	QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/../Docs/index.html"));
 #elif _WIN32
-    QDesktopServices::openUrl(QUrl::fromLocalFile("Docs\\index.html"));
+	QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "\\Docs\\index.html"));
 #else
-    QMessageBox::information(this, "Help", "Help can be found by executing 'man libra'");
+	QMessageBox::information(this, "Help", "Help can be found by executing 'man libra'");
 #endif
 }
 
@@ -952,5 +990,5 @@ void MemWnd::deviceError(IPeripheral* dev, unsigned int err) {
 }
 
 void MemWnd::openAbout() {
-    QMessageBox::information(this, "Placeholder About Dialog", VERSION "\n" HOSTNAME );
+	QMessageBox::information(this, "Placeholder About Dialog", VERSION "\n" HOSTNAME );
 }
