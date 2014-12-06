@@ -132,6 +132,11 @@ than using the polling system.
 6. The ISR must return by calling IRET to ensure the processor returns from the
    interrupt correctly, and resumes normal program execution.
 
+    **Note: While interrupts are enabled, the HLT instruction will not terminate
+    execution. This allows programs that use interrupts to put the processor to
+    sleep pending an interrupt. The only way to terminate execution of programs
+    while interrupts are enabled is to manually stop it.**
+
 .. index::
 	pair: Keyboard; Issues
 
