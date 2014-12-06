@@ -50,6 +50,11 @@ The control port, ``0x43`` is used to enable/disable the timer.
 	If this bit is clear, the timer will be disabled, because there is currently
 	no way to poll the timer to determine if the elapsed time has passed.
 
+    **Note: While interrupts are enabled, the HLT instruction will not terminate
+    execution. This allows programs that use interrupts to put the processor to
+    sleep pending an interrupt. The only way to terminate execution of programs
+    while interrupts are enabled is to manually stop it.**
+
 **TEN** - Timer Enabled
 	When this bit is set, the timer is enabled. When clear, the timer is disabled.
 
