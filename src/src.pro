@@ -5,24 +5,26 @@
 #-------------------------------------------------
 
 QT       += core gui
-CONFIG   += qt thread debug_and_release
+CONFIG   += qt thread
 
-Release:OBJDIR = ../obj/release
-Debug:OBJDIR = ../obj/debug
+CONFIG(release, debug|release) {
+	OBJDIR = ../obj/release
+	DESTDIR = ../bin
+	TARGET = libra
+}
 
-Release:DESTDIR = ../bin
-Release:OBJECTS_DIR = $$OBJDIR/obj
-Release:MOC_DIR = $$OBJDIR/moc
-Release:RCC_DIR = $$OBJDIR/rcc
-Release:UI_DIR = $$OBJDIR/ui
-Release:TARGET = libra
+CONFIG(debug, debug|release) {
+	OBJDIR = ../obj/debug
+	DESTDIR = ../bin_debug
+	TARGET = librad
+}
 
-Debug:DESTDIR = ../bin_debug
-Debug:OBJECTS_DIR = $$OBJDIR/obj
-Debug:MOC_DIR = $$OBJDIR/moc
-Debug:RCC_DIR = $$OBJDIR/rcc
-Debug:UI_DIR = $$OBJDIR/ui
-Debug:TARGET = librad
+
+
+OBJECTS_DIR = $$OBJDIR/obj
+MOC_DIR = $$OBJDIR/moc
+RCC_DIR = $$OBJDIR/rcc
+UI_DIR = $$OBJDIR/ui
 
 INCLUDEPATH += $$OBJDIR
 
