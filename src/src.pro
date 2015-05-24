@@ -5,24 +5,26 @@
 #-------------------------------------------------
 
 QT       += core gui
-CONFIG   += qt thread debug_and_release
+CONFIG   += qt thread
 
-Release:OBJDIR = ../obj/release
-Debug:OBJDIR = ../obj/debug
+CONFIG(release, debug|release) {
+	OBJDIR = ../obj/release
+	DESTDIR = ../bin
+	TARGET = libra
+}
 
-Release:DESTDIR = ../bin
-Release:OBJECTS_DIR = $$OBJDIR/obj
-Release:MOC_DIR = $$OBJDIR/moc
-Release:RCC_DIR = $$OBJDIR/rcc
-Release:UI_DIR = $$OBJDIR/ui
-Release:TARGET = libra
+CONFIG(debug, debug|release) {
+	OBJDIR = ../obj/debug
+	DESTDIR = ../bin_debug
+	TARGET = librad
+}
 
-Debug:DESTDIR = ../bin_debug
-Debug:OBJECTS_DIR = $$OBJDIR/obj
-Debug:MOC_DIR = $$OBJDIR/moc
-Debug:RCC_DIR = $$OBJDIR/rcc
-Debug:UI_DIR = $$OBJDIR/ui
-Debug:TARGET = librad
+
+
+OBJECTS_DIR = $$OBJDIR/obj
+MOC_DIR = $$OBJDIR/moc
+RCC_DIR = $$OBJDIR/rcc
+UI_DIR = $$OBJDIR/ui
 
 INCLUDEPATH += $$OBJDIR
 
@@ -213,12 +215,12 @@ version_c.depends = FORCE
 QMAKE_EXTRA_COMPILERS += version_c
 
 win32 {
-    Debug:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/../bin/QtCored4.dll \
+    debug:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/../bin/QtCored4.dll \
                             $$QMAKE_LIBDIR_QT/../bin/QtGuid4.dll \
                             $$QMAKE_LIBDIR_QT/../plugins/imageformats/qicod4.dll \
                             $$(WINDIR)/System32/msvcp100d.dll \
                             $$(WINDIR)/System32/msvcr100d.dll
-    Release:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/../bin/QtCore4.dll \
+    release:EXTRA_BINFILES += $$QMAKE_LIBDIR_QT/../bin/QtCore4.dll \
                               $$QMAKE_LIBDIR_QT/../bin/QtGui4.dll \
                               $$QMAKE_LIBDIR_QT/../plugins/imageformats/qico4.dll \
                               $$(WINDIR)/System32/msvcp100.dll \
@@ -242,8 +244,8 @@ macx {
     ICON = ../res/Libra.icns
 
     QMAKE_POST_LINK += $$QMAKE_MKDIR $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats $$escape_expand(\\n\\t)
-    Debug:QMAKE_POST_LINK += $$QMAKE_COPY $$QMAKE_LIBDIR_QT/../plugins/imageformats/libqico.dylib $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats $$escape_expand(\\n\\t)
-    Release:QMAKE_POST_LINK += $$QMAKE_COPY $$QMAKE_LIBDIR_QT/../plugins/imageformats/libqico.dylib $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats $$escape_expand(\\n\\t)
+    debug:QMAKE_POST_LINK += $$QMAKE_COPY $$QMAKE_LIBDIR_QT/../plugins/imageformats/libqico.dylib $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats $$escape_expand(\\n\\t)
+    release:QMAKE_POST_LINK += $$QMAKE_COPY $$QMAKE_LIBDIR_QT/../plugins/imageformats/libqico.dylib $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats $$escape_expand(\\n\\t)
     QMAKE_POST_LINK += macdeployqt $$DESTDIR/$${TARGET}.app -executable=$$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats/libqico.dylib $$escape_expand(\\n\\t)
 
     QMAKE_POST_LINK2 += install_name_tool -change @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore $$DESTDIR/$${TARGET}.app/Contents/PlugIns/imageformats/libqico.dylib $$escape_expand(\\n\\t)

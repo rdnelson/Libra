@@ -1,5 +1,11 @@
 OBJDIR = ../obj/doc
-DESTDIR = ../bin
+
+CONFIG(debug, debug|release) {
+	DESTDIR = ../bin_debug
+}
+CONFIG(release, debug|release) {
+	DESTDIR = ../bin
+}
 
 CONFIG += console
 SOURCE = conf.py
