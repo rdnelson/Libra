@@ -35,7 +35,7 @@ win32|macx {
 
 	TARGET = man/libra.1
 
-	QMAKE_POST_LINK += $(COPY_FILE) %^ %@
+	QMAKE_POST_LINK += $(COPY_FILE) $^ $@
 
 	isEmpty(PREFIX) {
 		PREFIX = /usr
