@@ -46,5 +46,5 @@ target: libra.pro
 	$(MAKE) -C build all
 
 clean:
-	$(MAKE) -C build clean
+	if [ -d build ]; then $(MAKE) -C build clean; fi
 	${RM} build bin
