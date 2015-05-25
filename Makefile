@@ -45,6 +45,9 @@ target: libra.pro
 	$(CD) build; $(QMAKE) .. CONFIG+=$(TARGET)
 	$(MAKE) -C build all
 
+install: release
+	$(MAKE) -C build install INSTALL_ROOT=$(INSTALL_ROOT)
+
 clean:
 	if [ -d build ]; then $(MAKE) -C build clean; fi
 	${RM} build bin
