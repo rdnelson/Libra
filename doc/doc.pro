@@ -30,7 +30,7 @@ win32|macx {
 	sphinx.output = $$DESTDIR/Docs/index.html
 } else {
 	sphinx.commands = sphinx-build -b man -d $$OBJDIR/doctrees $$PWD $$DESTDIR/man ${QMAKE_FILE_NAME}
-	sphinx.output = $$DESTDIR/man/Libra.1
+	sphinx.output = $$DESTDIR/man/libra.1
 	sphinx.variable_out = OBJECTS
 
 	TARGET = man/libra.1
