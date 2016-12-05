@@ -51,9 +51,10 @@ Linux
 
 The following commands can be run to build Libra on linux.
 
-	$ cd src
 	$ qmake libra-qt.pro
 	$ make
+	
+The compiled executable can be found in the bin folder after the build completes.
 
 Mac OS X
 --------
